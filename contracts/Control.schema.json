@@ -1,0 +1,33 @@
+{
+  "properties": {
+    "feed_id": {
+      "title": "Feed Id",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "loop",
+        "feed_down",
+        "feed_up"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "loop_epoch": {
+      "title": "Loop Epoch",
+      "type": "integer"
+    },
+    "t_emit_ns": {
+      "title": "T Emit Ns",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "feed_id",
+    "kind",
+    "loop_epoch",
+    "t_emit_ns"
+  ],
+  "title": "Control",
+  "type": "object"
+}

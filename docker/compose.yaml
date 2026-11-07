@@ -1,0 +1,26 @@
+# Skeleton for local work: MediaMTX + engine. The feeds and GPU ingest join in compose.demo.yaml (D1).
+services:
+  mediamtx:
+    image: bluenviron/mediamtx:1.15.3
+    volumes:
+      - ./mediamtx.yml:/mediamtx.yml:ro
+    ports:
+      - "8554:8554"   # RTSP
+      - "8888:8888"   # HLS
+      - "8889:8889"   # WebRTC
+      - "9997:9997"   # status API
+    restart: unless-stopped
+
+  engine:
+    build: {context: .., dockerfile: docker/Dockerfile}
+    command: ["python", "-m", "intensity.engine.service", "--overlay", "demo"]
+    ports: ["8000:8000"]
+    volumes:
+      - ../models:/app/models:ro
+      - ../data/events:/app/data/events:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped

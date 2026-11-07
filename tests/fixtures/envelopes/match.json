@@ -1,0 +1,21 @@
+{
+  "kind": "event",
+  "data": {
+    "v": 1,
+    "feed_id": "fb-arg-fra",
+    "sport": "football",
+    "source": "match",
+    "t_video": 0.0,
+    "loop_epoch": 0,
+    "t_emit_ns": 1794000000000000000,
+    "payload": {
+      "game_time_s": 0.0,
+      "period": 1,
+      "kind": "kickoff",
+      "team": "Argentina",
+      "player": null,
+      "attrs": {}
+    },
+    "facts": []
+  }
+}

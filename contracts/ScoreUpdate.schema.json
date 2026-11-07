@@ -1,0 +1,362 @@
+{
+  "$defs": {
+    "Fact": {
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "text"
+      ],
+      "title": "Fact",
+      "type": "object"
+    },
+    "Forecast": {
+      "properties": {
+        "heating_up": {
+          "title": "Heating Up",
+          "type": "boolean"
+        },
+        "horizon_s": {
+          "title": "Horizon S",
+          "type": "number"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Model Version"
+        },
+        "p": {
+          "title": "P",
+          "type": "number"
+        },
+        "source": {
+          "enum": [
+            "model",
+            "heuristic",
+            "rule"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "p",
+        "label",
+        "horizon_s",
+        "source",
+        "heating_up",
+        "model_version"
+      ],
+      "title": "Forecast",
+      "type": "object"
+    },
+    "Imminent": {
+      "properties": {
+        "context": {
+          "title": "Context",
+          "type": "number"
+        },
+        "cue": {
+          "title": "Cue",
+          "type": "number"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/Fact"
+          },
+          "title": "Facts",
+          "type": "array"
+        },
+        "heating_up": {
+          "title": "Heating Up",
+          "type": "boolean"
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Phase"
+        },
+        "source": {
+          "const": "rule",
+          "title": "Source",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "cue",
+        "context",
+        "heating_up",
+        "phase",
+        "source",
+        "facts"
+      ],
+      "title": "Imminent",
+      "type": "object"
+    },
+    "PartValue": {
+      "properties": {
+        "contribution": {
+          "title": "Contribution",
+          "type": "number"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/Fact"
+          },
+          "title": "Facts",
+          "type": "array"
+        },
+        "phrase": {
+          "title": "Phrase",
+          "type": "string"
+        },
+        "value": {
+          "title": "Value",
+          "type": "number"
+        },
+        "weight": {
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "weight",
+        "contribution",
+        "phrase",
+        "facts"
+      ],
+      "title": "PartValue",
+      "type": "object"
+    },
+    "Reason": {
+      "properties": {
+        "factors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Factors",
+          "type": "array"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/Fact"
+          },
+          "title": "Facts",
+          "type": "array"
+        },
+        "polished": {
+          "title": "Polished",
+          "type": "boolean"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "facts",
+        "factors",
+        "polished"
+      ],
+      "title": "Reason",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "feed_id": {
+      "title": "Feed Id",
+      "type": "string"
+    },
+    "forecast": {
+      "$ref": "#/$defs/Forecast"
+    },
+    "game_clock": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Game Clock"
+    },
+    "heating_up": {
+      "title": "Heating Up",
+      "type": "boolean"
+    },
+    "heating_up_by": {
+      "items": {
+        "enum": [
+          "forecast",
+          "imminent"
+        ],
+        "type": "string"
+      },
+      "title": "Heating Up By",
+      "type": "array"
+    },
+    "imminent": {
+      "$ref": "#/$defs/Imminent"
+    },
+    "intensity": {
+      "title": "Intensity",
+      "type": "number"
+    },
+    "intensity_pct": {
+      "title": "Intensity Pct",
+      "type": "number"
+    },
+    "intensity_raw": {
+      "title": "Intensity Raw",
+      "type": "number"
+    },
+    "loop_epoch": {
+      "title": "Loop Epoch",
+      "type": "integer"
+    },
+    "parts": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/PartValue"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Parts",
+      "type": "object"
+    },
+    "reasons": {
+      "items": {
+        "$ref": "#/$defs/Reason"
+      },
+      "title": "Reasons",
+      "type": "array"
+    },
+    "sport": {
+      "enum": [
+        "football",
+        "f1",
+        "nba",
+        "weightlifting",
+        "chess"
+      ],
+      "title": "Sport",
+      "type": "string"
+    },
+    "stale": {
+      "title": "Stale",
+      "type": "boolean"
+    },
+    "t_emit_ns": {
+      "title": "T Emit Ns",
+      "type": "integer"
+    },
+    "t_video": {
+      "title": "T Video",
+      "type": "number"
+    },
+    "trend": {
+      "enum": [
+        "rising",
+        "steady",
+        "falling"
+      ],
+      "title": "Trend",
+      "type": "string"
+    },
+    "trend_slope": {
+      "title": "Trend Slope",
+      "type": "number"
+    },
+    "v": {
+      "const": 1,
+      "default": 1,
+      "title": "V",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "feed_id",
+    "sport",
+    "t_video",
+    "loop_epoch",
+    "game_clock",
+    "t_emit_ns",
+    "stale",
+    "intensity_raw",
+    "intensity",
+    "intensity_pct",
+    "trend",
+    "trend_slope",
+    "parts",
+    "forecast",
+    "imminent",
+    "heating_up",
+    "heating_up_by",
+    "reasons"
+  ],
+  "title": "ScoreUpdate",
+  "type": "object"
+}

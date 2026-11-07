@@ -1,0 +1,72 @@
+# Engine settings (owner: engine agent). Validated by intensity.config.EngineConfig.
+engine:
+  clock: live                 # live | simulated (parity test, tape replay)
+  speed: 1.0                  # simulated clock only
+  stale_after_s: 2.0          # no ClockTick for this long -> ScoreUpdate.stale
+  ema_alpha: 0.3
+  weights_path: config/weights.yaml
+  feeds_path: config/feeds.yaml
+  max_reasons: 3
+  service:
+    host: 0.0.0.0
+    port: 8000
+    score_interval_s: 1.0     # one ScoreUpdate per feed per second
+    fast_tick_s: 0.1          # imminent check cadence for out-of-cycle updates
+    ingest_queue: 4096
+  trend:
+    window_s: 10.0
+    rising_slope: 0.01        # intensity units per second
+    falling_slope: -0.01
+  percentile:
+    window_s: 1800.0          # intensity_pct within sport over a rolling 30 min
+    min_samples: 30
+    ref_path: models/intensity_ref.json
+  forecast:
+    source: model             # model | heuristic (stage switch)
+    models_dir: models
+    shadow: {}                # sport -> version scored and logged, not served
+    heuristic_threshold: 0.5
+    heuristic_quantiles: [0.02, 0.05, 0.08, 0.12, 0.16, 0.2, 0.25, 0.32, 0.4, 0.5, 0.7]
+  imminent:
+    enabled: true
+    context_floor: 0.3        # D12
+    hold_s: 3.0               # D12
+    min_on_s: 1.0             # D12
+    config_dir: config/imminent
+  trackers:
+    calibration_path: models/video_v0/calibration.json
+    rolling:
+      window_s: 300.0
+      min_samples: 20
+      max_samples: 1200
+    crowd:
+      events_weight: 0.8
+      events_classes: [cheering, applause, crowd]
+      drop_after_s: 3.0
+      rise_fact_min_db_s: 0.5
+    commentary:
+      lexicon_dir: config/lexicon
+      decay_s: 10.0
+      name_weight: 0.15
+      rate_ref_wps: 3.0
+      rate_weight: 0.2
+      max_quote_words: 6
+      min_no_speech_prob: 0.6
+    video:
+      drop_after_s: 3.0
+      weights: {motion: 0.4, celebration: 0.35, close_up: 0.25, cuts: 0.0}
+      close_up_shots: [close_player, close_crowd]
+      celebration_prompts:
+        football: [goal celebration, players hugging]
+        f1: [podium celebration, team celebrating in pit lane]
+        nba: [players celebrating a basket, bench celebrating]
+        weightlifting: [athlete celebrating a lift]
+        chess: []
+  polish:
+    enabled: false            # D10
+    model: claude-opus-5-5
+    timeout_s: 1.5
+    max_tokens: 1024
+    min_interval_s: 5.0
+  replay:
+    events_dir: data/events

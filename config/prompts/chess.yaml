@@ -1,0 +1,7 @@
+shot_type:
+  wide: [a wide shot of a chess tournament hall]
+  close_player: [a close-up of a chess player thinking]
+  close_crowd: [a close-up of spectators]
+  replay: [a chess board diagram]
+  other: [a studio shot of commentators]
+sport: []

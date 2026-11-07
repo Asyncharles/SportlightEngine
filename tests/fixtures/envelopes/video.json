@@ -1,0 +1,53 @@
+{
+  "kind": "event",
+  "data": {
+    "v": 1,
+    "feed_id": "fb-arg-fra",
+    "sport": "football",
+    "source": "video",
+    "t_video": 0.0,
+    "loop_epoch": 0,
+    "t_emit_ns": 1794000000000000000,
+    "payload": {
+      "clip_seq": 0,
+      "t_video_start": 0.0,
+      "motion": 0.0387,
+      "cuts_per_10s": 2.76,
+      "shot_type": "wide",
+      "shot_conf": 0.86,
+      "replay": false,
+      "replay_conf": 0.05,
+      "prompts": {
+        "goal celebration": 0.112,
+        "players hugging": 0.109,
+        "players running on a counter attack": 0.115
+      },
+      "pan_dx": 0.1389,
+      "pan_dy": 0.0,
+      "pan_speed": 0.1389,
+      "pan_sustained_s": 0.0,
+      "score": null,
+      "model": "mock-v0"
+    },
+    "facts": [
+      {
+        "key": "shot_type",
+        "value": "wide",
+        "unit": null,
+        "text": "wide shot"
+      },
+      {
+        "key": "pan_speed",
+        "value": 0.14,
+        "unit": "fw/s",
+        "text": "camera panning 0.1 frame widths a second"
+      },
+      {
+        "key": "motion",
+        "value": 0.039,
+        "unit": null,
+        "text": "fast action on a wide shot"
+      }
+    ]
+  }
+}

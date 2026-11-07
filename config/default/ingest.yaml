@@ -1,0 +1,24 @@
+# Ingest settings (owner: ingest agent). Free-form until the ingest agent adds a typed section.
+clip:                         # D2 placeholders, awaiting the ML lead
+  frames: 16
+  sample_fps: 8
+  stride_s: 0.5
+  size: 224
+  dtype: float16
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+ingest:
+  decoder: nvdec              # nvdec | pyav_cpu
+  feeds_state: run/feeds_state.json
+  engine_url: ws://engine:8000/ingest
+  rtsp_base: rtsp://mediamtx:8554
+  clock:
+    tick_hz: 4
+    fine_anchor: true
+    fine_anchor_window_s: 2.0
+  batch:
+    max_size: 8
+  audio:
+    sample_rate: 16000
+    ring_s: 60
+    gpu_mel: false            # D8

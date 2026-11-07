@@ -1,0 +1,16 @@
+# Commentary keywords (owner: engine agent): phrase -> weight (0 to 1).
+keywords:
+  goal: 1.0
+  scores: 0.9
+  penalty: 0.9
+  chance: 0.6
+  shot: 0.5
+  save: 0.6
+  what a: 0.5
+  header: 0.4
+  corner: 0.3
+  free kick: 0.4
+  red card: 0.8
+  offside: 0.3
+  equaliser: 1.0
+  extra time: 0.5

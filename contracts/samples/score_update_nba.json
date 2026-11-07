@@ -1,0 +1,236 @@
+{
+  "v": 1,
+  "feed_id": "nba-demo-game",
+  "sport": "nba",
+  "t_video": 273.0,
+  "loop_epoch": 0,
+  "game_clock": "Q1 7:27",
+  "t_emit_ns": 1794000000000000000,
+  "stale": false,
+  "intensity_raw": 0.3668,
+  "intensity": 0.4136,
+  "intensity_pct": 31.22,
+  "trend": "falling",
+  "trend_slope": -0.01714,
+  "parts": {
+    "closeness": {
+      "value": 0.8,
+      "weight": 0.16,
+      "contribution": 0.128,
+      "phrase": "a one-possession game",
+      "facts": [
+        {
+          "key": "margin",
+          "value": 3,
+          "unit": "pts",
+          "text": "3-point game"
+        },
+        {
+          "key": "score",
+          "value": "23-20",
+          "unit": null,
+          "text": "Celtics 23-20 Warriors"
+        }
+      ]
+    },
+    "momentum": {
+      "value": 0.0,
+      "weight": 0.12,
+      "contribution": 0.0,
+      "phrase": "trading baskets",
+      "facts": [
+        {
+          "key": "run_2min",
+          "value": 0,
+          "unit": "pts",
+          "text": "Celtics on a 0-point run"
+        },
+        {
+          "key": "score",
+          "value": "23-20",
+          "unit": null,
+          "text": "Celtics 23-20 Warriors"
+        }
+      ]
+    },
+    "stakes": {
+      "value": 0.0,
+      "weight": 0.12,
+      "contribution": 0.0,
+      "phrase": "early in the game",
+      "facts": [
+        {
+          "key": "time_remaining_s",
+          "value": 447,
+          "unit": "s",
+          "text": "Q1 7:27"
+        },
+        {
+          "key": "margin",
+          "value": 3,
+          "unit": "pts",
+          "text": "3-point game"
+        }
+      ]
+    },
+    "crowd": {
+      "value": 0.834,
+      "weight": 0.12,
+      "contribution": 0.1001,
+      "phrase": "a roaring crowd",
+      "facts": [
+        {
+          "key": "loudness_rel_db",
+          "value": 2.5,
+          "unit": "dB",
+          "text": "crowd 2 dB above normal"
+        }
+      ]
+    },
+    "commentary": {
+      "value": 0.075,
+      "weight": 0.08,
+      "contribution": 0.006,
+      "phrase": "quiet commentary",
+      "facts": [
+        {
+          "key": "commentary_quote",
+          "value": "and one for Jayson Tatum, what",
+          "unit": null,
+          "text": "\"and one for Jayson Tatum, what\""
+        },
+        {
+          "key": "commentary_keyword",
+          "value": "and one",
+          "unit": null,
+          "text": "commentator says \"and one\""
+        },
+        {
+          "key": "commentary_player",
+          "value": "Jayson Tatum",
+          "unit": null,
+          "text": "Jayson Tatum mentioned"
+        }
+      ]
+    },
+    "video": {
+      "value": 0.1734,
+      "weight": 0.12,
+      "contribution": 0.0208,
+      "phrase": "calm pictures",
+      "facts": [
+        {
+          "key": "shot_type",
+          "value": "wide",
+          "unit": null,
+          "text": "wide shot"
+        }
+      ]
+    },
+    "forecast": {
+      "value": 0.56,
+      "weight": 0.16,
+      "contribution": 0.0896,
+      "phrase": "no sign of a lead change yet",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 23,
+          "unit": "%",
+          "text": "23% chance of a lead change within 60 s"
+        }
+      ]
+    },
+    "imminent": {
+      "value": 0.1862,
+      "weight": 0.12,
+      "contribution": 0.0223,
+      "phrase": "nothing building yet",
+      "facts": []
+    }
+  },
+  "forecast": {
+    "p": 0.23,
+    "label": "lead_change",
+    "horizon_s": 60.0,
+    "source": "heuristic",
+    "heating_up": false,
+    "model_version": null
+  },
+  "imminent": {
+    "value": 0.1862,
+    "cue": 0.1432,
+    "context": 0.692,
+    "heating_up": false,
+    "phase": null,
+    "source": "rule",
+    "facts": []
+  },
+  "heating_up": false,
+  "heating_up_by": [],
+  "reasons": [
+    {
+      "text": "A one-possession game: 3-point game, Celtics 23-20 Warriors",
+      "facts": [
+        {
+          "key": "margin",
+          "value": 3,
+          "unit": "pts",
+          "text": "3-point game"
+        },
+        {
+          "key": "score",
+          "value": "23-20",
+          "unit": null,
+          "text": "Celtics 23-20 Warriors"
+        }
+      ],
+      "factors": [
+        "closeness"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A roaring crowd: crowd 2 dB above normal, Q1 7:27",
+      "facts": [
+        {
+          "key": "loudness_rel_db",
+          "value": 2.5,
+          "unit": "dB",
+          "text": "crowd 2 dB above normal"
+        },
+        {
+          "key": "game_clock",
+          "value": "Q1 7:27",
+          "unit": null,
+          "text": "Q1 7:27"
+        }
+      ],
+      "factors": [
+        "crowd"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A lead change looks likely: 23% chance of a lead change within 60 s, Q1 7:27",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 23,
+          "unit": "%",
+          "text": "23% chance of a lead change within 60 s"
+        },
+        {
+          "key": "game_clock",
+          "value": "Q1 7:27",
+          "unit": null,
+          "text": "Q1 7:27"
+        }
+      ],
+      "factors": [
+        "forecast"
+      ],
+      "polished": false
+    }
+  ]
+}

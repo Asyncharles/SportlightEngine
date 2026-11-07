@@ -1,0 +1,250 @@
+{
+  "v": 1,
+  "feed_id": "wl-demo-session",
+  "sport": "weightlifting",
+  "t_video": 290.0,
+  "loop_epoch": 0,
+  "game_clock": "Attempt 1",
+  "t_emit_ns": 1794000000000000000,
+  "stale": false,
+  "intensity_raw": 0.4162,
+  "intensity": 0.4229,
+  "intensity_pct": 8.51,
+  "trend": "steady",
+  "trend_slope": -0.00216,
+  "parts": {
+    "closeness": {
+      "value": 0.6201,
+      "weight": 0.16,
+      "contribution": 0.0992,
+      "phrase": "a lift that could go either way",
+      "facts": [
+        {
+          "key": "weight_kg",
+          "value": 135,
+          "unit": "kg",
+          "text": "Park Hye-jeong going for 135 kg"
+        },
+        {
+          "key": "weight_over_best_kg",
+          "value": 0,
+          "unit": "kg",
+          "text": "matching best"
+        }
+      ]
+    },
+    "momentum": {
+      "value": 0.6667,
+      "weight": 0.12,
+      "contribution": 0.08,
+      "phrase": "lifters in form",
+      "facts": [
+        {
+          "key": "good_lifts",
+          "value": 2,
+          "unit": null,
+          "text": "2 of the last 3 lifts good"
+        },
+        {
+          "key": "attempt",
+          "value": 1,
+          "unit": null,
+          "text": "attempt 1 of 3"
+        }
+      ]
+    },
+    "stakes": {
+      "value": 0.3333,
+      "weight": 0.12,
+      "contribution": 0.04,
+      "phrase": "an early attempt",
+      "facts": [
+        {
+          "key": "attempt",
+          "value": 1,
+          "unit": null,
+          "text": "attempt 1 of 3"
+        },
+        {
+          "key": "weight_kg",
+          "value": 135,
+          "unit": "kg",
+          "text": "Park Hye-jeong going for 135 kg"
+        }
+      ]
+    },
+    "crowd": {
+      "value": 0.166,
+      "weight": 0.12,
+      "contribution": 0.0199,
+      "phrase": "a quiet crowd",
+      "facts": [
+        {
+          "key": "loudness_rel_db",
+          "value": -1.1,
+          "unit": "dB",
+          "text": "crowd 1 dB below normal"
+        }
+      ]
+    },
+    "commentary": {
+      "value": 0.0667,
+      "weight": 0.08,
+      "contribution": 0.0053,
+      "phrase": "quiet commentary",
+      "facts": [
+        {
+          "key": "commentary_quote",
+          "value": "settling into a rhythm",
+          "unit": null,
+          "text": "\"settling into a rhythm\""
+        }
+      ]
+    },
+    "video": {
+      "value": 0.6041,
+      "weight": 0.12,
+      "contribution": 0.0725,
+      "phrase": "lively pictures",
+      "facts": [
+        {
+          "key": "prompt:athlete celebrating a lift",
+          "value": 0.15,
+          "unit": null,
+          "text": "athlete celebrating a lift on screen"
+        },
+        {
+          "key": "motion",
+          "value": 0.023,
+          "unit": null,
+          "text": "fast action on a wide shot"
+        },
+        {
+          "key": "shot_type",
+          "value": "wide",
+          "unit": null,
+          "text": "wide shot"
+        }
+      ]
+    },
+    "forecast": {
+      "value": 0.6201,
+      "weight": 0.16,
+      "contribution": 0.0992,
+      "phrase": "a good lift brewing",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 69,
+          "unit": "%",
+          "text": "69% chance of a good lift within 60 s"
+        }
+      ]
+    },
+    "imminent": {
+      "value": 0.0,
+      "weight": 0.12,
+      "contribution": 0.0,
+      "phrase": "platform empty",
+      "facts": [
+        {
+          "key": "phase",
+          "value": "idle",
+          "unit": null,
+          "text": "platform empty"
+        }
+      ]
+    }
+  },
+  "forecast": {
+    "p": 0.68997,
+    "label": "lift_success",
+    "horizon_s": 60.0,
+    "source": "rule",
+    "heating_up": false,
+    "model_version": null
+  },
+  "imminent": {
+    "value": 0.0,
+    "cue": 0.0,
+    "context": 0.734,
+    "heating_up": false,
+    "phase": "idle",
+    "source": "rule",
+    "facts": [
+      {
+        "key": "phase",
+        "value": "idle",
+        "unit": null,
+        "text": "platform empty"
+      }
+    ]
+  },
+  "heating_up": false,
+  "heating_up_by": [],
+  "reasons": [
+    {
+      "text": "A lift that could go either way: Park Hye-jeong going for 135 kg, matching best",
+      "facts": [
+        {
+          "key": "weight_kg",
+          "value": 135,
+          "unit": "kg",
+          "text": "Park Hye-jeong going for 135 kg"
+        },
+        {
+          "key": "weight_over_best_kg",
+          "value": 0,
+          "unit": "kg",
+          "text": "matching best"
+        }
+      ],
+      "factors": [
+        "closeness"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A good lift looks likely: 69% chance of a good lift within 60 s, Attempt 1",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 69,
+          "unit": "%",
+          "text": "69% chance of a good lift within 60 s"
+        },
+        {
+          "key": "game_clock",
+          "value": "Attempt 1",
+          "unit": null,
+          "text": "Attempt 1"
+        }
+      ],
+      "factors": [
+        "forecast"
+      ],
+      "polished": false
+    },
+    {
+      "text": "Lifters in form: 2 of the last 3 lifts good, attempt 1 of 3",
+      "facts": [
+        {
+          "key": "good_lifts",
+          "value": 2,
+          "unit": null,
+          "text": "2 of the last 3 lifts good"
+        },
+        {
+          "key": "attempt",
+          "value": 1,
+          "unit": null,
+          "text": "attempt 1 of 3"
+        }
+      ],
+      "factors": [
+        "momentum"
+      ],
+      "polished": false
+    }
+  ]
+}

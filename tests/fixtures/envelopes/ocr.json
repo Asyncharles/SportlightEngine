@@ -1,0 +1,21 @@
+{
+  "kind": "event",
+  "data": {
+    "v": 1,
+    "feed_id": "fb-arg-fra",
+    "sport": "football",
+    "source": "ocr",
+    "t_video": 0.0,
+    "loop_epoch": 0,
+    "t_emit_ns": 1794000000000000000,
+    "payload": {
+      "fields": {
+        "clock": "0:00"
+      },
+      "conf": {
+        "clock": 0.9
+      }
+    },
+    "facts": []
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "clock",
+  "data": {
+    "feed_id": "fb-arg-fra",
+    "t_video": 0.0,
+    "loop_epoch": 0,
+    "t_emit_ns": 1794000000000000000
+  }
+}

@@ -1,0 +1,15 @@
+name: ci
+on:
+  push: {branches: [main, master]}
+  pull_request:
+jobs:
+  cpu:
+    runs-on: ubuntu-24.04
+    env:
+      UV_PROJECT_ENVIRONMENT: venv
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with: {version: "0.13.7"}
+      - run: uv sync --frozen --inexact --extra train
+      - run: make lint test

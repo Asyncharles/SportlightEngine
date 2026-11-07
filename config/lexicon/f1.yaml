@@ -1,0 +1,13 @@
+keywords:
+  overtake: 1.0
+  overtaking: 1.0
+  pass: 0.6
+  move: 0.4
+  side by side: 0.8
+  dive: 0.6
+  drs: 0.5
+  lock up: 0.5
+  safety car: 0.7
+  crash: 0.9
+  fastest lap: 0.4
+  pit: 0.3

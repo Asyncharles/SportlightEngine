@@ -1,0 +1,21 @@
+{
+  "kind": "event",
+  "data": {
+    "v": 1,
+    "feed_id": "nba-demo-game",
+    "sport": "nba",
+    "source": "voice",
+    "t_video": 34.0,
+    "loop_epoch": 0,
+    "t_emit_ns": 1794000000000000000,
+    "payload": {
+      "window_s": 0.5,
+      "speech_frac": 0.04,
+      "speaking": false,
+      "energy_rel_db": null,
+      "pitch_rel_st": null,
+      "pace_rel": null
+    },
+    "facts": []
+  }
+}

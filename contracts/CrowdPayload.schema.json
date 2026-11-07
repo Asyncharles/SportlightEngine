@@ -1,0 +1,64 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "events": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Events"
+    },
+    "hush": {
+      "title": "Hush",
+      "type": "boolean"
+    },
+    "loudness_dbfs": {
+      "title": "Loudness Dbfs",
+      "type": "number"
+    },
+    "loudness_rel_db": {
+      "title": "Loudness Rel Db",
+      "type": "number"
+    },
+    "nonspeech_dbfs": {
+      "title": "Nonspeech Dbfs",
+      "type": "number"
+    },
+    "nonspeech_ok": {
+      "title": "Nonspeech Ok",
+      "type": "boolean"
+    },
+    "peak_dbfs": {
+      "title": "Peak Dbfs",
+      "type": "number"
+    },
+    "rise_db_s": {
+      "title": "Rise Db S",
+      "type": "number"
+    },
+    "window_s": {
+      "title": "Window S",
+      "type": "number"
+    }
+  },
+  "required": [
+    "window_s",
+    "loudness_dbfs",
+    "loudness_rel_db",
+    "peak_dbfs",
+    "nonspeech_dbfs",
+    "nonspeech_ok",
+    "rise_db_s",
+    "hush"
+  ],
+  "title": "CrowdPayload",
+  "type": "object"
+}

@@ -1,0 +1,6 @@
+rule_version: f1-r1
+threshold: 0.45
+cue_weights: {battle_shot: 0.4, gap_close: 0.4, voice_rise: 0.2}
+battle_prompts: [two racing cars close together, onboard camera]
+gap_close: {full_s: 1.0, zero_s: 2.0}   # 1 under full_s, linear to 0 at zero_s
+audio_only_renormalise: true

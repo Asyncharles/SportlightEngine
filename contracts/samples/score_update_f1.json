@@ -1,0 +1,250 @@
+{
+  "v": 1,
+  "feed_id": "f1-demo-race",
+  "sport": "f1",
+  "t_video": 256.0,
+  "loop_epoch": 0,
+  "game_clock": "Lap 3/58",
+  "t_emit_ns": 1794000000000000000,
+  "stale": false,
+  "intensity_raw": 0.457,
+  "intensity": 0.3466,
+  "intensity_pct": 79.3,
+  "trend": "steady",
+  "trend_slope": 0.00279,
+  "parts": {
+    "closeness": {
+      "value": 0.95,
+      "weight": 0.16,
+      "contribution": 0.152,
+      "phrase": "cars nose to tail",
+      "facts": [
+        {
+          "key": "min_gap_s",
+          "value": 0.4,
+          "unit": "s",
+          "text": "gap 0.4 s at the front"
+        },
+        {
+          "key": "battles_1s",
+          "value": 1,
+          "unit": null,
+          "text": "1 battles within a second"
+        }
+      ]
+    },
+    "momentum": {
+      "value": 0.6667,
+      "weight": 0.12,
+      "contribution": 0.08,
+      "phrase": "lots of overtaking",
+      "facts": [
+        {
+          "key": "passes_3laps",
+          "value": 3,
+          "unit": null,
+          "text": "3 passes in 3 laps"
+        },
+        {
+          "key": "battles_1s",
+          "value": 1,
+          "unit": null,
+          "text": "1 battles within a second"
+        }
+      ]
+    },
+    "stakes": {
+      "value": 0.0517,
+      "weight": 0.12,
+      "contribution": 0.0062,
+      "phrase": "a long way to go",
+      "facts": [
+        {
+          "key": "laps_remaining",
+          "value": 55,
+          "unit": null,
+          "text": "55 laps to go"
+        },
+        {
+          "key": "lap",
+          "value": 3,
+          "unit": null,
+          "text": "lap 3 of 58"
+        }
+      ]
+    },
+    "crowd": {
+      "value": 0.3956,
+      "weight": 0.12,
+      "contribution": 0.0475,
+      "phrase": "a quiet crowd",
+      "facts": [
+        {
+          "key": "loudness_rel_db",
+          "value": -0.3,
+          "unit": "dB",
+          "text": "crowd at its usual level"
+        }
+      ]
+    },
+    "commentary": {
+      "value": 0.0667,
+      "weight": 0.08,
+      "contribution": 0.0053,
+      "phrase": "quiet commentary",
+      "facts": [
+        {
+          "key": "commentary_quote",
+          "value": "settling into a rhythm",
+          "unit": null,
+          "text": "\"settling into a rhythm\""
+        }
+      ]
+    },
+    "video": {
+      "value": 0.222,
+      "weight": 0.12,
+      "contribution": 0.0266,
+      "phrase": "calm pictures",
+      "facts": [
+        {
+          "key": "shot_type",
+          "value": "wide",
+          "unit": null,
+          "text": "wide shot"
+        }
+      ]
+    },
+    "forecast": {
+      "value": 0.5,
+      "weight": 0.16,
+      "contribution": 0.08,
+      "phrase": "no sign of an overtake yet",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 20,
+          "unit": "%",
+          "text": "20% chance of an overtake within 180 s"
+        }
+      ]
+    },
+    "imminent": {
+      "value": 0.4942,
+      "weight": 0.12,
+      "contribution": 0.0593,
+      "phrase": "something is building",
+      "facts": [
+        {
+          "key": "prompt:two racing cars close together",
+          "value": 0.17,
+          "unit": null,
+          "text": "two racing cars close together on screen"
+        },
+        {
+          "key": "min_gap_s",
+          "value": 0.4,
+          "unit": "s",
+          "text": "gap 0.4 s at the front"
+        }
+      ]
+    }
+  },
+  "forecast": {
+    "p": 0.2,
+    "label": "on_track_pass",
+    "horizon_s": 180.0,
+    "source": "heuristic",
+    "heating_up": false,
+    "model_version": null
+  },
+  "imminent": {
+    "value": 0.4942,
+    "cue": 0.7603,
+    "context": 0.65,
+    "heating_up": false,
+    "phase": null,
+    "source": "rule",
+    "facts": [
+      {
+        "key": "prompt:two racing cars close together",
+        "value": 0.17,
+        "unit": null,
+        "text": "two racing cars close together on screen"
+      },
+      {
+        "key": "min_gap_s",
+        "value": 0.4,
+        "unit": "s",
+        "text": "gap 0.4 s at the front"
+      }
+    ]
+  },
+  "heating_up": false,
+  "heating_up_by": [],
+  "reasons": [
+    {
+      "text": "Cars nose to tail: gap 0.4 s at the front, 1 battles within a second",
+      "facts": [
+        {
+          "key": "min_gap_s",
+          "value": 0.4,
+          "unit": "s",
+          "text": "gap 0.4 s at the front"
+        },
+        {
+          "key": "battles_1s",
+          "value": 1,
+          "unit": null,
+          "text": "1 battles within a second"
+        }
+      ],
+      "factors": [
+        "closeness"
+      ],
+      "polished": false
+    },
+    {
+      "text": "Lots of overtaking: 3 passes in 3 laps, 1 battles within a second",
+      "facts": [
+        {
+          "key": "passes_3laps",
+          "value": 3,
+          "unit": null,
+          "text": "3 passes in 3 laps"
+        },
+        {
+          "key": "battles_1s",
+          "value": 1,
+          "unit": null,
+          "text": "1 battles within a second"
+        }
+      ],
+      "factors": [
+        "momentum"
+      ],
+      "polished": false
+    },
+    {
+      "text": "An overtake looks likely: 20% chance of an overtake within 180 s, Lap 3/58",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 20,
+          "unit": "%",
+          "text": "20% chance of an overtake within 180 s"
+        },
+        {
+          "key": "game_clock",
+          "value": "Lap 3/58",
+          "unit": null,
+          "text": "Lap 3/58"
+        }
+      ],
+      "factors": [
+        "forecast"
+      ],
+      "polished": false
+    }
+  ]
+}

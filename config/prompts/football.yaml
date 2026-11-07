@@ -1,0 +1,11 @@
+# open_clip prompts (owner: ingest agent). shot_type -> prompt texts; sport prompts are scored one by one.
+shot_type:
+  wide: [a wide shot of a football pitch]
+  close_player: [a close-up of a football player]
+  close_crowd: [a close-up of fans in a stadium]
+  replay: [a slow-motion replay of a football match]
+  other: [a graphic or studio shot]
+sport:
+  - goal celebration
+  - players hugging
+  - players running on a counter attack

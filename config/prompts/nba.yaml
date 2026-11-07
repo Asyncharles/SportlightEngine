@@ -1,0 +1,10 @@
+shot_type:
+  wide: [a wide shot of a basketball court]
+  close_player: [a close-up of a basketball player]
+  close_crowd: [a close-up of fans in an arena]
+  replay: [a slow-motion replay of a basketball game]
+  other: [a graphic or studio shot]
+sport:
+  - players celebrating a basket
+  - bench celebrating
+  - fast break down the court

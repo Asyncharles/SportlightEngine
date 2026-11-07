@@ -1,0 +1,31 @@
+{
+  "kind": "event",
+  "data": {
+    "v": 1,
+    "feed_id": "fb-arg-fra",
+    "sport": "football",
+    "source": "crowd",
+    "t_video": 0.0,
+    "loop_epoch": 0,
+    "t_emit_ns": 1794000000000000000,
+    "payload": {
+      "window_s": 1.0,
+      "loudness_dbfs": -26.91,
+      "loudness_rel_db": 1.09,
+      "peak_dbfs": -16.91,
+      "nonspeech_dbfs": -30.91,
+      "nonspeech_ok": true,
+      "rise_db_s": -0.13,
+      "hush": false,
+      "events": null
+    },
+    "facts": [
+      {
+        "key": "loudness_rel_db",
+        "value": 1.1,
+        "unit": "dB",
+        "text": "crowd 1 dB above normal"
+      }
+    ]
+  }
+}

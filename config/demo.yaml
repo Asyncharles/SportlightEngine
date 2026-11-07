@@ -1,0 +1,8 @@
+# VM demo overlay.
+ingest:
+  decoder: nvdec
+engine:
+  forecast:
+    source: model
+log:
+  json: true

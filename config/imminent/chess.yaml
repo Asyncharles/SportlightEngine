@@ -1,0 +1,4 @@
+rule_version: chess-r0
+threshold: 1.1                 # never fires: chess is a stretch goal
+cue_weights: {voice_rise: 1.0}
+audio_only_renormalise: false

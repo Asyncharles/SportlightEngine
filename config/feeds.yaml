@@ -1,0 +1,35 @@
+# The one feed registry: MediaMTX paths, pushers, ingest and engine all read it.
+# match_id and sync tables are filled by the ML lead.
+feeds:
+  - feed_id: fb-arg-fra
+    sport: football
+    sample: samples/arg_fra_2022_final.mp4
+    rtsp_path: fb-arg-fra
+    match_ref: {source: statsbomb, match_id: null}
+    sync: data/sync/arg_fra_2022_final.csv
+    asr: live
+    ocr_regions: null
+  - feed_id: f1-demo-race
+    sport: f1
+    sample: samples/f1_demo_race.mp4
+    rtsp_path: f1-demo-race
+    match_ref: {source: fastf1, match_id: null}
+    sync: data/sync/f1_demo_race.csv
+    asr: live
+    ocr_regions: null
+  - feed_id: nba-demo-game
+    sport: nba
+    sample: samples/nba_demo_game.mp4
+    rtsp_path: nba-demo-game
+    match_ref: {source: nba_api, match_id: null}
+    sync: data/sync/nba_demo_game.csv
+    asr: live
+    ocr_regions: null
+  - feed_id: wl-demo-session
+    sport: weightlifting
+    sample: samples/wl_demo_session.mp4
+    rtsp_path: wl-demo-session
+    match_ref: {source: session_csv, match_id: null}
+    sync: data/sync/wl_demo_session.csv
+    asr: live
+    ocr_regions: null

@@ -1,0 +1,214 @@
+{
+  "$defs": {
+    "ClockTick": {
+      "properties": {
+        "feed_id": {
+          "title": "Feed Id",
+          "type": "string"
+        },
+        "loop_epoch": {
+          "title": "Loop Epoch",
+          "type": "integer"
+        },
+        "t_emit_ns": {
+          "title": "T Emit Ns",
+          "type": "integer"
+        },
+        "t_video": {
+          "title": "T Video",
+          "type": "number"
+        }
+      },
+      "required": [
+        "feed_id",
+        "t_video",
+        "loop_epoch",
+        "t_emit_ns"
+      ],
+      "title": "ClockTick",
+      "type": "object"
+    },
+    "Control": {
+      "properties": {
+        "feed_id": {
+          "title": "Feed Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "loop",
+            "feed_down",
+            "feed_up"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "loop_epoch": {
+          "title": "Loop Epoch",
+          "type": "integer"
+        },
+        "t_emit_ns": {
+          "title": "T Emit Ns",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "feed_id",
+        "kind",
+        "loop_epoch",
+        "t_emit_ns"
+      ],
+      "title": "Control",
+      "type": "object"
+    },
+    "Event": {
+      "properties": {
+        "facts": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Fact"
+          },
+          "title": "Facts",
+          "type": "array"
+        },
+        "feed_id": {
+          "title": "Feed Id",
+          "type": "string"
+        },
+        "loop_epoch": {
+          "title": "Loop Epoch",
+          "type": "integer"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        },
+        "source": {
+          "enum": [
+            "match",
+            "crowd",
+            "commentary",
+            "video",
+            "voice",
+            "ocr"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "sport": {
+          "enum": [
+            "football",
+            "f1",
+            "nba",
+            "weightlifting",
+            "chess"
+          ],
+          "title": "Sport",
+          "type": "string"
+        },
+        "t_emit_ns": {
+          "title": "T Emit Ns",
+          "type": "integer"
+        },
+        "t_video": {
+          "title": "T Video",
+          "type": "number"
+        },
+        "v": {
+          "const": 1,
+          "default": 1,
+          "title": "V",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "feed_id",
+        "sport",
+        "source",
+        "t_video",
+        "loop_epoch",
+        "t_emit_ns",
+        "payload"
+      ],
+      "title": "Event",
+      "type": "object"
+    },
+    "Fact": {
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "text"
+      ],
+      "title": "Fact",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "data": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Event"
+        },
+        {
+          "$ref": "#/$defs/ClockTick"
+        },
+        {
+          "$ref": "#/$defs/Control"
+        }
+      ],
+      "title": "Data"
+    },
+    "kind": {
+      "enum": [
+        "event",
+        "clock",
+        "control"
+      ],
+      "title": "Kind",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "data"
+  ],
+  "title": "Envelope",
+  "type": "object"
+}
