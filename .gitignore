@@ -1,0 +1,26 @@
+# Environments and IDE
+venv/
+.venv/
+.idea/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Runtime output
+run/
+reports/
+
+# Data: synced to the private bucket, never committed (hard rule 10)
+data/raw/
+data/events/
+data/tables/
+data/transcripts/
+data/tapes/
+data/samples/
+*.mp4
+*.mkv
+*.ts
+
+# Secrets
+.env

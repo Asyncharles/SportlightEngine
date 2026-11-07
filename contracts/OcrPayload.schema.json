@@ -1,0 +1,25 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "conf": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Conf",
+      "type": "object"
+    },
+    "fields": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Fields",
+      "type": "object"
+    }
+  },
+  "required": [
+    "fields",
+    "conf"
+  ],
+  "title": "OcrPayload",
+  "type": "object"
+}

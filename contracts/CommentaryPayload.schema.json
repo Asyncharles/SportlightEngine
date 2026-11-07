@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "avg_logprob": {
+      "title": "Avg Logprob",
+      "type": "number"
+    },
+    "lang": {
+      "title": "Lang",
+      "type": "string"
+    },
+    "no_speech_prob": {
+      "title": "No Speech Prob",
+      "type": "number"
+    },
+    "t_end": {
+      "title": "T End",
+      "type": "number"
+    },
+    "t_start": {
+      "title": "T Start",
+      "type": "number"
+    },
+    "text": {
+      "title": "Text",
+      "type": "string"
+    }
+  },
+  "required": [
+    "text",
+    "t_start",
+    "t_end",
+    "lang",
+    "avg_logprob",
+    "no_speech_prob"
+  ],
+  "title": "CommentaryPayload",
+  "type": "object"
+}

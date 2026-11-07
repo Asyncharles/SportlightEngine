@@ -1,0 +1,11 @@
+shot_type:
+  wide: [a wide shot of a race track with racing cars]
+  close_player: [a close-up of a racing driver]
+  close_crowd: [a close-up of fans in a grandstand]
+  replay: [a replay of a motor race]
+  other: [a timing graphic or studio shot]
+sport:
+  - two racing cars close together
+  - onboard camera
+  - podium celebration
+  - team celebrating in pit lane

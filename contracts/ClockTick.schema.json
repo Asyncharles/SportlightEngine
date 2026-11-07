@@ -1,0 +1,28 @@
+{
+  "properties": {
+    "feed_id": {
+      "title": "Feed Id",
+      "type": "string"
+    },
+    "loop_epoch": {
+      "title": "Loop Epoch",
+      "type": "integer"
+    },
+    "t_emit_ns": {
+      "title": "T Emit Ns",
+      "type": "integer"
+    },
+    "t_video": {
+      "title": "T Video",
+      "type": "number"
+    }
+  },
+  "required": [
+    "feed_id",
+    "t_video",
+    "loop_epoch",
+    "t_emit_ns"
+  ],
+  "title": "ClockTick",
+  "type": "object"
+}

@@ -1,0 +1,101 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "clip_seq": {
+      "title": "Clip Seq",
+      "type": "integer"
+    },
+    "cuts_per_10s": {
+      "title": "Cuts Per 10S",
+      "type": "number"
+    },
+    "model": {
+      "title": "Model",
+      "type": "string"
+    },
+    "motion": {
+      "title": "Motion",
+      "type": "number"
+    },
+    "pan_dx": {
+      "title": "Pan Dx",
+      "type": "number"
+    },
+    "pan_dy": {
+      "title": "Pan Dy",
+      "type": "number"
+    },
+    "pan_speed": {
+      "title": "Pan Speed",
+      "type": "number"
+    },
+    "pan_sustained_s": {
+      "title": "Pan Sustained S",
+      "type": "number"
+    },
+    "prompts": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Prompts",
+      "type": "object"
+    },
+    "replay": {
+      "title": "Replay",
+      "type": "boolean"
+    },
+    "replay_conf": {
+      "title": "Replay Conf",
+      "type": "number"
+    },
+    "score": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Score"
+    },
+    "shot_conf": {
+      "title": "Shot Conf",
+      "type": "number"
+    },
+    "shot_type": {
+      "enum": [
+        "wide",
+        "close_player",
+        "close_crowd",
+        "replay",
+        "other"
+      ],
+      "title": "Shot Type",
+      "type": "string"
+    },
+    "t_video_start": {
+      "title": "T Video Start",
+      "type": "number"
+    }
+  },
+  "required": [
+    "clip_seq",
+    "t_video_start",
+    "motion",
+    "cuts_per_10s",
+    "shot_type",
+    "shot_conf",
+    "replay",
+    "replay_conf",
+    "prompts",
+    "pan_dx",
+    "pan_dy",
+    "pan_speed",
+    "pan_sustained_s",
+    "model"
+  ],
+  "title": "VideoPayload",
+  "type": "object"
+}

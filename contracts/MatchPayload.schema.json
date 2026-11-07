@@ -1,0 +1,53 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "attrs": {
+      "additionalProperties": true,
+      "title": "Attrs",
+      "type": "object"
+    },
+    "game_time_s": {
+      "title": "Game Time S",
+      "type": "number"
+    },
+    "kind": {
+      "title": "Kind",
+      "type": "string"
+    },
+    "period": {
+      "title": "Period",
+      "type": "integer"
+    },
+    "player": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Player"
+    },
+    "team": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Team"
+    }
+  },
+  "required": [
+    "game_time_s",
+    "period",
+    "kind"
+  ],
+  "title": "MatchPayload",
+  "type": "object"
+}

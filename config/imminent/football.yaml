@@ -1,0 +1,6 @@
+# Imminent rule (owner: engine agent). Untuned defaults until P4 tuning on non-demo footage.
+rule_version: football-r1
+threshold: 0.45
+cue_weights: {pan: 0.5, crowd_rise: 0.25, voice_rise: 0.25}
+pan_min_sustained_s: 1.5
+audio_only_renormalise: true   # with the video model down, imminent runs on audio cues alone

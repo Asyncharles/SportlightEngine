@@ -1,0 +1,9 @@
+{
+  "kind": "control",
+  "data": {
+    "feed_id": "wl-demo-session",
+    "kind": "loop",
+    "loop_epoch": 1,
+    "t_emit_ns": 1794000069000000000
+  }
+}

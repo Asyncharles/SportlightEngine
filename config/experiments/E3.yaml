@@ -1,0 +1,8 @@
+# Capacity experiment E3 (owner: ingest agent, milestone B1).
+experiment:
+  id: E3
+  feeds: [1, 2, 4, 8, 16, 32, 64]
+  modes: [decode_dummy, full_perception]
+  repeats: 3
+  duration_s: 120
+  warmup_s: 10

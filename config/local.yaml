@@ -1,0 +1,10 @@
+# Laptop overlay: CPU decode backend, engine on localhost, mock-friendly.
+ingest:
+  decoder: pyav_cpu
+  engine_url: ws://127.0.0.1:8000/ingest
+  rtsp_base: rtsp://127.0.0.1:8554
+engine:
+  service:
+    host: 127.0.0.1
+log:
+  json: false

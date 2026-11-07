@@ -1,0 +1,60 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "energy_rel_db": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Energy Rel Db"
+    },
+    "pace_rel": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pace Rel"
+    },
+    "pitch_rel_st": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pitch Rel St"
+    },
+    "speaking": {
+      "title": "Speaking",
+      "type": "boolean"
+    },
+    "speech_frac": {
+      "title": "Speech Frac",
+      "type": "number"
+    },
+    "window_s": {
+      "title": "Window S",
+      "type": "number"
+    }
+  },
+  "required": [
+    "window_s",
+    "speech_frac",
+    "speaking"
+  ],
+  "title": "VoicePayload",
+  "type": "object"
+}

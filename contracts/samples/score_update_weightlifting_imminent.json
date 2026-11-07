@@ -1,0 +1,282 @@
+{
+  "v": 1,
+  "feed_id": "wl-demo-session",
+  "sport": "weightlifting",
+  "t_video": 101.5,
+  "loop_epoch": 0,
+  "game_clock": "Attempt 2",
+  "t_emit_ns": 1794000000000000000,
+  "stale": false,
+  "intensity_raw": 0.5779,
+  "intensity": 0.5716,
+  "intensity_pct": 75.96,
+  "trend": "steady",
+  "trend_slope": 3e-05,
+  "parts": {
+    "closeness": {
+      "value": 1.0,
+      "weight": 0.16,
+      "contribution": 0.16,
+      "phrase": "a lift that could go either way",
+      "facts": [
+        {
+          "key": "weight_kg",
+          "value": 127,
+          "unit": "kg",
+          "text": "Emily Campbell going for 127 kg"
+        },
+        {
+          "key": "weight_over_best_kg",
+          "value": 2,
+          "unit": "kg",
+          "text": "2 kg above best"
+        }
+      ]
+    },
+    "momentum": {
+      "value": 0.0,
+      "weight": 0.12,
+      "contribution": 0.0,
+      "phrase": "a run of misses",
+      "facts": [
+        {
+          "key": "good_lifts",
+          "value": 0,
+          "unit": null,
+          "text": "0 of the last 0 lifts good"
+        },
+        {
+          "key": "attempt",
+          "value": 2,
+          "unit": null,
+          "text": "attempt 2 of 3"
+        }
+      ]
+    },
+    "stakes": {
+      "value": 0.6667,
+      "weight": 0.12,
+      "contribution": 0.08,
+      "phrase": "an early attempt",
+      "facts": [
+        {
+          "key": "attempt",
+          "value": 2,
+          "unit": null,
+          "text": "attempt 2 of 3"
+        },
+        {
+          "key": "weight_kg",
+          "value": 127,
+          "unit": "kg",
+          "text": "Emily Campbell going for 127 kg"
+        }
+      ]
+    },
+    "crowd": {
+      "value": 0.0343,
+      "weight": 0.12,
+      "contribution": 0.0041,
+      "phrase": "a quiet crowd",
+      "facts": [
+        {
+          "key": "loudness_rel_db",
+          "value": -6.9,
+          "unit": "dB",
+          "text": "crowd 7 dB below normal"
+        }
+      ]
+    },
+    "commentary": {
+      "value": 0.02,
+      "weight": 0.08,
+      "contribution": 0.0016,
+      "phrase": "quiet commentary",
+      "facts": [
+        {
+          "key": "commentary_quote",
+          "value": "settling into a rhythm",
+          "unit": null,
+          "text": "\"settling into a rhythm\""
+        }
+      ]
+    },
+    "video": {
+      "value": 0.4346,
+      "weight": 0.12,
+      "contribution": 0.0522,
+      "phrase": "calm pictures",
+      "facts": [
+        {
+          "key": "shot_type",
+          "value": "wide",
+          "unit": null,
+          "text": "wide shot"
+        }
+      ]
+    },
+    "forecast": {
+      "value": 1.0,
+      "weight": 0.16,
+      "contribution": 0.16,
+      "phrase": "a good lift brewing",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 50,
+          "unit": "%",
+          "text": "50% chance of a good lift within 60 s"
+        }
+      ]
+    },
+    "imminent": {
+      "value": 1.0,
+      "weight": 0.12,
+      "contribution": 0.12,
+      "phrase": "athlete at the bar, crowd hushed",
+      "facts": [
+        {
+          "key": "phase",
+          "value": "setup_hush",
+          "unit": null,
+          "text": "athlete at the bar, crowd hushed"
+        },
+        {
+          "key": "hush",
+          "value": "true",
+          "unit": null,
+          "text": "the crowd goes quiet"
+        },
+        {
+          "key": "weight_kg",
+          "value": 127,
+          "unit": "kg",
+          "text": "Emily Campbell going for 127 kg"
+        },
+        {
+          "key": "p_success",
+          "value": 50,
+          "unit": "%",
+          "text": "50% chance of a good lift"
+        }
+      ]
+    }
+  },
+  "forecast": {
+    "p": 0.5,
+    "label": "lift_success",
+    "horizon_s": 60.0,
+    "source": "rule",
+    "heating_up": false,
+    "model_version": null
+  },
+  "imminent": {
+    "value": 1.0,
+    "cue": 1.0,
+    "context": 1.0,
+    "heating_up": true,
+    "phase": "setup_hush",
+    "source": "rule",
+    "facts": [
+      {
+        "key": "phase",
+        "value": "setup_hush",
+        "unit": null,
+        "text": "athlete at the bar, crowd hushed"
+      },
+      {
+        "key": "hush",
+        "value": "true",
+        "unit": null,
+        "text": "the crowd goes quiet"
+      },
+      {
+        "key": "weight_kg",
+        "value": 127,
+        "unit": "kg",
+        "text": "Emily Campbell going for 127 kg"
+      },
+      {
+        "key": "p_success",
+        "value": 50,
+        "unit": "%",
+        "text": "50% chance of a good lift"
+      }
+    ]
+  },
+  "heating_up": true,
+  "heating_up_by": [
+    "imminent"
+  ],
+  "reasons": [
+    {
+      "text": "A lift is about to start: athlete at the bar, crowd hushed, the crowd goes quiet, Emily Campbell going for 127 kg",
+      "facts": [
+        {
+          "key": "phase",
+          "value": "setup_hush",
+          "unit": null,
+          "text": "athlete at the bar, crowd hushed"
+        },
+        {
+          "key": "hush",
+          "value": "true",
+          "unit": null,
+          "text": "the crowd goes quiet"
+        },
+        {
+          "key": "weight_kg",
+          "value": 127,
+          "unit": "kg",
+          "text": "Emily Campbell going for 127 kg"
+        }
+      ],
+      "factors": [
+        "imminent"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A lift that could go either way: Emily Campbell going for 127 kg, 2 kg above best",
+      "facts": [
+        {
+          "key": "weight_kg",
+          "value": 127,
+          "unit": "kg",
+          "text": "Emily Campbell going for 127 kg"
+        },
+        {
+          "key": "weight_over_best_kg",
+          "value": 2,
+          "unit": "kg",
+          "text": "2 kg above best"
+        }
+      ],
+      "factors": [
+        "closeness"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A good lift looks likely: 50% chance of a good lift within 60 s, Attempt 2",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 50,
+          "unit": "%",
+          "text": "50% chance of a good lift within 60 s"
+        },
+        {
+          "key": "game_clock",
+          "value": "Attempt 2",
+          "unit": null,
+          "text": "Attempt 2"
+        }
+      ],
+      "factors": [
+        "forecast"
+      ],
+      "polished": false
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+shot_type:
+  wide: [a wide shot of a weightlifting platform]
+  close_player: [a close-up of a weightlifter]
+  close_crowd: [a close-up of the audience]
+  replay: [a slow-motion replay of a lift]
+  other: [a scoreboard graphic]
+sport:
+  - empty platform
+  - athlete walking onto the platform
+  - athlete chalking hands
+  - athlete standing over the barbell
+  - athlete celebrating a lift

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engine debug</title>
+<style>
+  :root { --bg:#f7f7f8; --card:#fff; --fg:#1d1d1f; --muted:#6e6e73; --bar:#0a66c2; --track:#e5e5ea; --hot:#c2410c; --stale:#b91c1c; --ok:#15803d; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#111113; --card:#1c1c1e; --fg:#f5f5f7; --muted:#a1a1a6; --bar:#60a5fa; --track:#2c2c2e; --hot:#fb923c; --stale:#f87171; --ok:#4ade80; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 14px/1.4 system-ui, -apple-system, sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 12px; align-items: baseline; margin-bottom: 12px; }
+  h1 { font-size: 18px; margin: 0; }
+  .muted { color: var(--muted); }
+  #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
+  .card { background: var(--card); border-radius: 10px; padding: 12px; }
+  .card.hot { outline: 2px solid var(--hot); }
+  .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .big { font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tag { font-size: 12px; padding: 1px 6px; border-radius: 6px; background: var(--track); }
+  .tag.hot { background: var(--hot); color: #fff; }
+  .tag.stale { background: var(--stale); color: #fff; }
+  .row { display: grid; grid-template-columns: 84px 1fr 44px; gap: 6px; align-items: center; margin: 3px 0; font-size: 12px; }
+  .track { height: 8px; background: var(--track); border-radius: 4px; overflow: hidden; }
+  .fill { height: 100%; background: var(--bar); }
+  .fill.imm { background: var(--hot); }
+  .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  ul { margin: 8px 0 0; padding-left: 18px; }
+  li { margin: 2px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Engine debug</h1>
+  <span id="status" class="muted">connecting…</span>
+  <span class="muted">Ranked by intensity_pct · bars show part value (weight in grey)</span>
+</header>
+<main id="grid"></main>
+<script>
+  const PARTS = ["closeness", "momentum", "stakes", "crowd", "commentary", "video", "forecast", "imminent"];
+  const latest = {};
+  const grid = document.getElementById("grid");
+  const status = document.getElementById("status");
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+  function card(u) {
+    const tags = [];
+    if (u.heating_up) tags.push(`<span class="tag hot">heating up: ${u.heating_up_by.join(" + ")}</span>`);
+    if (u.stale) tags.push(`<span class="tag stale">stale</span>`);
+    if (u.imminent.phase) tags.push(`<span class="tag">${esc(u.imminent.phase)}</span>`);
+    const rows = PARTS.map(name => {
+      const p = u.parts[name];
+      if (!p) return `<div class="row"><span>${name}</span><span class="muted">dropped out</span><span></span></div>`;
+      return `<div class="row"><span>${name}</span><div class="track"><div class="fill ${name === "imminent" ? "imm" : ""}" style="width:${(p.value * 100).toFixed(0)}%"></div></div><span class="num">${p.value.toFixed(2)} <span title="weight">${p.weight.toFixed(2)}</span></span></div>`;
+    }).join("");
+    const imm = u.imminent;
+    const reasons = u.reasons.map(r => `<li>${esc(r.text)}${r.polished ? " ✎" : ""}</li>`).join("");
+    return `<section class="card ${u.heating_up ? "hot" : ""}">
+      <div class="top"><div><strong>${esc(u.feed_id)}</strong> <span class="muted">${esc(u.sport)} · ${esc(u.game_clock || "")}</span></div>
+      <div class="big">${u.intensity_pct.toFixed(0)}</div></div>
+      <div class="muted">intensity ${u.intensity.toFixed(3)} · ${u.trend} (${u.trend_slope.toFixed(3)}/s) · t_video ${u.t_video.toFixed(1)} · loop ${u.loop_epoch}</div>
+      <div>${tags.join(" ")}</div>
+      <div class="muted">forecast ${esc(u.forecast.label)} p=${u.forecast.p.toFixed(3)} (${u.forecast.source}${u.forecast.model_version ? " " + esc(u.forecast.model_version) : ""}) · imminent ${imm.value.toFixed(2)} = cue ${imm.cue.toFixed(2)} × context ${imm.context.toFixed(2)}</div>
+      ${rows}
+      <ul>${reasons}</ul>
+    </section>`;
+  }
+
+  function render() {
+    const items = Object.values(latest).sort((a, b) => b.intensity_pct - a.intensity_pct);
+    grid.innerHTML = items.map(card).join("");
+  }
+
+  function connect() {
+    const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/scores`);
+    ws.onopen = () => { status.textContent = "live"; };
+    ws.onmessage = ev => { const u = JSON.parse(ev.data); latest[u.feed_id] = u; render(); };
+    ws.onclose = () => { status.textContent = "reconnecting…"; setTimeout(connect, 1000); };
+  }
+  connect();
+</script>
+</body>
+</html>

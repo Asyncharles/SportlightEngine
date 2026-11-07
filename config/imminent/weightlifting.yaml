@@ -1,0 +1,12 @@
+rule_version: weightlifting-r1
+threshold: 0.72                # above the setup cue (0.7): only setup_hush or the lift can fire
+phase_hold_s: 1.0              # a phase candidate must lead this long before the phase moves
+phase_cues: {idle: 0.0, walk_on: 0.4, setup: 0.7, setup_hush: 1.0, lift: 1.0}
+prompts:
+  empty: [empty platform]
+  athlete: [athlete walking onto the platform, athlete chalking hands, athlete standing over the barbell]
+  setup: [athlete chalking hands, athlete standing over the barbell]
+lift_spike_pct: 0.9            # motion or pan percentile that marks the lift after setup
+lift_spike_ratio: 2.0          # ...and the value must be this many times the rolling median
+lift_reset_s: 15.0             # after a lift, back to idle unless the video says otherwise
+eta_prior: {late_after_s: 30.0, cue: 0.2}

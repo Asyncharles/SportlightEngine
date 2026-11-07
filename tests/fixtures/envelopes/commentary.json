@@ -1,0 +1,21 @@
+{
+  "kind": "event",
+  "data": {
+    "v": 1,
+    "feed_id": "fb-arg-fra",
+    "sport": "football",
+    "source": "commentary",
+    "t_video": 0.0,
+    "loop_epoch": 0,
+    "t_emit_ns": 1794000000000000000,
+    "payload": {
+      "text": "they knock it about in midfield",
+      "t_start": 0.0,
+      "t_end": 0.0,
+      "lang": "en",
+      "avg_logprob": -0.265,
+      "no_speech_prob": 0.02
+    },
+    "facts": []
+  }
+}

@@ -1,0 +1,263 @@
+{
+  "v": 1,
+  "feed_id": "nba-demo-game",
+  "sport": "nba",
+  "t_video": 35.0,
+  "loop_epoch": 0,
+  "game_clock": "Q1 11:25",
+  "t_emit_ns": 1794000000000000000,
+  "stale": false,
+  "intensity_raw": 0.5402,
+  "intensity": 0.5176,
+  "intensity_pct": 75.0,
+  "trend": "steady",
+  "trend_slope": 0.0,
+  "parts": {
+    "closeness": {
+      "value": 1.0,
+      "weight": 0.1739,
+      "contribution": 0.1739,
+      "phrase": "a one-possession game",
+      "facts": [
+        {
+          "key": "margin",
+          "value": 0,
+          "unit": "pts",
+          "text": "0-point game"
+        },
+        {
+          "key": "score",
+          "value": "0-0",
+          "unit": null,
+          "text": "Home 0-0 Away"
+        }
+      ]
+    },
+    "momentum": {
+      "value": 0.0,
+      "weight": 0.1304,
+      "contribution": 0.0,
+      "phrase": "trading baskets",
+      "facts": [
+        {
+          "key": "run_2min",
+          "value": 0,
+          "unit": "pts",
+          "text": "no scoring run"
+        },
+        {
+          "key": "score",
+          "value": "0-0",
+          "unit": null,
+          "text": "Home 0-0 Away"
+        }
+      ]
+    },
+    "stakes": {
+      "value": 0.0,
+      "weight": 0.1304,
+      "contribution": 0.0,
+      "phrase": "early in the game",
+      "facts": [
+        {
+          "key": "time_remaining_s",
+          "value": 685,
+          "unit": "s",
+          "text": "Q1 11:25"
+        },
+        {
+          "key": "margin",
+          "value": 0,
+          "unit": "pts",
+          "text": "0-point game"
+        }
+      ]
+    },
+    "crowd": {
+      "value": 0.5849,
+      "weight": 0.1304,
+      "contribution": 0.0763,
+      "phrase": "a lively crowd",
+      "facts": [
+        {
+          "key": "loudness_rel_db",
+          "value": 1.9,
+          "unit": "dB",
+          "text": "crowd 2 dB above normal"
+        },
+        {
+          "key": "rise_db_s",
+          "value": 1.1,
+          "unit": "dB/s",
+          "text": "crowd rising 1 dB a second"
+        }
+      ]
+    },
+    "commentary": null,
+    "video": {
+      "value": 0.4431,
+      "weight": 0.1304,
+      "contribution": 0.0578,
+      "phrase": "calm pictures",
+      "facts": [
+        {
+          "key": "shot_type",
+          "value": "wide",
+          "unit": null,
+          "text": "wide shot"
+        }
+      ]
+    },
+    "forecast": {
+      "value": 0.83,
+      "weight": 0.1739,
+      "contribution": 0.1443,
+      "phrase": "a lead change brewing",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 43,
+          "unit": "%",
+          "text": "43% chance of a lead change within 60 s"
+        }
+      ]
+    },
+    "imminent": {
+      "value": 0.6737,
+      "weight": 0.1304,
+      "contribution": 0.0879,
+      "phrase": "something is building",
+      "facts": [
+        {
+          "key": "shot_type",
+          "value": "wide",
+          "unit": null,
+          "text": "wide shot"
+        },
+        {
+          "key": "pan_speed",
+          "value": 0.39,
+          "unit": "fw/s",
+          "text": "camera panning 0.4 frame widths a second"
+        },
+        {
+          "key": "pace_rel",
+          "value": 1.11,
+          "unit": null,
+          "text": "commentator talking 1.11 times faster"
+        }
+      ]
+    }
+  },
+  "forecast": {
+    "p": 0.43,
+    "label": "lead_change",
+    "horizon_s": 60.0,
+    "source": "heuristic",
+    "heating_up": false,
+    "model_version": null
+  },
+  "imminent": {
+    "value": 0.6737,
+    "cue": 0.7647,
+    "context": 0.881,
+    "heating_up": true,
+    "phase": null,
+    "source": "rule",
+    "facts": [
+      {
+        "key": "shot_type",
+        "value": "wide",
+        "unit": null,
+        "text": "wide shot"
+      },
+      {
+        "key": "pan_speed",
+        "value": 0.39,
+        "unit": "fw/s",
+        "text": "camera panning 0.4 frame widths a second"
+      },
+      {
+        "key": "pace_rel",
+        "value": 1.11,
+        "unit": null,
+        "text": "commentator talking 1.11 times faster"
+      }
+    ]
+  },
+  "heating_up": true,
+  "heating_up_by": [
+    "imminent"
+  ],
+  "reasons": [
+    {
+      "text": "A fast break is on: wide shot, camera panning 0.4 frame widths a second, commentator talking 1.11 times faster",
+      "facts": [
+        {
+          "key": "shot_type",
+          "value": "wide",
+          "unit": null,
+          "text": "wide shot"
+        },
+        {
+          "key": "pan_speed",
+          "value": 0.39,
+          "unit": "fw/s",
+          "text": "camera panning 0.4 frame widths a second"
+        },
+        {
+          "key": "pace_rel",
+          "value": 1.11,
+          "unit": null,
+          "text": "commentator talking 1.11 times faster"
+        }
+      ],
+      "factors": [
+        "imminent"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A one-possession game: 0-point game, Home 0-0 Away",
+      "facts": [
+        {
+          "key": "margin",
+          "value": 0,
+          "unit": "pts",
+          "text": "0-point game"
+        },
+        {
+          "key": "score",
+          "value": "0-0",
+          "unit": null,
+          "text": "Home 0-0 Away"
+        }
+      ],
+      "factors": [
+        "closeness"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A lead change looks likely: 43% chance of a lead change within 60 s, Q1 11:25",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 43,
+          "unit": "%",
+          "text": "43% chance of a lead change within 60 s"
+        },
+        {
+          "key": "game_clock",
+          "value": "Q1 11:25",
+          "unit": null,
+          "text": "Q1 11:25"
+        }
+      ],
+      "factors": [
+        "forecast"
+      ],
+      "polished": false
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+# Perception settings (owner: ingest agent). Free-form until the ingest agent adds a typed section.
+perception:
+  video:
+    enabled: true
+    model: v0                 # v0 | head
+    pan:
+      size: 128
+      min_speed: 0.15         # frame widths per second
+  video_v0:
+    cut_threshold: 0.4
+  crowd:
+    window_s: 1.0
+    step_s: 0.5
+    baseline_s: 60
+    rise_window_s: 3.0
+    hush_drop_db: 6.0
+    hush_within_s: 2.0
+    speech_frac_max: 0.8
+  voice:
+    min_speech_frac: 0.3
+    baseline_s: 120
+    pitch_fmin_hz: 70
+    pitch_fmax_hz: 400
+  asr:
+    model: small.en
+    compute_type: float16
+    step_s: 1.5
+    window_s: 4.0
+    vad: true

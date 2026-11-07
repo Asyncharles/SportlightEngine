@@ -1,0 +1,12 @@
+# Training settings (owner: training agent). Free-form until the training agent adds a typed section.
+training:
+  seed: 1234
+  split: {val_frac: 0.15, test_frac: 0.15}
+  search: {max_settings: 20}
+  calibration: {precision_mult: 3.0, max_heating_frac: 0.15}
+  highlights: {peaks: 10, peak_gap_s: 60, hit_window_s: 45, target_hits: 6}
+  labels:
+    football: {name: big_chance, horizon_s: 30, min_xg: 0.1}
+    f1: {name: on_track_pass, horizon_s: 180}
+    nba: {name: lead_change, horizon_s: 60}
+    weightlifting: {name: lift_success, horizon_s: 60}

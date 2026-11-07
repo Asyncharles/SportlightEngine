@@ -1,0 +1,236 @@
+{
+  "v": 1,
+  "feed_id": "fb-arg-fra",
+  "sport": "football",
+  "t_video": 239.0,
+  "loop_epoch": 0,
+  "game_clock": "3:59",
+  "t_emit_ns": 1794000000000000000,
+  "stale": false,
+  "intensity_raw": 0.5616,
+  "intensity": 0.5267,
+  "intensity_pct": 69.75,
+  "trend": "steady",
+  "trend_slope": -0.00383,
+  "parts": {
+    "closeness": {
+      "value": 1.0,
+      "weight": 0.16,
+      "contribution": 0.16,
+      "phrase": "a tight scoreline",
+      "facts": [
+        {
+          "key": "score_diff",
+          "value": 0,
+          "unit": null,
+          "text": "level at 0-0"
+        },
+        {
+          "key": "score",
+          "value": "0-0",
+          "unit": null,
+          "text": "Argentina 0-0 France"
+        }
+      ]
+    },
+    "momentum": {
+      "value": 0.5,
+      "weight": 0.12,
+      "contribution": 0.06,
+      "phrase": "end-to-end attacking",
+      "facts": [
+        {
+          "key": "shots_2min",
+          "value": 2,
+          "unit": null,
+          "text": "2 shots in 2 minutes"
+        },
+        {
+          "key": "minute",
+          "value": 3,
+          "unit": "min",
+          "text": "minute 3"
+        }
+      ]
+    },
+    "stakes": {
+      "value": 0.2,
+      "weight": 0.12,
+      "contribution": 0.024,
+      "phrase": "plenty of time left",
+      "facts": [
+        {
+          "key": "minute",
+          "value": 3,
+          "unit": "min",
+          "text": "minute 3"
+        },
+        {
+          "key": "score_diff",
+          "value": 0,
+          "unit": null,
+          "text": "level at 0-0"
+        }
+      ]
+    },
+    "crowd": {
+      "value": 0.6211,
+      "weight": 0.12,
+      "contribution": 0.0745,
+      "phrase": "a lively crowd",
+      "facts": [
+        {
+          "key": "loudness_rel_db",
+          "value": 1.1,
+          "unit": "dB",
+          "text": "crowd 1 dB above normal"
+        }
+      ]
+    },
+    "commentary": {
+      "value": 0.0667,
+      "weight": 0.08,
+      "contribution": 0.0053,
+      "phrase": "quiet commentary",
+      "facts": [
+        {
+          "key": "commentary_quote",
+          "value": "settling into a rhythm",
+          "unit": null,
+          "text": "\"settling into a rhythm\""
+        }
+      ]
+    },
+    "video": {
+      "value": 0.5868,
+      "weight": 0.12,
+      "contribution": 0.0704,
+      "phrase": "lively pictures",
+      "facts": [
+        {
+          "key": "prompt:goal celebration",
+          "value": 0.15,
+          "unit": null,
+          "text": "goal celebration on screen"
+        },
+        {
+          "key": "motion",
+          "value": 0.039,
+          "unit": null,
+          "text": "fast action on a wide shot"
+        },
+        {
+          "key": "shot_type",
+          "value": "wide",
+          "unit": null,
+          "text": "wide shot"
+        }
+      ]
+    },
+    "forecast": {
+      "value": 0.87,
+      "weight": 0.16,
+      "contribution": 0.1392,
+      "phrase": "a big chance brewing",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 47,
+          "unit": "%",
+          "text": "47% chance of a big chance within 30 s"
+        }
+      ]
+    },
+    "imminent": {
+      "value": 0.2341,
+      "weight": 0.12,
+      "contribution": 0.0281,
+      "phrase": "nothing building yet",
+      "facts": []
+    }
+  },
+  "forecast": {
+    "p": 0.47,
+    "label": "big_chance",
+    "horizon_s": 30.0,
+    "source": "heuristic",
+    "heating_up": false,
+    "model_version": null
+  },
+  "imminent": {
+    "value": 0.2341,
+    "cue": 0.2153,
+    "context": 0.909,
+    "heating_up": false,
+    "phase": null,
+    "source": "rule",
+    "facts": []
+  },
+  "heating_up": false,
+  "heating_up_by": [],
+  "reasons": [
+    {
+      "text": "A tight scoreline: level at 0-0, Argentina 0-0 France",
+      "facts": [
+        {
+          "key": "score_diff",
+          "value": 0,
+          "unit": null,
+          "text": "level at 0-0"
+        },
+        {
+          "key": "score",
+          "value": "0-0",
+          "unit": null,
+          "text": "Argentina 0-0 France"
+        }
+      ],
+      "factors": [
+        "closeness"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A big chance looks likely: 47% chance of a big chance within 30 s, 3:59",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 47,
+          "unit": "%",
+          "text": "47% chance of a big chance within 30 s"
+        },
+        {
+          "key": "game_clock",
+          "value": "3:59",
+          "unit": null,
+          "text": "3:59"
+        }
+      ],
+      "factors": [
+        "forecast"
+      ],
+      "polished": false
+    },
+    {
+      "text": "A lively crowd: crowd 1 dB above normal, 3:59",
+      "facts": [
+        {
+          "key": "loudness_rel_db",
+          "value": 1.1,
+          "unit": "dB",
+          "text": "crowd 1 dB above normal"
+        },
+        {
+          "key": "game_clock",
+          "value": "3:59",
+          "unit": null,
+          "text": "3:59"
+        }
+      ],
+      "factors": [
+        "crowd"
+      ],
+      "polished": false
+    }
+  ]
+}

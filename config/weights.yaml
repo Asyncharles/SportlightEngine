@@ -1,0 +1,16 @@
+# Part weights per sport (shared; changes need the ML lead and a CHANGELOG.md line).
+# video, forecast and imminent follow D6; the rest are placeholders until D2 tuning.
+default:
+  closeness: 0.20
+  momentum: 0.15
+  stakes: 0.15
+  crowd: 0.15
+  commentary: 0.10
+  video: 0.15
+  forecast: 0.20
+  imminent: 0.15
+football: {}
+f1: {}
+nba: {}
+weightlifting: {}
+chess: {}
