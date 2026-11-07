@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import bisect
 import json
 import logging
 from collections import deque
@@ -10,7 +11,7 @@ from pathlib import Path
 import numpy as np
 
 from intensity.config import PercentileConfig, TrendConfig, resolve_path
-from intensity.engine.adapters.base import AdapterPart
+from intensity.engine.adapters.base import AdapterPart, clamp01
 from intensity.schema import PART_NAMES, PartValue
 
 log = logging.getLogger(__name__)
@@ -36,7 +37,7 @@ def combine(
         if part is None:
             out[name] = None
             continue
-        value = float(min(1.0, max(0.0, part.value)))
+        value = clamp01(part.value)
         w = weights.get(name, 0.0) / total_w if name in present and total_w > 0 else 0.0
         contribution = value * w
         raw += contribution
@@ -58,7 +59,7 @@ def forecast_part_value(p: float, quantiles: list[float] | None, sport: str) -> 
     if sport == "weightlifting":
         return float(1.0 - abs(2.0 * p - 1.0))
     if not quantiles:
-        return float(min(1.0, max(0.0, p)))
+        return clamp01(p)
     q = np.asarray(sorted(quantiles), dtype=float)
     return float(np.interp(p, q, np.linspace(0.0, 1.0, len(q))))
 
@@ -121,28 +122,36 @@ class SportPercentile:
     """`intensity_pct`: the percentile of a feed's intensity within its sport over a rolling 30 min.
 
     Seeded from intensity_ref.json so it is meaningful from the first tick. Shared by every feed of a
-    sport, and kept across loops.
+    sport, and kept across loops. The window is kept sorted, so each lookup is a bisect.
     """
 
     def __init__(self, cfg: PercentileConfig, seed: list[float] | None = None):
         self.cfg = cfg
-        self.seed = np.sort(np.asarray(seed, dtype=float)) if seed else None
-        self.samples: deque[tuple[float, float]] = deque(maxlen=max(64, int(cfg.window_s * 64)))
+        self.seed = sorted(float(x) for x in seed) if seed else []
+        self.samples: deque[tuple[float, float]] = deque()
+        self._sorted: list[float] = []
 
     def add(self, now: float, value: float) -> None:
         self.samples.append((now, value))
+        bisect.insort(self._sorted, value)
         while self.samples and self.samples[0][0] < now - self.cfg.window_s:
-            self.samples.popleft()
+            _, old = self.samples.popleft()
+            del self._sorted[bisect.bisect_left(self._sorted, old)]
+
+    @staticmethod
+    def _rank(ref: list[float], value: float) -> tuple[int, int]:
+        lo = bisect.bisect_left(ref, value)
+        return lo, bisect.bisect_right(ref, value) - lo
 
     def pct(self, value: float) -> float:
-        live = np.fromiter((s[1] for s in self.samples), float) if self.samples else np.empty(0)
-        n = len(live)
-        if n < self.cfg.min_samples and self.seed is not None and len(self.seed):
-            ref = np.concatenate([live, self.seed])
-        elif n == 0:
-            return round(100.0 * value, 2)
+        n = len(self._sorted)
+        if n >= self.cfg.min_samples or (n and not self.seed):
+            less, equal = self._rank(self._sorted, value)
+            total = n
+        elif self.seed:
+            less_l, equal_l = self._rank(self._sorted, value)
+            less_s, equal_s = self._rank(self.seed, value)
+            less, equal, total = less_l + less_s, equal_l + equal_s, n + len(self.seed)
         else:
-            ref = live
-        less = float((ref < value).sum())
-        equal = float((ref == value).sum())
-        return round(100.0 * (less + 0.5 * equal) / len(ref), 2)
+            return round(100.0 * value, 2)
+        return round(100.0 * (less + 0.5 * equal) / total, 2)

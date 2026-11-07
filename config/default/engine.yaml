@@ -3,6 +3,7 @@ engine:
   clock: live                 # live | simulated (parity test, tape replay)
   speed: 1.0                  # simulated clock only
   stale_after_s: 2.0          # no ClockTick for this long -> ScoreUpdate.stale
+  max_extrapolate_s: 0.5      # the feed clock runs on past its last tick by at most this
   ema_alpha: 0.3
   weights_path: config/weights.yaml
   feeds_path: config/feeds.yaml
@@ -52,6 +53,9 @@ engine:
       rate_weight: 0.2
       max_quote_words: 6
       min_no_speech_prob: 0.6
+      drop_after_s: 60.0
+    voice:
+      drop_after_s: 3.0
     video:
       drop_after_s: 3.0
       weights: {motion: 0.4, celebration: 0.35, close_up: 0.25, cuts: 0.0}

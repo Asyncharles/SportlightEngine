@@ -73,8 +73,8 @@ class WeightliftingAdapter(Adapter):
             "stakes": AdapterPart(stakes, "a final attempt" if self.attempt >= 3 else "an early attempt", [attempt_fact, weight_fact]),
         }
 
-    def facts(self, game_time: float) -> dict[str, Fact]:
-        out = super().facts(game_time)
+    def facts(self, game_time: float, parts: dict[str, AdapterPart] | None = None) -> dict[str, Fact]:
+        out = super().facts(game_time, parts)
         p = self.p_success()
         out["p_success"] = Fact(key="p_success", value=round(100 * p), unit="%", text=f"{round(100 * p)}% chance of a good lift")
         if self.eta is not None:

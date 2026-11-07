@@ -24,12 +24,15 @@ class _Segment:
 class CommentaryTracker:
     def __init__(self, cfg: CommentaryTrackerConfig, keywords: dict[str, float]):
         self.cfg = cfg
+        self.set_keywords(keywords)
+        self.names: set[str] = set()
+        self.reset()
+
+    def set_keywords(self, keywords: dict[str, float]) -> None:
         self.keywords = {k.lower(): float(v) for k, v in keywords.items()}
         self._patterns = [
             (k, w, re.compile(r"\b" + re.escape(k) + r"\b", re.IGNORECASE)) for k, w in self.keywords.items()
         ]
-        self.names: set[str] = set()
-        self.reset()
 
     def reset(self) -> None:
         self.segments: deque[_Segment] = deque(maxlen=64)
@@ -90,7 +93,7 @@ class CommentaryTracker:
             decayed = seg.score * max(0.0, 1.0 - age / self.cfg.decay_s)
             if decayed > best:
                 best, best_facts = decayed, seg.facts
-        if now - self.last_t > 60.0:
-            return None  # no ASR for a minute (asr: off, or the link is down): drop out
+        if now - self.last_t > self.cfg.drop_after_s:
+            return None  # no ASR for a while (asr: off, or the link is down): drop out
         phrase = "excited commentary" if best >= 0.6 else "steady commentary" if best >= 0.25 else "quiet commentary"
         return AdapterPart(best, phrase, list(best_facts))

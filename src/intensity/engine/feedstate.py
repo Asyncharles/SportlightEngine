@@ -25,11 +25,16 @@ class FeedClock:
     t_video: float | None = None
     arrival: float = 0.0  # engine time the last tick arrived
 
-    def now(self, engine_now: float, stale_after_s: float) -> float:
+    last: float = 0.0  # highest t_video handed out this loop, so the clock never steps back
+
+    def now(self, engine_now: float, max_extrapolate_s: float) -> float:
         if self.t_video is None:
             return 0.0
-        # Stop extrapolating once stale: the stream is not advancing.
-        return self.t_video + min(max(0.0, engine_now - self.arrival), stale_after_s)
+        # Extrapolate only across the gap between ticks: past that the stream may have stalled,
+        # and running ahead would release match records for video that has not played.
+        t = self.t_video + min(max(0.0, engine_now - self.arrival), max_extrapolate_s)
+        self.last = max(self.last, t)
+        return self.last
 
 
 @dataclass
@@ -55,6 +60,7 @@ class FeedState:
     last_forecast: ForecastResult | None = None
     last_stakes: float = 0.0
     last_update: ScoreUpdate | None = None
+    last_scored_at: float | None = None  # engine time of the last score, to score once per step
     last_ocr: dict[str, str] = field(default_factory=dict)
     loops: int = 0
 
@@ -62,7 +68,7 @@ class FeedState:
         return self.down or self.clock.t_video is None or engine_now - self.clock.arrival > cfg.stale_after_s
 
     def t_video(self, engine_now: float, cfg: EngineConfig) -> float:
-        return self.clock.now(engine_now, cfg.stale_after_s)
+        return self.clock.now(engine_now, cfg.max_extrapolate_s)
 
     def game_time(self, t_video: float) -> float | None:
         gt = self.sync.last_game_time(t_video)

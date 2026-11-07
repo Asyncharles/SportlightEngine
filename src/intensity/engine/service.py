@@ -151,6 +151,8 @@ def create_app(config: Config | None = None, feeds: list[Feed] | None = None, mo
         yield
         await service.stop()
 
+    # Endpoints that read or change engine state are `async def`: they run on the event loop with
+    # the ticks, never in a worker thread racing them.
     app = FastAPI(title="Sports Intensity engine", lifespan=lifespan)
     app.state.service = service
 
@@ -195,7 +197,7 @@ def create_app(config: Config | None = None, feeds: list[Feed] | None = None, mo
         return RedirectResponse("/debug")
 
     @app.get("/feeds")
-    def list_feeds() -> dict[str, Any]:
+    async def list_feeds() -> dict[str, Any]:
         now = service.now()
         live = service.engine.feeds
         registry = [f.model_dump() for f in service.feeds]
@@ -207,21 +209,21 @@ def create_app(config: Config | None = None, feeds: list[Feed] | None = None, mo
         return {"feeds": registry + extra}
 
     @app.get("/health")
-    def health() -> dict[str, Any]:
+    async def health() -> dict[str, Any]:
         return service.engine.health(service.now())
 
     @app.get("/metrics")
-    def metrics() -> dict[str, Any]:
+    async def metrics() -> dict[str, Any]:
         snap = service.metrics.snapshot()
         snap["ws_clients"] = len(service.broadcaster.clients)
         return snap
 
     @app.post("/admin/reload")
-    def reload() -> dict[str, Any]:
+    async def reload() -> dict[str, Any]:
         return service.engine.reload()
 
     @app.post("/admin/switch")
-    def switch(key: str = Body(...), value: Any = Body(...)) -> dict[str, Any]:
+    async def switch(key: str = Body(...), value: Any = Body(...)) -> dict[str, Any]:
         try:
             service.engine.set_switch(key, value)
         except (KeyError, ValueError) as exc:

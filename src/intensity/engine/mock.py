@@ -153,7 +153,7 @@ class MockFeed:
         motion = max(0.0, 0.03 + 0.05 * build + 0.08 * after + rng.normal(0, 0.008))
         if self.sport == "weightlifting":
             motion, pan_speed, sustained = self._lift_motion(tv, nearest, rng)
-        prompts = self._prompts(tv, build, after, nearest, rng)
+        prompts = self._prompts(tv, epoch, build, after, nearest, rng)
         payload = {
             "clip_seq": int(round(tv / 0.5)),
             "t_video_start": round(max(0.0, tv - 2.0), 3),
@@ -182,7 +182,7 @@ class MockFeed:
             return 0.2 + 0.05 * rng.random(), 0.6, 0.0  # the lift: motion and pan spike
         return max(0.0, 0.02 + rng.normal(0, 0.005)), abs(rng.normal(0, 0.02)), 0.0
 
-    def _prompts(self, tv, build, after, nearest, rng) -> dict[str, float]:
+    def _prompts(self, tv, epoch, build, after, nearest, rng) -> dict[str, float]:
         scores = {p: round(float(0.1 + 0.05 * rng.random()), 3) for p in self.prompts}
 
         def bump(name: str, value: float) -> None:
@@ -190,7 +190,7 @@ class MockFeed:
                 scores[name] = round(min(1.0, value + 0.03 * rng.random()), 3)
 
         if self.sport == "weightlifting":
-            nxt = self._next_moment(tv)
+            nxt = self._next_moment(tv, epoch)
             last = nearest if nearest is not None and nearest <= tv else None
             if last is not None and tv - last < 5.0:
                 bump("athlete celebrating a lift", 0.5)
@@ -211,9 +211,9 @@ class MockFeed:
                 bump(name, 0.2 + 0.4 * after)
         return scores
 
-    def _next_moment(self, tv: float) -> float | None:
-        epoch_moments = self.moments(int((self.offset_s + tv) // self.duration_s))
-        for m in epoch_moments:
+    def _next_moment(self, tv: float, epoch: int) -> float | None:
+        """The next moment of the loop that is playing (`tv` is already loop-relative)."""
+        for m in self.moments(epoch):
             if m + 1.5 > tv:
                 return m
         return None
@@ -223,7 +223,7 @@ class MockFeed:
         rise = 3.0 * build - 2.0 * after + rng.normal(0, 0.3)
         loud = rng.normal(0, 1.5) + 3.0 * build + 12.0 * after
         if self.sport == "weightlifting":
-            nxt = self._next_moment(tv)
+            nxt = self._next_moment(tv, epoch)
             hush = nxt is not None and nxt - 5 <= tv < nxt
             loud = rng.normal(0, 1.0) + (-8.0 if hush else 0.0) + 12.0 * after
             rise = rng.normal(0, 0.3) - (3.0 if hush and tv < (nxt or 0) - 4 else 0.0) + 4.0 * after

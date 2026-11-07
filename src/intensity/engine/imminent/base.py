@@ -17,6 +17,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from intensity.config import ImminentConfig
+from intensity.engine.adapters.base import clamp01
 from intensity.engine.trackers.crowd import CrowdCues
 from intensity.engine.trackers.video import VideoCues
 from intensity.engine.trackers.voice import VoiceCues
@@ -119,7 +120,7 @@ class ImminentState:
             return self.current, False
         self.last_t = t
         res = self.rule.cue(inp)
-        ctx = min(1.0, max(0.0, self.rule.context_value(inp)))
+        ctx = clamp01(self.rule.context_value(inp))
         floor = self.cfg.context_floor
         context = floor + (1.0 - floor) * ctx
         raw = res.cue * context

@@ -85,6 +85,11 @@ class CommentaryTrackerConfig(_Strict):
     rate_weight: float = 0.2
     max_quote_words: int = 6
     min_no_speech_prob: float = 0.6  # segments above this are ignored
+    drop_after_s: float = 60.0  # no ASR segment for this long: the part drops out
+
+
+class VoiceTrackerConfig(_Strict):
+    drop_after_s: float = 3.0
 
 
 class VideoTrackerConfig(_Strict):
@@ -117,6 +122,7 @@ class TrackersConfig(_Strict):
     rolling: RollingConfig = RollingConfig()
     crowd: CrowdTrackerConfig = CrowdTrackerConfig()
     commentary: CommentaryTrackerConfig = CommentaryTrackerConfig()
+    voice: VoiceTrackerConfig = VoiceTrackerConfig()
     video: VideoTrackerConfig = VideoTrackerConfig()
     calibration_path: str = "models/video_v0/calibration.json"
     default_seeds: dict[str, list[float]] = Field(default_factory=_default_seeds)
@@ -138,6 +144,7 @@ class EngineConfig(_Strict):
     clock: Literal["live", "simulated"] = "live"
     speed: float = 1.0  # simulated clock only
     stale_after_s: float = 2.0
+    max_extrapolate_s: float = 0.5  # clock runs on past the last tick by at most this (ticks are 4 Hz)
     ema_alpha: float = 0.3
     weights_path: str = "config/weights.yaml"
     feeds_path: str = "config/feeds.yaml"

@@ -65,3 +65,19 @@ Each item is a default the engine builds on until its owner changes it.
   the fact guard.
 - **Feed registry**: `Feed.demo` (default true) marks demo matches for the split and the imminent
   tuning guard. It is a new optional field in the shared `config/feeds.yaml`.
+
+## Engine fixes from code review (2026-11-07)
+
+- The feed clock runs on at most `engine.max_extrapolate_s` (0.5 s) past its last tick, instead
+  of up to `stale_after_s`, and never steps backwards within a loop. Before, a stalled stream
+  released match records early and then made `t_video` jump back.
+- A feed is scored at most once per engine step, so an out-of-cycle update and the 1 Hz tick at the
+  same instant no longer double-step the EMA, trend and percentile.
+- An unregistered feed first seen in a later loop keeps its first clock tick.
+- `/admin/reload` also swaps `rule_version` and reloads lexicons. State-reading endpoints run on
+  the event loop.
+- New config keys: `engine.trackers.voice.drop_after_s` (3 s) and
+  `engine.trackers.commentary.drop_after_s` (60 s), which were hard-coded before.
+- Imminent evaluation: an NBA lead change is the go-ahead basket after the other team led, directly
+  or after a tie; ties alone are not moments.
+- Mock: weightlifting phases and hush follow the loop that is playing.

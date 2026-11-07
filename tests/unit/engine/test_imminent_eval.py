@@ -13,6 +13,9 @@ def test_match_moments_per_sport():
     nba = [match(t, "score", sport="nba", home_score=h, away_score=a) for t, h, a in
            [(1, 2, 0), (2, 2, 3), (3, 5, 3), (4, 7, 3)]]
     assert ie.match_moments(nba, "nba") == [2, 3]  # two lead changes
+    via_tie = [match(t, "score", sport="nba", home_score=h, away_score=a) for t, h, a in
+               [(1, 2, 0), (2, 2, 2), (3, 2, 3), (4, 4, 4), (5, 6, 4)]]
+    assert ie.match_moments(via_tie, "nba") == [3, 5]  # the go-ahead baskets, never the ties
     f1 = [match(5, "pass", sport="f1"), match(6, "pass", sport="f1", pit_swap=True)]
     assert ie.match_moments(f1, "f1") == [5]
 

@@ -75,7 +75,7 @@ class ClipResult:
 def match_moments(events: list[Event], sport: str) -> list[float]:
     out = []
     home = away = 0
-    leader = 0
+    last_leader = 0  # the last team that led, ignoring ties: +1 home, -1 away
     for ev in events:
         p = ev.payload
         kind, attrs = p["kind"], p.get("attrs", {})
@@ -84,10 +84,10 @@ def match_moments(events: list[Event], sport: str) -> list[float]:
         elif sport == "nba" and kind == "score":
             home, away = int(attrs.get("home_score", home)), int(attrs.get("away_score", away))
             now = (home > away) - (home < away)
-            if now != leader and (now == 0 or leader != 0 or home + away > 0):
-                if leader != 0:
-                    out.append(ev.t_video)
-                leader = now
+            if now != 0:
+                if last_leader != 0 and now != last_leader:
+                    out.append(ev.t_video)  # the go-ahead basket, directly or after a tie
+                last_leader = now
         elif sport == "weightlifting" and kind == "attempt_called" and attrs.get("eta_game_s") is not None:
             out.append(float(attrs["eta_game_s"]))  # identity sync on tapes: game time = t_video
     return out

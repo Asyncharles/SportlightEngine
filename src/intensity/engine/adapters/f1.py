@@ -77,8 +77,8 @@ class F1Adapter(Adapter):
             ),
         }
 
-    def facts(self, game_time: float) -> dict[str, Fact]:
-        out = super().facts(game_time)
+    def facts(self, game_time: float, parts: dict[str, AdapterPart] | None = None) -> dict[str, Fact]:
+        out = super().facts(game_time, parts)
         if self.safety_car:
             out["safety_car"] = Fact(key="safety_car", value="out", text="safety car out")
         return out

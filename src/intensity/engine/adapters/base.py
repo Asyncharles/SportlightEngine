@@ -66,11 +66,12 @@ class Adapter(ABC):
     def heuristic_forecast(self, game_time: float) -> float:
         """p of LABEL within HORIZON_S, used until a trained bundle is approved."""
 
-    def facts(self, game_time: float) -> dict[str, Fact]:
+    def facts(self, game_time: float, parts: dict[str, AdapterPart] | None = None) -> dict[str, Fact]:
         """Current state facts keyed by name. Keys that match FEATURES let SHAP reasons quote them;
-        imminent rules read sport-specific keys (`min_gap_s`, `p_success`, `attempt_eta_game_s`)."""
+        imminent rules read sport-specific keys (`min_gap_s`, `p_success`, `attempt_eta_game_s`).
+        Pass `parts` when they are already computed for this tick."""
         out: dict[str, Fact] = {}
-        for part in self.parts(game_time).values():
+        for part in (parts if parts is not None else self.parts(game_time)).values():
             for fact in part.facts:
                 out[fact.key] = fact
         clock = self.game_clock()

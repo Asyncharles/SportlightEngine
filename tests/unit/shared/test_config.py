@@ -52,6 +52,8 @@ def test_repo_config_loads_and_has_every_weight():
     assert cfg.engine.imminent.hold_s == 3.0
     assert cfg.engine.imminent.min_on_s == 1.0
     assert cfg.clip["frames"] == 16  # D2 placeholders
+    assert cfg.engine.trackers.voice.drop_after_s == 3.0
+    assert cfg.engine.trackers.commentary.drop_after_s == 60.0
     weights = load_weights(cfg.engine.weights_path)
     for sport in ("football", "f1", "nba", "weightlifting"):
         assert set(PART_NAMES) <= set(weights[sport])

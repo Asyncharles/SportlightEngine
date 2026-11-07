@@ -99,7 +99,7 @@ class Engine:
             sync=sync,
             adapter=make_adapter(sport),
             crowd=CrowdTracker(tc.crowd, tc.rolling, seeds),
-            voice=VoiceTracker(tc.rolling, seeds),
+            voice=VoiceTracker(tc.rolling, seeds, tc.voice.drop_after_s),
             commentary=CommentaryTracker(tc.commentary, self._lexicon(sport)),
             video=VideoTracker(sport, tc.video, tc.rolling, seeds),
             imminent=ImminentState(make_rule(sport, self._imminent_yaml(sport)), self.cfg.imminent),
@@ -129,6 +129,7 @@ class Engine:
                 self.metrics.inc("ingest.unknown_feed")
                 return
             fs = self.add_feed(data.feed_id, data.sport)
+            fs.loop_epoch = data.loop_epoch  # a new feed starts in the loop it arrives in: nothing to reset
             pending = self._pending_ticks.pop(data.feed_id, None)
             if pending is not None and pending[0].loop_epoch == data.loop_epoch:
                 fs.clock.t_video, fs.clock.arrival = pending[0].t_video, pending[1]
@@ -189,25 +190,28 @@ class Engine:
             fs.last_source_at["match"] = now
             self._apply_event(fs, ev)
 
-    def _cue_inputs(self, fs: FeedState, t: float, gt: float | None) -> CueInputs:
+    def _cue_inputs(self, fs: FeedState, t: float, gt: float | None, adapter_facts: dict | None = None) -> CueInputs:
         fr = fs.last_forecast
+        if adapter_facts is None:
+            adapter_facts = fs.adapter.facts(gt if gt is not None else t)
         return CueInputs(
             t_video=t,
             game_time=gt,
             video=fs.video.cues(t),
             crowd=fs.crowd.cues(t),
             voice=fs.voice.cues(t),
-            adapter_facts=fs.adapter.facts(gt if gt is not None else t),
+            adapter_facts=adapter_facts,
             forecast_part=fr.part_value if fr else 0.0,
             stakes_part=fs.last_stakes,
             forecast_p=fr.forecast.p if fr else 0.5,
         )
 
-    def _update_imminent(self, fs: FeedState, t: float, gt: float | None) -> tuple[Imminent, bool]:
+    def _update_imminent(self, fs: FeedState, t: float, gt: float | None,
+                         adapter_facts: dict | None = None) -> tuple[Imminent, bool]:
         if not self.cfg.imminent.enabled:
             return fs.imminent.current, False
         with Timer(self.metrics, "imminent_ms"):
-            return fs.imminent.update(self._cue_inputs(fs, t, gt))
+            return fs.imminent.update(self._cue_inputs(fs, t, gt, adapter_facts))
 
     def tick_imminent(self, now: float) -> list[ScoreUpdate]:
         """Fast tick: run every imminent rule; a crossing scores that feed now (out of cycle)."""
@@ -224,12 +228,15 @@ class Engine:
         return out
 
     def score_all(self, now: float) -> list[ScoreUpdate]:
-        return [self.score_feed(fs, now) for fs in self.feeds.values() if fs.seen]
+        """The regular 1 Hz scores. A feed already scored out of cycle at this `now` is skipped, so
+        its EMA, trend and percentile take one step, and clients get one update."""
+        return [self.score_feed(fs, now) for fs in self.feeds.values() if fs.seen and fs.last_scored_at != now]
 
     def score_feed(self, fs: FeedState, now: float) -> ScoreUpdate:
         with Timer(self.metrics, "tick_ms"):
             update = self._score(fs, now)
         fs.last_update = update
+        fs.last_scored_at = now
         return update
 
     def _score(self, fs: FeedState, now: float) -> ScoreUpdate:
@@ -239,12 +246,12 @@ class Engine:
         gt = fs.game_time(t)
         g = gt if gt is not None else t
         adapter_parts = fs.adapter.parts(g)
-        adapter_facts = fs.adapter.facts(g)
+        adapter_facts = fs.adapter.facts(g, adapter_parts)
 
         fr = fs.forecaster.predict(fs.adapter, g)
         fs.last_forecast = fr
         fs.last_stakes = adapter_parts["stakes"].value if "stakes" in adapter_parts else 0.0
-        imminent, _ = self._update_imminent(fs, t, gt)
+        imminent, _ = self._update_imminent(fs, t, gt, adapter_facts)
 
         parts: dict[str, AdapterPart | None] = {
             "closeness": adapter_parts.get("closeness"),
@@ -316,10 +323,20 @@ class Engine:
         versions = self.registry.reload()
         self.weights = load_weights(self.cfg.weights_path)
         self._imminent_cfg.clear()
+        self._lexicons.clear()
         for fs in self.feeds.values():
-            fs.imminent.rule.cfg = self._imminent_yaml(fs.sport)
-            fs.imminent.rule.threshold = float(fs.imminent.rule.cfg.get("threshold", fs.imminent.rule.threshold))
-        return {"bundles": versions, "errors": self.registry.status()["errors"]}
+            rule = fs.imminent.rule
+            cfg = self._imminent_yaml(fs.sport)
+            # Runs on the event loop between ticks, so a tick never sees half a swap.
+            rule.cfg = cfg
+            rule.threshold = float(cfg.get("threshold", rule.threshold))
+            rule.rule_version = cfg.get("rule_version", rule.rule_version)
+            fs.commentary.set_keywords(self._lexicon(fs.sport))
+        return {
+            "bundles": versions,
+            "errors": self.registry.status()["errors"],
+            "imminent_rules": {sport: cfg.get("rule_version") for sport, cfg in self._imminent_cfg.items()},
+        }
 
     SWITCHES = ("engine.polish.enabled", "engine.forecast.source", "engine.imminent.enabled")
 

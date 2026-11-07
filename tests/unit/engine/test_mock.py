@@ -45,3 +45,12 @@ def test_tape_round_trip(tmp_path):
     back = read_tape(tmp_path / "t.jsonl")
     assert [e.model_dump_json() for e in back] == [e.model_dump_json() for e in envs]
     assert all(isinstance(e, Envelope) for e in back)
+
+
+def test_weightlifting_phases_follow_the_playing_loop():
+    from intensity.engine.mock import MockFeed
+
+    feed = MockFeed("wl", "weightlifting", offset_s=17, duration_s=300)
+    for epoch in (0, 1, 2):
+        nxt = feed._next_moment(100.0, epoch)
+        assert nxt in feed.moments(epoch)
