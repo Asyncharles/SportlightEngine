@@ -1,0 +1,28 @@
+# Engine performance report (owner: engine agent): `make engine-report`, `python -m intensity.engine.perf`.
+# Runs a private copy of the engine in its own process; the live service is never touched (see
+# src/intensity/engine/perf/__init__.py). Output: data/reports/engine/<run_id>/, pushed to
+# gs://<bucket>/reports/engine/<run_id>/.
+perf:
+  overlays: [demo]            # the config the VM serves; publish and polish are always forced off
+  nice: 10                    # lower the harness's CPU priority, so on a shared host the live engine wins
+  out_dir: data/reports/engine
+  startup:
+    restart_at_s: 1800.0      # first ClockTick lands this far into each clip (capped at 60% of it): the restart pre-roll
+  demo:
+    duration_s: null          # simulated seconds; null = the longest demo clip, so every feed plays it through
+  perception:
+    minutes: 10.0             # mock footage with all six sources, until perception (I3 to P3) is built
+  scaling:
+    feeds: [4, 8, 16, 32, 64] # demo feeds cloned up to this many, each clone at its own clip offset
+    warmup_s: 30.0
+    duration_s: 120.0
+  transport:
+    seconds: 15.0             # real time over loopback WebSockets to a private engine on a free port
+  budgets_ms:                 # the plan's latency budget (Engine and serving, "Latency budget")
+    ingest_to_engine: 20.0
+    tick_per_feed: 50.0
+    tick_per_feed_target: 5.0
+    imminent_per_feed: 1.0
+    forecast_per_feed: 2.0
+    imminent_to_ws: 200.0
+    tick_to_ws_clients: 10.0

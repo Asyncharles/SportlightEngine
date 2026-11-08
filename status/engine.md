@@ -29,6 +29,11 @@ cross the threshold.
 
 ## Measured
 
+- `make engine-report` (run `20261108-095200`, `gs://…/reports/engine/`): tick per feed p95 0.19 ms; engine CPU
+  0.6 ms per feed per second, which is about 1,600 feeds per core on the engine side alone (the GPU ingest is
+  the real limit, E3); restart pre-roll 120 to 280 ms per feed. The probes run on a private engine, so the
+  live service is never touched.
+
 - Out-of-cycle imminent update reaches a `/ws/scores` client in under 200 ms (`test_service.py`,
   TestClient).
 - Ingest to engine over the real WebSocket transport: p95 19.9 ms (mock streaming for 8 s; the mock
