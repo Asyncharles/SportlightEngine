@@ -13,6 +13,7 @@ import os
 from pathlib import Path, PurePosixPath
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+ENV_FILE = REPO_ROOT / ".env"  # read for GCS_BUCKET only, like scripts/sync_bucket.sh (it may hold secrets)
 
 # Bucket folders, mirroring data/. The VM pulls SERVE_FOLDERS at setup (infra/gcp/setup_vm.sh).
 FOLDERS = ("samples", "stills", "raw", "events", "tables", "video_head", "transcripts", "tapes",
@@ -47,8 +48,12 @@ def resolve_data(path: str | Path) -> Path:
 
 
 def bucket() -> str | None:
-    """The bucket name from `GCS_BUCKET` (with or without `gs://`), or None when unset."""
+    """The bucket name from `GCS_BUCKET` (with or without `gs://`), else from `.env`; None when unset."""
     name = os.environ.get("GCS_BUCKET", "").strip()
+    if not name and ENV_FILE.exists():
+        for line in ENV_FILE.read_text().splitlines():
+            if line.startswith("GCS_BUCKET="):
+                name = line.split("=", 1)[1].strip().strip("'\"")
     return name.removeprefix("gs://").rstrip("/") or None
 
 

@@ -3,6 +3,20 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Sync check: the match data lines up with the video (deploy agent, 2026-11-08)
+
+- `make sync-check CLIP=<clip_id>|demo [FROM_BUCKET=1]` (`engine/synccheck.py`) picks about 10 key moments spread over a clip, maps them through the sync table (weightlifting sessions are already in video time), and grabs frames 5 s before, at and after each.
+  - Each row is labelled with what the broadcast should show: football minute, NBA quarter clock, F1 lap, the lifter and weight.
+  - `FROM_BUCKET=1` streams the clip from the private bucket over authenticated HTTPS, so no footage is copied to a laptop. Only 320 px thumbnails are written, to `data/reports/sync/` (the bucket's `reports/`).
+  - `synccheck shift --clip … --by S [--row N]` corrects a measured offset.
+- `intensity.data.bucket()` falls back to `GCS_BUCKET` in `.env`, reading that key only.
+- **Results on the four demo clips (spot-checked frames; full sheets in `gs://…/reports/sync/`):**
+  - football: the broadcast clock matched the prediction exactly (79:24 at Mbappé's penalty, 107:58 at Messi's extra-time goal);
+  - NBA: matched to within 1 s (Q4 11:34 exact, 5:38 against 5:37);
+  - F1: matched at lap level (the lap tower reads the next lap after each crossing, as the lap data implies);
+  - weightlifting: matched at the decision (the lift 5 s before, the result graphic at the decision time).
+  - No offset needed.
+
 ## MVP engine on a CPU VM (Charles, 2026-11-08)
 
 - L4 GPUs were out of stock (`ZONE_RESOURCE_POOL_EXHAUSTED`) for `g2-standard-8` and `g2-standard-4` in nine zones: europe-west4 a/b/c, west1 b/c, west2 a/b, west3 a/b.

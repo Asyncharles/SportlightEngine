@@ -1,5 +1,5 @@
 # Engine agent targets.
-.PHONY: engine mock mock-ingest samples eval-imminent sync-sheet
+.PHONY: engine mock mock-ingest samples eval-imminent sync-sheet sync-check
 
 engine:  ## Run the engine service (OVERLAY=local|demo)
 	$(PY) -m intensity.engine.service --overlay $(or $(OVERLAY),local)
@@ -20,3 +20,7 @@ eval-imminent:  ## Imminent check: SPORT=football SET=tuning|demo|mock
 sync-sheet:  ## Frames at every key match event: CLIP=<clip_id>
 	@test -n "$(CLIP)" || (echo "usage: make sync-sheet CLIP=<clip_id>" && exit 2)
 	$(PY) -m intensity.engine.syncsheet --clip $(CLIP)
+
+sync-check:  ## Does match data line up with the video? CLIP=<clip_id>|demo (FROM_BUCKET=1 streams the clip, no local copy)
+	@test -n "$(CLIP)" || (echo "usage: make sync-check CLIP=<clip_id>|demo [FROM_BUCKET=1]" && exit 2)
+	$(PY) -m intensity.engine.synccheck --clip $(CLIP) $(if $(filter 1,$(FROM_BUCKET)),--from-bucket)
