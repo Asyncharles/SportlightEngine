@@ -3,6 +3,19 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Restarts take seconds, not 20 (deploy agent, 2026-11-08)
+
+**What happened:** the `69e3742` deploy left sportlight.uk without fresh scores for 19.3 s. The brief's target is 10 s.
+- The engine took 7.5 s to stop, because uvicorn waited for its open WebSockets.
+- The ingest took 10.5 s, Docker's full stop timeout: Python as PID 1 ignores SIGTERM, and the ingest also kept running after its health server stopped.
+
+**Changes:**
+- Compose: `init: true` and `stop_grace_period: 5s` on both services, plus `start_interval: 1s` on the engine's health check, so the ingest starts within a second of the engine being ready.
+- The engine and the ingest's health server use `timeout_graceful_shutdown` (2 s and 1 s).
+- The ingest cancels its clock lane and closes the engine link as soon as its server stops.
+- Locally, both exit 0.17 s after SIGTERM.
+- `deploy dev` gains a `restart` input: `FORCE_RECREATE=1` makes `run_demo.sh` recreate the containers on an unchanged release, giving a clean restart for the recovery test.
+
 ## intensity_pct: tie tolerance and per-feed pre-roll (Charles, 2026-11-08)
 
 **What happened:** on the live `si-dev` run, F1 and weightlifting sat at `intensity_pct` 100 for the first ~10 minutes, so the UI's auto-switch would never have left F1.

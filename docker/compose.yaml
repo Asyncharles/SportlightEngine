@@ -13,6 +13,8 @@ services:
   engine:
     image: *image
     build: {context: .., dockerfile: docker/Dockerfile}
+    init: true                # signals reach Python (not PID 1), so a restart takes seconds, not 10
+    stop_grace_period: 5s
     command: ["python", "-m", "intensity.engine.service", "--overlay", "demo"]
     ports: ["8000:8000"]
     environment:
@@ -28,11 +30,14 @@ services:
       timeout: 3s
       retries: 3
       start_period: 30s
+      start_interval: 1s      # while starting, check every second, so the ingest starts right after
     restart: unless-stopped
 
   ingest:
     image: *image
     command: ["python", "-m", "intensity.ingest.run", "--overlay", "demo"]
+    init: true
+    stop_grace_period: 5s
     ports: ["127.0.0.1:8001:8001"]
     volumes:
       - ${SI_DATA:-../data}/samples:/app/data/samples:ro
