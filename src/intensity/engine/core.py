@@ -190,6 +190,21 @@ class Engine:
         elif src == "ocr":
             fs.last_ocr = dict(event.payload.get("fields", {}))
 
+    def _ranked(self, fs: FeedState, intensity: float, now: float) -> float:
+        """What the sport's percentile ranks: the intensity (level), or how far it is above the feed's
+        own baseline (spike). The baseline follows intensity with a time constant of spike_baseline_s."""
+        pcfg = self.cfg.percentile
+        if pcfg.mode == "spike":
+            base = intensity if fs.baseline is None else fs.baseline
+            ranked = intensity - base
+            dt = max(0.0, now - fs.baseline_at) if fs.baseline is not None else 0.0
+            fs.baseline = base + (intensity - base) * min(1.0, dt / max(1.0, pcfg.spike_baseline_s))
+            fs.baseline_at = now
+        else:
+            ranked = intensity
+        fs.last_ranked = ranked
+        return ranked
+
     def _preroll(self, fs: FeedState, t_now: float, now: float) -> None:
         """Fill the sport's percentile window with this feed's intensity over the clip time before `t_now`.
 
@@ -211,11 +226,16 @@ class Engine:
         t = t_now - span
         while t < t_now - 0.5:
             shadow.handle(Envelope(kind="clock", data=ClockTick(feed_id=fs.feed_id, t_video=t, loop_epoch=0, t_emit_ns=0)), t)
-            history += [(now - (t_now - t), u.intensity) for u in shadow.score_all(t) if u.feed_id == fs.feed_id]
+            if any(u.feed_id == fs.feed_id for u in shadow.score_all(t)):
+                history.append((now - (t_now - t), shadow.feeds[fs.feed_id].last_ranked))
             t += 1.0
         if fs.sport not in self.sport_pct:
             self.sport_pct[fs.sport] = SportPercentile(pcfg, self.intensity_ref.get(fs.sport))
         self.sport_pct[fs.sport].backfill(history)
+        # Carry the smoothing over, so the live feed continues where the replay left off.
+        warm = shadow.feeds[fs.feed_id]
+        fs.ema.value = warm.ema.value
+        fs.baseline, fs.baseline_at = warm.baseline, now
         self.metrics.inc("engine.preroll")
         log.info("pre-rolled %s: %d s of match history in %.0f ms", fs.feed_id, len(history), (time.monotonic() - started) * 1000)
 
@@ -304,8 +324,9 @@ class Engine:
         raw, part_values = combine(parts, self._weights_for(fs.sport))
         intensity = fs.ema.update(raw)
         trend, slope = fs.trend.update(t, intensity)
+        ranked = self._ranked(fs, intensity, now)
         pct = self.sport_pct[fs.sport]
-        pct.add(now, intensity)
+        pct.add(now, ranked)
 
         by: list[str] = []
         if fr.forecast.heating_up:
@@ -331,7 +352,7 @@ class Engine:
             stale=fs.stale(now, cfg),
             intensity_raw=round(raw, 4),
             intensity=round(intensity, 4),
-            intensity_pct=pct.pct(intensity),
+            intensity_pct=pct.pct(ranked),
             trend=trend,  # type: ignore[arg-type]
             trend_slope=round(slope, 5),
             parts=part_values,

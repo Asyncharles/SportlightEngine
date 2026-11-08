@@ -64,6 +64,9 @@ class FeedState:
     last_ocr: dict[str, str] = field(default_factory=dict)
     loops: int = 0
     prerolled: bool = False  # the sport window got this feed's earlier match history (Engine._preroll)
+    baseline: float | None = None  # percentile mode spike: the intensity average the moment is ranked against
+    baseline_at: float = 0.0  # engine time of the last baseline update
+    last_ranked: float = 0.0  # the value last added to the sport's percentile window
 
     def stale(self, engine_now: float, cfg: EngineConfig) -> bool:
         return self.down or self.clock.t_video is None or engine_now - self.clock.arrival > cfg.stale_after_s
@@ -88,6 +91,7 @@ class FeedState:
         self.imminent.reset()
         self.ema.reset()
         self.trend.reset()
+        self.baseline = None
         self.clock = FeedClock()
         self.last_forecast = None
         self.last_stakes = 0.0

@@ -3,6 +3,28 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Spike score for the demo: the UI switches on moments (Charles, 2026-11-08)
+
+**What happened:** live on sportlight.uk, the main window switched once in 4 minutes and then stayed on F1. F1's intensity climbs lap by lap (stakes), so its level percentile against its own history stays high for most of its loop.
+
+**Changes:**
+- New `engine.percentile.mode: spike` (default `level`, so the plan's behaviour is unchanged elsewhere).
+  - It ranks the intensity minus the feed's own baseline, an average over about `spike_baseline_s: 60`.
+  - The baseline resets on a loop.
+  - The pre-roll fills the window with spike values and hands its EMA and baseline to the live feed.
+- `config/demo.yaml` (the deployed engine) turns it on, with `tie_tolerance: 0.005` to suit the smaller values.
+
+**Validation:** the four demo clips looping for 78 min at 1 Hz, through the UI's hysteresis (20 s minimum, +10 for 3 s). A labelled moment is caught if the main window shows its feed from 10 s before to 30 s after it. Highlight lists: football, F1 and NBA from `data/highlights`; weightlifting from the decisions on attempts 2 and 3.
+
+| Score (real engine) | Switches | Moments caught | Chance (same sequence, shifted times) |
+| --- | --- | --- | --- |
+| level | 35 | 29/75 (39%) | 30% |
+| spike, 60 s | 82 | 46/75 (61%) | 39% |
+
+The scratch variants with 120 s and 300 s baselines caught 53% and 51%, each against a chance rate of about 35%.
+
+**Side effect on the front end:** it records a highlight when the score enters 78 or more. In spike mode that happens about twice as often (102 entries against 45 in 78 min).
+
 ## Restarts take seconds, not 20 (deploy agent, 2026-11-08)
 
 **What happened:** the `69e3742` deploy left sportlight.uk without fresh scores for 19.3 s. The brief's target is 10 s.
