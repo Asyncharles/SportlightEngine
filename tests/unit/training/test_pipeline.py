@@ -16,9 +16,9 @@ from intensity.training.evaluate import Highlight, find_peaks, parse_clock, scor
 from intensity.training.featurize import featurize_match
 from intensity.training.labels import label_match
 from intensity.training.model import block_centres, calibrate, heating_threshold, search_settings
-from intensity.training.sources import football
+from intensity.training.sources import f1, football
 from intensity.training.split import SplitError, assert_no_demo_leak, split_matches
-from tests.unit.training.test_convert import football_raw
+from tests.unit.training.test_convert import f1_raw, football_raw
 
 LABEL = {"name": "big_chance", "horizon_s": 30, "min_xg": 0.1}
 
@@ -172,6 +172,21 @@ def test_low_xg_shot_is_not_a_big_chance() -> None:
     )
     y = label_match(recs, np.ones(3, dtype=int), np.array([0.0, 5.0, 60.0]), "football", LABEL)
     assert list(y) == [0.0, 0.0, 0.0]
+
+
+def test_f1_label_counts_on_track_passes_only() -> None:
+    recs = payloads(f1.to_records(f1_raw(), {"sc_slow_ratio": 1.2}))
+    passes = {r.game_time_s: r for r in recs if r.kind == "pass"}
+    on_track = [t for t, r in passes.items() if not r.attrs.get("pit_swap")]
+    assert len(on_track) == 1 and len(passes) == 2  # Leclerc on Hamilton; the pit swap is not one
+    t_pass = on_track[0]
+    times = np.array([t_pass - 180.0, t_pass - 1.0, t_pass])
+    cfg = {"horizon_s": 180}
+    y = label_match(recs, np.ones(3, dtype=int), times, "f1", cfg)
+    assert list(y[:2]) == [1.0, 1.0] and np.isnan(y[2])  # the race ends within 180 s of the pass
+    # Capped to passes for the lead: Leclerc's pass was for second, so the same tick is a negative.
+    y_top = label_match(recs, np.ones(1, dtype=int), times[:1], "f1", {**cfg, "max_position": 1})
+    assert y_top[0] == 0.0
 
 
 # --------------------------------------------------------------------------- split

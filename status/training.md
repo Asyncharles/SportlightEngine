@@ -9,10 +9,11 @@ Updated 2026-11-08. Laptop (macOS arm64, Python 3.12.7), home network. Owns `src
 
 | Milestone | State | Evidence (command) |
 | --- | --- | --- |
-| T0 data fetchers | Done; football and NBA complete, F1 at 99 of 128 races | `pytest tests/unit/training/test_sources.py`; `INTENSITY_NET=1 pytest -m net tests/unit/training`; `make fetch-<sport>` |
+| T0 data fetchers | Done; football and NBA complete, F1 at 107 of 128 races | `pytest tests/unit/training/test_sources.py`; `INTENSITY_NET=1 pytest -m net tests/unit/training`; `make fetch-<sport>` |
 | S2 adapters | Done; part definitions await ML lead review | `pytest tests/unit/training/test_adapters.py tests/unit/training/test_convert.py`; `make convert-<sport>` |
 | T1 football | Pipeline done; first model misses both targets, so football keeps the heuristic | `make build-football`; `pytest tests/unit/training/test_pipeline.py`; report in `reports/training/football/<version>/report.html` |
-| T2 to T4, parity | Not started; T2 (F1) waits for the last F1 races | |
+| T2 F1 | Label, featurize and label steps done; training blocked on the F1 demo race id | `make train-f1` (refuses until `config/feeds.yaml` names the demo race) |
+| T3, T4, parity | Not started | |
 
 T0 details:
 
@@ -77,6 +78,20 @@ T1 details:
 - Football's highest unmatched peak is 84 s before Messi's penalty, at the foul that won it. The
   highlight list was drafted before any model ran and has not been edited to fit (hard rule 6).
 
+T2 details:
+
+- The plan's label (any on-track pass within 180 s) is positive on 54.8% of ticks, so PR-AUC can
+  reach at most 1.85x the base rate and the 2x target can't be met. On 2026-11-08 Charles chose
+  passes for P5 or better within 180 s (`labels.f1.max_position: 5`): base rate 13.9%, so up to
+  about 7x is possible. This awaits the ML lead's approval.
+- Featurize: 585k ticks over the first 101 races in 18 s. Values checked; the outliers are real
+  races. The 2020 Sakhir GP had 87 laps. Red flags in the 2020 Tuscan and 2023 Australian GPs put
+  the suspension into lap times, so gaps to the leader jump to 900 to 1,400 s. The rain pit-stop
+  wave at the 2023 Dutch GP shows up to 33 position changes in one lap, because the pit-swap filter
+  only covers stops on the same or previous lap.
+- The F1 heuristic forecast was written for the any-pass label, so its scale is off for the P5
+  label until a bundle replaces it.
+
 ## Blockers and asks
 
 - F1 at lap granularity from Jolpica only was approved by the ML lead on 2026-11-07 (FastF1 now
@@ -85,9 +100,11 @@ T1 details:
   and stakes per sport, with the football stage weights).
 - **ML lead**: confirm the football demo `match_id` 3869685 (the 2022 final) set in
   `config/feeds.yaml`, and review the draft highlight list in `data/highlights/3869685.yaml`
-  (9 moments: the six goals, plus saves and chances). F1 and NBA demo ids are still needed before
-  T2 and T3, since the split refuses to run without them. The weightlifting session CSV is still
-  needed for T4.
+  (9 moments: the six goals, plus saves and chances).
+- **ML lead**: **the F1 demo race id blocks T2 training** (Charles, 2026-11-08: not chosen yet), and
+  the NBA demo game id will block T3. The split refuses to run without them. Each demo match also
+  needs a highlight list in `data/highlights/`. The weightlifting session CSV is needed for T4.
+- **ML lead**: approve the F1 label change to passes for P5 or better (see T2 details).
 - **ML lead**: decide whether football may add StatsBomb competitions (for example the 2018 World
   Cup, Euro 2020 and Euro 2024, about 165 more matches). With 45 training matches the model is
   data-starved, and the 10-match test set can't settle a 2x target either way.

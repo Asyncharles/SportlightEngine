@@ -48,14 +48,29 @@ def football_events(records: list[MatchPayload], cfg: dict[str, Any]) -> list[tu
     ]
 
 
+def f1_events(records: list[MatchPayload], cfg: dict[str, Any]) -> list[tuple[int, float]]:
+    """On-track passes: pit swaps and lap-one changes excluded, optionally only for positions up to
+    `max_position`. Each lands at the passer's line crossing, the moment lap data can show it."""
+    max_position = int(cfg.get("max_position", 99))
+    return [
+        (r.period, r.game_time_s)
+        for r in records
+        if r.kind == "pass"
+        and not r.attrs.get("pit_swap")
+        and not r.attrs.get("start")
+        and int(r.attrs.get("position", 99)) <= max_position
+    ]
+
+
 LABEL_EVENTS: dict[str, Callable[[list[MatchPayload], dict[str, Any]], list[tuple[int, float]]]] = {
     "football": football_events,
+    "f1": f1_events,
 }
 
 
 def label_cfg(config: Config, sport: str) -> dict[str, Any]:
     if sport not in LABEL_EVENTS:
-        raise NotImplementedError(f"no label for {sport} yet (football in T1, F1 in T2, NBA in T3)")
+        raise NotImplementedError(f"no label for {sport} yet (NBA lands in T3)")
     return dict(config.training["labels"][sport])
 
 

@@ -134,3 +134,11 @@ Each item is a default the engine builds on until its owner changes it.
 - `data/highlights/3869685.yaml`: draft highlight list for the ML lead to review or replace.
 - First football model misses both targets (test PR-AUC 1.35x, highlights 3 of 10), so it is not
   exported and football keeps the heuristic.
+
+## T2 F1 label (training agent, 2026-11-08; chosen by Charles, awaiting ML lead approval)
+
+- `on_track_pass` now counts only passes for P5 or better (`training.labels.f1.max_position: 5`),
+  still within 180 s, still excluding pit swaps and lap-one changes. The plan's any-pass label is
+  positive on 54.8% of ticks, which caps PR-AUC at 1.85x the base rate, below the 2x target. The P5
+  label's base rate is 13.9%.
+- Removing `max_position` restores the plan's label.

@@ -50,6 +50,6 @@ training:
   highlights: {peaks: 10, peak_gap_s: 60, hit_window_s: 45, target_hits: 6}
   labels:
     football: {name: big_chance, horizon_s: 30, min_xg: 0.1}  # a shot with xG >= min_xg, or a goal
-    f1: {name: on_track_pass, horizon_s: 180}
+    f1: {name: on_track_pass, horizon_s: 180, max_position: 5}  # passes for P5 or better; the plan's any-pass label is 55% positive
     nba: {name: lead_change, horizon_s: 60}
     weightlifting: {name: lift_success, horizon_s: 60}
