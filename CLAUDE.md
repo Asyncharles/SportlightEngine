@@ -41,5 +41,8 @@ are in `status/<agent>.md`; decisions and contract changes are in `CHANGELOG.md`
   reasons (`engine/explain/`, every number guarded against facts).
 - `engine/mock.py` is deterministic per (seed, feed, step). The tests, `contracts/samples/` and
   `SET=mock` evaluations depend on it, so changing it changes those too.
+- Data lives in the private bucket `gs://sportlight-514020-si-private`, mirrored at `data/` (no prefix in the
+  bucket). Every `data/...` path resolves through `intensity.data` (`INTENSITY_DATA_DIR`, default `<repo>/data`);
+  `make data-pull` / `make data-push` sync it (`scripts/sync_bucket.sh`). Deploy plan: `docs/deploy-wiring-plan.md`.
 - Every tunable comes from `config/` (hard rule 4); `config/default/engine.yaml` is validated by
   `intensity.config.EngineConfig` (`extra="forbid"`).

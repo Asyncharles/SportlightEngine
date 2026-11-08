@@ -3,6 +3,20 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Deploy wiring, Milestone 1: bucket and data layer (deploy agent, 2026-11-08)
+
+Plan: `docs/deploy-wiring-plan.md`.
+
+- Data stays in the existing private bucket `gs://sportlight-514020-si-private`, by Charles's decision. No new bucket was created.
+  - `infra/gcp/bucket.sh` sets the labels `app=sports-intensity` and `owner=charles` and re-asserts the settings: uniform access, public access prevention enforced, versioning off.
+  - It also adds the team and GPU-VM bindings. si-web's `si-vm-sa` access is left as it was (plan D8).
+- `intensity.data` is the one data layer. Every `data/...` config path resolves under `INTENSITY_DATA_DIR`, defaulting to `<repo>/data`, through `config.resolve_path`, so the laptop and the VM read the same relative paths.
+  - The bucket mirrors `data/` without the prefix.
+- `scripts/sync_bucket.sh` (`make data-pull` / `make data-push`) never deletes at the destination without `--delete`, and never pushes the two 2018 StatsBomb files (`raw/football/7560.json`, `7567.json`) without `ALLOW_RAW_FOOTBALL_2018=1`.
+- `make data-verify` checks the uploaded package: counts and sizes, every labelled clip at its path, and anonymous access refused.
+- `infra/gcp/create_gpu_vm.sh` (si-dev: g2-standard-8, 1 L4, standard, 12 h max run, tag `si`, SA `si-gpu-sa`) and `infra/gcp/setup_vm.sh` (driver, Docker, NVIDIA toolkit, bucket pull, idle watchdog).
+  - Human-only steps are in `infra/gcp/PREREQS.md`.
+
 ## v1, 2026-11-07: contracts (awaiting ML lead approval at the hour-0 gate)
 
 `src/intensity/schema.py`, exported to `contracts/*.schema.json`. Shapes are exactly as in the plan's

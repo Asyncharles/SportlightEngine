@@ -38,4 +38,4 @@ contracts:  ## Re-export contracts/*.schema.json (needs ML lead approval + CHANG
 env-check:  ## GPU, NVDEC, PyNvVideoCodec, faster-whisper and LightGBM checks; snapshot to run/env_check.json
 	$(PY) scripts/env_check.py
 
-include make/engine.mk make/training.mk make/ingest.mk
+include make/engine.mk make/training.mk make/ingest.mk make/data.mk
