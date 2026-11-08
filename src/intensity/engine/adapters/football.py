@@ -10,6 +10,10 @@ second half starts at 2700 s):
 
 Coordinates are StatsBomb's, attacking towards x = 120 for the team on the ball. Windows reset at
 each period start. Shoot-out goals count separately and never change the score.
+
+The attack features follow the team in possession (the team of the last pass, carry or shot): where
+the ball is in its attacking frame, how long it has had the ball, and what it has done in the last
+`windows_s.instant` seconds. A 30 s forecast needs this; the 2 and 5 min windows are too slow.
 """
 
 from __future__ import annotations
@@ -61,6 +65,15 @@ class FootballAdapter(Adapter):
         "last_event_x",
         "last_event_y",
         "secs_since_shot",
+        "attack_home",
+        "attack_x",
+        "attack_dist_goal",
+        "possession_s",
+        "possession_passes",
+        "shots_30s_attack",
+        "entries_30s_attack",
+        "box_touches_30s_attack",
+        "corners_30s_attack",
     )
     LABEL = "big_chance"
     HORIZON_S = 30.0
@@ -78,6 +91,10 @@ class FootballAdapter(Adapter):
         self.windows: dict[str, deque[tuple[float, str, float]]] = {k: deque() for k in _WINDOWS}
         self.last: tuple[str, str | None, float, float] = ("none", None, 60.0, 40.0)
         self.last_shot_t: float | None = None
+        self.poss_team: str | None = None
+        self.poss_since = 0.0
+        self.poss_passes = 0
+        self.ball = (60.0, 40.0)  # in the possession team's attacking frame
         self.names: set[str] = set()
         self._cache: tuple[float, int, dict[str, float]] | None = None
         self._seq = 0  # bumped by every record, so cached values never outlive new state
@@ -101,6 +118,8 @@ class FootballAdapter(Adapter):
             for win in self.windows.values():
                 win.clear()
             self.last_shot_t = None
+            self.poss_team = None
+            self.ball = (60.0, 40.0)
         self.game_time = t
         if kind == "kickoff":
             self.home = a.get("home", self.home)
@@ -141,10 +160,26 @@ class FootballAdapter(Adapter):
                 self.yellows[team] = self.yellows.get(team, 0) + 1
             else:
                 self.reds[team] = self.reds.get(team, 0) + 1
+        self._possession(record)
         if kind in _ON_BALL or kind in ("kickoff", "card", "substitution"):
             last_x = float(end_x if end_x is not None else x if x is not None else self.last[2])
             last_y = float(end_y if end_y is not None else y if y is not None else self.last[3])
             self.last = (kind, team, last_x, last_y)
+
+    def _possession(self, record: MatchPayload) -> None:
+        a, team, kind, t = record.attrs, record.team, record.kind, record.game_time_s
+        x, y = a.get("x"), a.get("y")
+        if not team or x is None or y is None:
+            return
+        if kind in ("pass", "carry", "shot", "goal") and not a.get("own_goal"):
+            if team != self.poss_team:
+                self.poss_team, self.poss_since, self.poss_passes = team, t, 0
+            if kind == "pass" and a.get("completed", True):
+                self.poss_passes += 1
+            end_x, end_y = a.get("end_x"), a.get("end_y")
+            self.ball = (float(end_x), float(end_y)) if end_x is not None and end_y is not None else (x, y)
+        elif kind in ("pressure", "foul") and team != self.poss_team:
+            self.ball = (120.0 - float(x), 80.0 - float(y))  # the defender's frame, flipped
 
     def _in_box(self, x: float | None, y: float | None) -> bool:
         if x is None or y is None:
@@ -223,6 +258,22 @@ class FootballAdapter(Adapter):
         v["secs_since_shot"] = (
             min(600.0, game_time - self.last_shot_t) if self.last_shot_t is not None else 600.0
         )
+        home_attack = self.poss_team is not None and self.poss_team == home
+        v["attack_home"] = 1.0 if home_attack else 0.0 if self.poss_team == away else 0.5
+        bx, by = self.ball
+        v["attack_x"] = bx
+        v["attack_dist_goal"] = float(np.hypot(120.0 - bx, 40.0 - by))
+        cap = float(w.get("possession_cap", 120))
+        v["possession_s"] = min(cap, game_time - self.poss_since) if self.poss_team else 0.0
+        v["possession_passes"] = self.poss_passes if self.poss_team else 0
+        instant = game_time - float(w.get("instant", 30))
+        for name, kind in (
+            ("shots", "shot"),
+            ("entries", "entry"),
+            ("box_touches", "box"),
+            ("corners", "corner"),
+        ):
+            v[f"{name}_30s_attack"] = self._window(kind, instant, self.poss_team)[0] if self.poss_team else 0
         self._cache = (game_time, self._seq, v)
         return v
 

@@ -5,7 +5,7 @@ feeds:
     sport: football
     sample: samples/arg_fra_2022_final.mp4
     rtsp_path: fb-arg-fra
-    match_ref: {source: statsbomb, match_id: null}
+    match_ref: {source: statsbomb, match_id: 3869685}  # 2022 World Cup final; ML lead to confirm
     sync: data/sync/arg_fra_2022_final.csv
     asr: live
     ocr_regions: null

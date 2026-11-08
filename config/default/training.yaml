@@ -4,7 +4,12 @@ training:
   paths:
     raw: data/raw          # T0 fetchers write data/raw/<sport>/
     events: data/events    # converted match records, data/events/<sport>/<item>.jsonl
-    runs: run/training     # resolved config of every run
+    tables: data/tables    # features.parquet, labels.parquet and split.json per sport
+    highlights: data/highlights  # hand-made highlight lists, <match_id>.yaml
+    runs: run/training     # resolved config of every run, and staged bundles per sport
+    models: models         # exported bundles; CURRENT moves only with the ML lead's approval
+    reports: reports/training
+    feeds: config/feeds.yaml
   fetch:
     timeout_s: 60
     retries: 5
@@ -27,12 +32,24 @@ training:
   convert:
     f1:
       sc_slow_ratio: 1.2   # a lap is under the safety car (or VSC) when its median time is this much above green
+  featurize:
+    step_s: 1.0                    # one row per second of game time, as the live engine ticks
+    skip_periods: {football: [5]}  # the shoot-out: every kick is a big chance, nothing to forecast
   split: {val_frac: 0.15, test_frac: 0.15}
-  search: {max_settings: 20}
-  calibration: {precision_mult: 3.0, max_heating_frac: 0.15}
+  search:
+    max_settings: 20       # settings sampled from the grid with the seed
+    num_boost_round: 2000
+    early_stopping_rounds: 100
+    grid:
+      num_leaves: [15, 31, 63]
+      min_data_in_leaf: [50, 200, 800]
+      feature_fraction: [0.6, 0.8, 1.0]
+      learning_rate: [0.02, 0.05, 0.1]
+  calibration: {precision_mult: 3.0, max_heating_frac: 0.15, n_quantiles: 21}
+  evaluate: {target_pr_auc_mult: 2.0, top_frac: 0.05, reliability_bins: 10, shap_top: 15, shap_rows: 20000}
   highlights: {peaks: 10, peak_gap_s: 60, hit_window_s: 45, target_hits: 6}
   labels:
-    football: {name: big_chance, horizon_s: 30, min_xg: 0.1}
+    football: {name: big_chance, horizon_s: 30, min_xg: 0.1}  # a shot with xG >= min_xg, or a goal
     f1: {name: on_track_pass, horizon_s: 180}
     nba: {name: lead_change, horizon_s: 60}
     weightlifting: {name: lift_success, horizon_s: 60}
