@@ -11,7 +11,7 @@ Updated 2026-11-08. Plan and decisions: `docs/deploy-wiring-plan.md`. Human-only
 | #7 | `feat/clock-lane` | M2: clock-lane ingest, weightlifting session replay, image-based Compose with the GPU overlay |
 | #8 | `feat/deploy-workflows` | M2: Cloud Build image, `deploy-dev`/`deploy-demo`, `remote-*.sh`, secrets from Secret Manager on the VM |
 | #9 | `feat/amqp-publisher` | M3: FeedEvents to RabbitMQ (aio-pika), contract tests, CI e2e with the real front-end backend |
-| (local) | sportlight `deploy/engine-feeds-prod` | Front end: serve the demo clips from the bucket, mock publisher off in production. **Not pushed: needs Charles's OK** |
+| sportlight #4 | `deploy/engine-feeds-prod` | Front end: serve the demo clips from the bucket, mock publisher off in production (approved by Charles 2026-11-08) |
 
 ## Milestones
 
@@ -30,13 +30,14 @@ Updated 2026-11-08. Plan and decisions: `docs/deploy-wiring-plan.md`. Human-only
 - Dependencies: aio-pika, plus `rabbitmq:4.3.7-management` and Node in CI. Node 20 matches the front end's Dockerfiles; 22 was approved.
 - GPU VM: `si-dev`, g2-standard-8, approved.
 - Footage on sportlight.uk: public playback accepted for the demo window.
+- 2018 StatsBomb files (`raw/football/7560.json`, `7567.json`): ML lead approved; kept in the bucket (Charles, 2026-11-08). Pushing them needs `ALLOW_RAW_FOOTBALL_2018=1`; verify with `--allow-raw-football`.
+- Football forecast: keep the heuristic. `models/football/CURRENT` stays unset.
+- Front-end PR: approved and opened as sportlight #4.
 
 ## Asks
 
-- **Charles:** run `infra/gcp/PREREQS.md` steps 1 to 4, and send the team's emails.
+- **Charles:** run `infra/gcp/PREREQS.md` steps 1, 2 and 4 (step 3, si-gpu-sa, is done; `bucket.sh` gave it read access, plus writes to `reports/`, `tapes/`, `events/`), and send the team's emails.
 - **Charles:** create `SPORTLIGHT_REPO_TOKEN` (step 5), and say whether the agent may set the repo variables and environments.
-- **Charles:** upload the data package (without the two 2018 files), then `make data-verify PACKAGE=…`.
-- **Charles:** approve pushing the front-end PR.
-- **Charles / ML lead:** move `models/football/CURRENT` to `20261108-7d7cb7` (trained in-sample) if the engine should serve the model rather than the heuristic.
-- **ML lead:** approve `raw/football/7560.json` and `7567.json` (2018 StatsBomb) before they are pushed. Note that `in_sample` suspends hard rule 6.
+- Data package: uploaded and verified 2026-11-08 (17 clips, 592 stills, five NBA games, 2018 files approved).
+- **ML lead:** note that `in_sample` suspends hard rule 6.
 - **Training agent:** review the minimal weightlifting session converter (T4). F1 (T2, on `feat/training-t2-f1`) and NBA (T3) labels are needed before `train-all` can build them.

@@ -3,6 +3,19 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Data package in the bucket; 2018 matches approved (Charles, 2026-11-08)
+
+- The package is uploaded and `make data-verify` passes:
+  - 17 clips (4 demo, 13 tuning, 3 audio-only) under the labels' exact names;
+  - 592 stills;
+  - the five NBA clip games, converted to `events/nba/`. The NBA demo feed now replays Game 7;
+  - private: anonymous GET returns 403.
+- The ML lead approved the 2018 World Cup StatsBomb files (`raw/football/7560.json`, `7567.json`). They are kept in the bucket.
+  - The sync guard stays (`ALLOW_RAW_FOOTBALL_2018=1` to push).
+  - `verify_bucket.py --allow-raw-football` now passes.
+  - They are not converted or trained on yet.
+- The football forecast stays on the heuristic: `models/football/CURRENT` is not set for the in-sample bundle.
+
 ## Deploy wiring, Milestone 3: FeedEvents to the front end over RabbitMQ (deploy agent, 2026-11-08)
 
 New base dependency **aio-pika 9.6** (approved by Charles).
