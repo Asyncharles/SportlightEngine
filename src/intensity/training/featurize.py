@@ -13,6 +13,7 @@ columns. `features.meta.json` beside it records the input hash, so an unchanged 
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
 import logging
 from dataclasses import dataclass
@@ -24,7 +25,7 @@ import pandas as pd
 
 from intensity.config import Config, resolve_path
 from intensity.engine.adapters import make_adapter
-from intensity.engine.adapters.base import config_hash, feature_hash
+from intensity.engine.adapters.base import Adapter, config_hash, feature_hash
 from intensity.engine.replay import load_records
 from intensity.schema import MatchPayload
 from intensity.telemetry import log_event
@@ -115,6 +116,15 @@ def data_hash(paths: list[Path]) -> str:
     return h.hexdigest()[:16]
 
 
+def code_hash(*objects: Any) -> str:
+    """Hash of the source files behind these objects, so a code change rebuilds a cached table even
+    when the feature names stay the same."""
+    h = hashlib.sha256()
+    for path in sorted({inspect.getsourcefile(o) or "" for o in objects}):
+        h.update(Path(path).read_bytes())
+    return h.hexdigest()[:16]
+
+
 def featurize_settings(config: Config, sport: str) -> tuple[float, tuple[int, ...]]:
     cfg = config.training.get("featurize", {})
     return float(cfg.get("step_s", 1.0)), tuple(int(p) for p in cfg.get("skip_periods", {}).get(sport, []))
@@ -143,6 +153,7 @@ def featurize(config: Config, sport: str, force: bool = False) -> Path:
         "data_hash": data_hash(paths),
         "feature_hash": feature_hash(adapter.FEATURES),
         "adapter_config_hash": config_hash(adapter.cfg),
+        "code_hash": code_hash(type(adapter), Adapter, featurize_match),
         "step_s": step_s,
         "skip_periods": list(skip),
     }

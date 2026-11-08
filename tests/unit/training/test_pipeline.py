@@ -150,6 +150,28 @@ def test_features_at_t_ignore_every_record_after_t() -> None:
     np.testing.assert_array_equal(a.x[keep_a], b.x[keep_b])
 
 
+def test_featurize_rebuilds_when_the_adapter_code_changes(tmp_path: Path, monkeypatch) -> None:
+    from intensity.config import load_config
+    from intensity.training import featurize as fz
+
+    events = tmp_path / "events" / "football"
+    events.mkdir(parents=True)
+    (events / "m0.jsonl").write_text("".join(json.dumps(r) + "\n" for r in synthetic_match(0, half_s=60)))
+    config = load_config(
+        overrides=[
+            f"training.paths.events={tmp_path / 'events'}",
+            f"training.paths.tables={tmp_path / 'tables'}",
+        ]
+    )
+    meta = tmp_path / "tables" / "football" / "features.meta.json"
+    fz.featurize(config, "football")
+    first = json.loads(meta.read_text())["inputs"]["code_hash"]
+    assert first == fz.code_hash(fz.make_adapter("football").__class__, fz.Adapter, fz.featurize_match)
+    monkeypatch.setattr(fz, "code_hash", lambda *objects: "changed")  # same feature names, new code
+    fz.featurize(config, "football")
+    assert json.loads(meta.read_text())["inputs"]["code_hash"] == "changed"
+
+
 def test_label_looks_forward_within_the_period_and_drops_unknowns() -> None:
     recs = payloads(football.to_records(football_raw()))
     rows = featurize_match("football", recs, 1.0, skip_periods=(5,))

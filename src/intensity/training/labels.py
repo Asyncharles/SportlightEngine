@@ -26,6 +26,7 @@ from intensity.schema import MatchPayload
 from intensity.telemetry import log_event
 from intensity.training.featurize import (
     KEYS,
+    code_hash,
     events_dir,
     featurize,
     period_spans,
@@ -89,6 +90,7 @@ def label(config: Config, sport: str, force: bool = False) -> Path:
     inputs = {
         "features": read_meta(features_path.with_name("features.meta.json")).get("inputs"),
         "label": cfg,
+        "code_hash": code_hash(label_match),
     }
     out = tables_dir(config, sport) / "labels.parquet"
     meta_path = out.with_name("labels.meta.json")

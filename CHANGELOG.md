@@ -129,8 +129,10 @@ Each item is a default the engine builds on until its owner changes it.
   forecast never heats up on its own; the report says so.
 - Football adapter: 9 new attack features (40 in total). `windows_s` gains `instant: 30` and
   `possession_cap: 120`.
+- Cached tables also hash the adapter, featurize and label source files, so a code change
+  rebuilds them even when the feature names stay the same.
 - `config/feeds.yaml`: football demo `match_id` set to 3869685 (the 2022 final, which the plan holds
   out). ML lead to confirm.
 - `data/highlights/3869685.yaml`: draft highlight list for the ML lead to review or replace.
-- First football model misses both targets (test PR-AUC 1.35x, highlights 3 of 10), so it is not
+- The football model misses both targets (test PR-AUC 1.70x, highlights 4 of 10), so it is not
   exported and football keeps the heuristic.

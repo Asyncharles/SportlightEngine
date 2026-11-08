@@ -119,6 +119,7 @@ class FootballAdapter(Adapter):
                 win.clear()
             self.last_shot_t = None
             self.poss_team = None
+            self.ball = (60.0, 40.0)
         self.game_time = t
         if kind == "kickoff":
             self.home = a.get("home", self.home)

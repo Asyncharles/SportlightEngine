@@ -61,13 +61,13 @@ T1 details:
 - Leakage guards are tests: features at t are unchanged when every later record is shuffled, moved
   or dropped; labels look strictly after t; demo matches can't reach train or validation; the
   engine's own loader checks the exported bundle.
-- First model (staged as `run/training/football/20261108-8f44f1`, not exported):
-  - Test PR-AUC is 1.35x the base rate (target 2x); validation was 2.7x. The heuristic manages
-    1.14x on the same ticks. Lift in the top 5% is 2.0.
-  - Highlight check: 3 of 10 peaks precede a highlight (target 6). Hits: Messi's penalty,
-    Di María's goal, Mbappé's 118th-minute penalty.
-  - The test set is only 10 matches, so it's noisy: an earlier model scored 2.07x and one with
-    almost the same features scored 1.35x. Grouped 5-fold CV on the 54 non-test matches puts the
+- Latest model (staged as `run/training/football/20261108-e9a20d`, not exported):
+  - Test PR-AUC is 1.70x the base rate (target 2x); validation was 2.8x. The heuristic manages
+    1.14x on the same ticks. Lift in the top 5% is 2.9.
+  - Highlight check: 4 of 10 peaks precede a highlight (target 6). Hits: Messi's penalty,
+    Mbappé's two penalties and Lloris's save from Messi.
+  - The test set is only 10 matches, so it's noisy: near-identical models have scored between
+    1.35x and 2.07x on it. Grouped 5-fold CV on the 54 non-test matches puts the
     current features at about 2.1x, against 1.9x before the attack features were added.
 - Changes made along the way:
   - Football gained 9 possession-relative attack features over the last 30 s (40 in total),
