@@ -17,7 +17,14 @@ from intensity.training.featurize import featurize_match
 from intensity.training.labels import label_match
 from intensity.training.model import block_centres, calibrate, heating_threshold, search_settings
 from intensity.training.sources import football
-from intensity.training.split import SplitError, assert_no_demo_leak, split_matches
+from intensity.training.split import (
+    ALL,
+    SplitError,
+    assert_no_demo_leak,
+    is_in_sample,
+    members,
+    split_matches,
+)
 from tests.unit.training.test_convert import football_raw
 
 LABEL = {"name": "big_chance", "horizon_s": 30, "min_xg": 0.1}
@@ -199,7 +206,7 @@ def test_low_xg_shot_is_not_a_big_chance() -> None:
 # --------------------------------------------------------------------------- split
 
 
-def test_split_keeps_demo_matches_in_test_and_is_deterministic() -> None:
+def test_holdout_split_keeps_demo_matches_in_test_and_is_deterministic() -> None:
     ids = [f"m{i:02d}" for i in range(40)]
     parts = split_matches(ids, {"m07"}, 0.15, 0.15, seed=1234)
     assert parts["m07"] == "test"
@@ -208,6 +215,15 @@ def test_split_keeps_demo_matches_in_test_and_is_deterministic() -> None:
     assert parts == split_matches(list(reversed(ids)), {"m07"}, 0.15, 0.15, seed=1234)
     with pytest.raises(SplitError):
         assert_no_demo_leak({**parts, "m07": "train"}, {"m07"})
+    assert not is_in_sample(parts)
+
+
+def test_in_sample_split_trains_on_every_match_demo_included() -> None:
+    ids = [f"m{i:02d}" for i in range(40)]
+    parts = split_matches(ids, {"m07"}, 0.15, 0.15, seed=1234, mode="in_sample")
+    assert set(parts.values()) == {ALL} and is_in_sample(parts)
+    assert members(parts, "train") == members(parts, "test") == sorted(ids)
+    assert "m07" in members(parts, "train")  # hard rule 6 is suspended in this mode, by decision
 
 
 # --------------------------------------------------------------------------- calibrate and highlights
@@ -263,7 +279,8 @@ def test_search_is_capped_and_seeded() -> None:
 
 
 @pytest.mark.skipif(_lightgbm() is None, reason="lightgbm unavailable (on macOS: brew install libomp)")
-def test_build_end_to_end_exports_a_bundle_the_engine_loads(tmp_path: Path) -> None:
+@pytest.mark.parametrize("mode", ["in_sample", "holdout"])
+def test_build_end_to_end_exports_a_bundle_the_engine_loads(tmp_path: Path, mode: str) -> None:
     from intensity.training.cli import main
 
     events = tmp_path / "events" / "football"
@@ -286,6 +303,8 @@ def test_build_end_to_end_exports_a_bundle_the_engine_loads(tmp_path: Path) -> N
         f"training.paths.events={tmp_path / 'events'}",
         f"training.paths.feeds={tmp_path / 'feeds.yaml'}",
         f"training.paths.highlights={highlights}",
+        f"training.split.mode={mode}",
+        "training.in_sample.num_boost_round=40",
         "training.search.max_settings=2",
         "training.search.num_boost_round=40",
         "training.search.early_stopping_rounds=10",
@@ -300,7 +319,15 @@ def test_build_end_to_end_exports_a_bundle_the_engine_loads(tmp_path: Path) -> N
     version = (tmp_path / "runs" / "football" / "LATEST").read_text().strip()
     bundle_dir = tmp_path / "models" / "football" / version
     meta = json.loads((bundle_dir / "meta.json").read_text())
-    assert "m03" in meta["matches"]["test"] and "m03" not in meta["matches"]["train"] + meta["matches"]["val"]
+    report = tmp_path / "reports" / "football" / version
+    if mode == "holdout":
+        assert "m03" in meta["matches"]["test"] and "m03" not in meta["matches"]["train"] + meta["matches"]["val"]
+        assert meta["evaluation"] == "held-out" and "In-sample metrics" not in (report / "report.html").read_text()
+    else:
+        assert len(meta["matches"]["train"]) == 14 and meta["matches"]["train"] == meta["matches"]["test"]
+        assert meta["evaluation"] == "in-sample" and meta["metrics"]["test"]["evaluation"] == "in-sample"
+        assert "In-sample metrics" in (report / "report.html").read_text()
+        assert json.loads((report / "report.json").read_text())["metrics"]["evaluation"] == "in-sample"
     assert meta["metrics"]["passed"] and {"pr_auc", "brier"} <= set(meta["metrics"]["test"])
     assert not (tmp_path / "models" / "football" / "CURRENT").exists()  # only the ML lead moves it
     assert (tmp_path / "reports" / "football" / version / "report.html").exists()

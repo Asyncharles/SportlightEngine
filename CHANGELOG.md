@@ -3,6 +3,30 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Training on the full dataset: `training.split.mode: in_sample` (Charles, 2026-11-08)
+
+Charles decided there is no validation split: train on the full dataset and run on that same data. That suspends hard rule 6 (demo matches never train) and the T1 held-out evaluation. **ML lead to note.**
+
+- One switch, `training.split.mode` in `config/default/training.yaml`: `in_sample` (default) or `holdout` (the old grouped split, unchanged).
+  - In `in_sample`, `split.json` puts every match, demo matches included, in `all`; train, calibration and evaluation all see the same rows.
+  - There is no search, because choosing settings by in-sample score would pick the most overfit one. One fixed setting (`training.in_sample`, 400 rounds) trains without early stopping.
+- `assert_no_demo_leak` runs only in `holdout`. The demo-leak test is now mode-aware:
+  - `holdout` still forbids demo matches in training;
+  - `in_sample` asserts they are included.
+- Every bundle `meta.json` carries `"split_mode"` and `"evaluation": "in-sample" | "held-out"`. `report.json` carries `metrics.evaluation`. `report.html` shows an in-sample banner and labels its numbers "in-sample", not "test".
+- New serve-parity test (`tests/unit/training/test_serve_parity.py`): live engine forecasts equal the offline transform within 1e-6 (at the contract's 5 decimals).
+  - The fast version, on a synthetic match, runs in `make test`.
+  - The `slow` version runs on every demo match that has a CURRENT bundle and its event file.
+- **Engine fix found by serve parity:** `Replayer` sorted records released at the same `t_video` (everything before the clip starts) by game time alone. That interleaved first-half stoppage time with the second half: 123 period switches before the 2022 final's clip.
+  - The adapter reset its period state each time, so the first ~20 s of served forecasts differed from training's.
+  - It now sorts by `(t_video, period, game_time)`. Parity holds on all 4,525 ticks of `fb-arg-fra`.
+- `make train-all` (`scripts/train_all.sh`) pulls `raw/`, `events/`, `tables/` and `highlights/` from the bucket, converts offline, then builds and exports football, f1 and nba to `models/`.
+  - It never fetches unless `FETCH=1`, and refuses NBA fetching on GCE.
+  - `PUSH=1` pushes results back.
+  - No video head exists to train.
+  - CURRENT is not moved.
+- Training reports move to `data/reports/training/`, so they sync to the bucket's `reports/` like every other data folder.
+
 ## Deploy wiring, Milestone 1: bucket and data layer (deploy agent, 2026-11-08)
 
 Plan: `docs/deploy-wiring-plan.md`.

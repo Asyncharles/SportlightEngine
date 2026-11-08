@@ -27,6 +27,8 @@ are in `status/<agent>.md`; decisions and contract changes are in `CHANGELOG.md`
 - `make lint`: ruff + contract snapshot check. `make mock`: engine on the mock at :8000/debug.
 - `make eval-imminent SPORT=football SET=mock|tuning|demo`; `make samples` regenerates
   `contracts/samples/`.
+- `make train-all` builds every sport that has a label (football today) from the bucket data. Training is
+  in-sample by default (`training.split.mode: in_sample`, Charles's decision); `holdout` restores the split.
 - macOS has no `timeout`; to guard hanging tests use `perl -e 'alarm shift; exec @ARGV' 60 <cmd>`.
 
 ## Architecture (engine side)

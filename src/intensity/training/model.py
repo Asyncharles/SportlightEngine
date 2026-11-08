@@ -4,6 +4,11 @@ Train: LightGBM binary with `scale_pos_weight` = negatives / positives, early st
 average precision, and a capped search over `training.search.grid` (at most `max_settings` settings,
 sampled with the seed). The best setting by validation average precision is kept.
 
+In `training.split.mode: in_sample` there is no validation set: one fixed setting
+(`training.in_sample.params`) trains for `training.in_sample.num_boost_round` rounds on every match, and
+"validation" below means that same training data. Choosing settings by in-sample score would only
+pick the most overfit one, so there is no search.
+
 Calibrate: isotonic regression on the kept model's validation predictions, saved as `calibrator.json`
 (`x` raw score, `y` calibrated p; the engine interpolates). The points sit at each isotonic block's
 centre, so p keeps the model's ranking instead of tying inside blocks. The "heating up" threshold is the lowest
@@ -36,7 +41,7 @@ from intensity.engine.adapters.base import feature_hash
 from intensity.telemetry import log_event
 from intensity.training.featurize import KEYS, read_meta, tables_dir
 from intensity.training.labels import label, label_cfg
-from intensity.training.split import load_split, split
+from intensity.training.split import is_in_sample, load_split, members, split
 
 log = logging.getLogger(__name__)
 
@@ -57,8 +62,11 @@ class Dataset:
     sport: str
     features: tuple[str, ...]
     table: pd.DataFrame  # keys, heuristic_p, features, y, part
+    in_sample: bool = False  # split mode in_sample: every part is the whole table
 
     def part(self, name: str) -> pd.DataFrame:
+        if self.in_sample:
+            return self.table
         return self.table[self.table["part"] == name]
 
     def xy(self, name: str) -> tuple[np.ndarray, np.ndarray]:
@@ -78,7 +86,7 @@ def load_dataset(config: Config, sport: str) -> Dataset:
         raise ValueError(
             f"matches missing from split.json: {sorted(table.loc[table['part'].isna(), 'match_id'].unique())}"
         )
-    return Dataset(sport=sport, features=features, table=table)
+    return Dataset(sport=sport, features=features, table=table, in_sample=is_in_sample(parts))
 
 
 # --------------------------------------------------------------------------- train
@@ -146,6 +154,34 @@ def train_model(
             best = (booster, trial)
     assert best is not None
     return best[0], best[1], trials
+
+
+def train_in_sample(x: np.ndarray, y: np.ndarray, cfg: dict[str, Any], seed: int) -> tuple[Any, Trial, list[Trial]]:
+    """One fixed setting on all the data, no early stopping (split mode in_sample)."""
+    from sklearn.metrics import average_precision_score
+
+    lgb = _lightgbm()
+    pos = max(int(y.sum()), 1)
+    params = {
+        "objective": "binary",
+        "scale_pos_weight": (len(y) - pos) / pos,
+        "seed": seed,
+        "deterministic": True,
+        "force_row_wise": True,
+        "verbose": -1,
+        **cfg["params"],
+    }
+    rounds = int(cfg["num_boost_round"])
+    started = time.monotonic()
+    booster = lgb.train(params, lgb.Dataset(x, y, free_raw_data=False), num_boost_round=rounds)
+    trial = Trial(
+        params=dict(cfg["params"]),
+        val_ap=float(average_precision_score(y, booster.predict(x))),
+        best_iteration=rounds,
+        seconds=round(time.monotonic() - started, 1),
+    )
+    log_event(log, "trial", **trial.params, in_sample_ap=round(trial.val_ap, 4), iterations=rounds)
+    return booster, trial, [trial]
 
 
 # --------------------------------------------------------------------------- calibrate
@@ -280,7 +316,10 @@ def train(config: Config, sport: str) -> Path:
     x_va, y_va = data.xy("val")
     if not y_tr.any() or not y_va.any():
         raise ValueError(f"{sport}: no positives in training or validation; check the label")
-    booster, best, trials = train_model(x_tr, y_tr, x_va, y_va, config.training["search"], seed)
+    if data.in_sample:
+        booster, best, trials = train_in_sample(x_tr, y_tr, config.training["in_sample"], seed)
+    else:
+        booster, best, trials = train_model(x_tr, y_tr, x_va, y_va, config.training["search"], seed)
     cal = calibrate(booster.predict(x_va), y_va, config.training["calibration"])
 
     parts = json.loads(split_path.read_text())["parts"]
@@ -291,7 +330,7 @@ def train(config: Config, sport: str) -> Path:
             data_hash,
             read_meta(label_path.with_name("labels.meta.json"))["inputs"],
             parts,
-            config.training["search"],
+            config.training["in_sample"] if data.in_sample else config.training["search"],
             config.training["calibration"],
             sha,
         ],
@@ -317,10 +356,11 @@ def train(config: Config, sport: str) -> Path:
         "horizon_s": float(lcfg["horizon_s"]),
         "threshold": cal.threshold,
         "p_quantiles": cal.p_quantiles,
-        "matches": {
-            name: sorted(m for m, p in parts.items() if p == name) for name in ("train", "val", "test")
-        },
-        "rows": {name: int((data.table["part"] == name).sum()) for name in ("train", "val", "test")},
+        "split_mode": "in_sample" if data.in_sample else "holdout",
+        # In-sample: trained, calibrated and evaluated on the same matches, so no metric is held out.
+        "evaluation": "in-sample" if data.in_sample else "held-out",
+        "matches": {name: members(parts, name) for name in ("train", "val", "test")},
+        "rows": {name: int(len(data.part(name))) for name in ("train", "val", "test")},
         "params": best.params,
         "best_iteration": best.best_iteration,
         "metrics": {

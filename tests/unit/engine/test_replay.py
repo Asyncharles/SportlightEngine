@@ -26,6 +26,16 @@ def test_releases_records_as_the_clock_passes_them():
     assert len(rp.release(1e9, 1)) == 5
 
 
+def test_records_before_the_clip_keep_match_order_period_first():
+    """First-half stoppage time (game time past 2700 s) must not interleave with the second half,
+    or the adapter sees period changes back and forth and resets its state (serve parity)."""
+    sync = SyncTable([SyncRow("c", 0, 100, 3000, 2)])  # the clip starts in the second half
+    recs = [_rec(2700, period=2), _rec(2750, period=1), _rec(2800, period=2), _rec(2720, period=1)]
+    rp = Replayer("f", "football", recs, sync)
+    released = [(e.payload["period"], e.payload["game_time_s"]) for e in rp.release(0.0, 0)]
+    assert released == [(1, 2720), (1, 2750), (2, 2700), (2, 2800)]
+
+
 def test_events_carry_feed_and_epoch():
     rp = Replayer("fb", "football", [_rec(1.0)], SyncTable.identity(10))
     (ev,) = rp.release(2.0, 3)
