@@ -31,8 +31,17 @@ def test_bucket_layout_mirrors_data_without_the_prefix(monkeypatch):
     assert bucket_uri() == "gs://example-bucket/"
 
 
-def test_bucket_uri_needs_gcs_bucket(monkeypatch):
+def test_bucket_uri_needs_gcs_bucket(monkeypatch, tmp_path):
     monkeypatch.delenv("GCS_BUCKET", raising=False)
+    monkeypatch.setattr("intensity.data.ENV_FILE", tmp_path / "missing.env")
     assert bucket() is None
     with pytest.raises(RuntimeError, match="GCS_BUCKET"):
         bucket_uri("samples")
+
+
+def test_bucket_falls_back_to_the_env_file(monkeypatch, tmp_path):
+    monkeypatch.delenv("GCS_BUCKET", raising=False)
+    env = tmp_path / ".env"
+    env.write_text("ANTHROPIC_API_KEY=secret\nGCS_BUCKET=gs://from-env-file\n")
+    monkeypatch.setattr("intensity.data.ENV_FILE", env)
+    assert bucket() == "from-env-file"
