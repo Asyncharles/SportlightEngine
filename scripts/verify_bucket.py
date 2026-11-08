@@ -20,8 +20,7 @@ import json
 import os
 import subprocess
 import sys
-import urllib.error
-import urllib.request
+import urllib.parse
 import zipfile
 from pathlib import Path
 
@@ -38,8 +37,10 @@ PLAN = {
     "samples/tuning/weightlifting/": (".mp4", 3, 1.7 * GB),
     "samples/timing_audio_only/f1/": (".mp4", 3, 0.6 * GB),
     "stills/**": (".png", 592, 0.4 * GB),
-    "raw/nba/": (".json", 5, 1 * MB),
-}  # raw/football/'s two 2018 files are checked separately (RAW_2018)
+}
+# raw/nba/ also holds the training agent's season downloads, so the package's five play-by-play files
+# (the NBA clips' games, data/highlights/) are checked by name rather than by count.
+RAW_NBA_CLIPS = [f"raw/nba/{g}.json" for g in ("0041200224", "0041200231", "0041500407", "0041600206", "0042100111")]  # raw/football/'s two 2018 files are checked separately (RAW_2018)
 RAW_2018 = {"raw/football/7560.json", "raw/football/7567.json"}  # 2018 World Cup, awaiting the ML lead
 SPORT_PREFIX = {"fb": "football", "f1": "f1", "nba": "nba", "wl": "weightlifting"}
 IGNORED = (".DS_Store", ".gitkeep")
@@ -117,11 +118,10 @@ def expected_clips() -> list[str]:
 
 
 def anonymous_status(url: str) -> int:
-    try:
-        with urllib.request.urlopen(urllib.request.Request(url, method="GET"), timeout=20) as r:
-            return r.status
-    except urllib.error.HTTPError as e:
-        return e.code
+    """HTTP status of an unauthenticated GET (curl: python.org's macOS build has no CA bundle for urllib)."""
+    out = subprocess.run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", "--max-time", "20", url],
+                         capture_output=True, text=True)
+    return int(out.stdout or 0)
 
 
 def main() -> int:
@@ -159,6 +159,11 @@ def main() -> int:
         for k in wrong[:20]:
             print(f"        {k}: bucket {objects[k]} bytes, package {pkg[k]} bytes")
 
+    absent_nba = [k for k in RAW_NBA_CLIPS if k not in objects]
+    check(not absent_nba, f"the five NBA clip games' play-by-play are in raw/nba/ ({len(absent_nba)} missing)")
+    for k in absent_nba:
+        print(f"        missing {k}")
+
     clips = expected_clips()
     absent = [k for k in clips if k not in objects]
     check(not absent, f"every labelled clip is at its expected path ({len(clips)} clips)")
@@ -175,7 +180,7 @@ def main() -> int:
     if probe is None:
         check(False, "anonymous access check needs at least one object")
     else:
-        url = f"https://storage.googleapis.com/{bucket}/{urllib.request.quote(probe)}"
+        url = f"https://storage.googleapis.com/{bucket}/{urllib.parse.quote(probe)}"
         code = anonymous_status(url)
         check(code == 403, f"anonymous GET of an object returns {code} (want 403)")
     code = anonymous_status(f"https://storage.googleapis.com/storage/v1/b/{bucket}/o")
