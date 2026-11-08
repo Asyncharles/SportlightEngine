@@ -1,0 +1,23 @@
+# F1 adapter (owner: training agent). Records are at lap granularity (Jolpica; approved 2026-11-07).
+top_n: 10                    # gaps and battles count the cars in the top N
+battle_gap_s: 1.0
+no_gap_s: 99.0               # feature value when no gap is known
+passes_window_laps: 3
+laps_since_sc_cap: 20
+closeness:
+  gap_full_s: 0.3            # 1 at or under this gap, 0 at gap_full_s + gap_span_s
+  gap_span_s: 2.0
+  phrase_at: 0.6
+momentum:
+  passes_full: 3
+  battles_full: 3
+  phrase_at: 0.5
+stakes:
+  progress_weight: 0.7
+  leader_weight: 0.3
+  leader_gap_zero_s: 5.0     # the lead fight counts fully at 0 s, not at all from here
+  phrase_at: 0.7
+heuristic:                   # p(on-track pass within 2 laps)
+  base: 0.05
+  per_battle: 0.15
+  safety_car: 0.02

@@ -1,6 +1,32 @@
 # Training settings (owner: training agent). Free-form until the training agent adds a typed section.
 training:
   seed: 1234
+  paths:
+    raw: data/raw          # T0 fetchers write data/raw/<sport>/
+    events: data/events    # converted match records, data/events/<sport>/<item>.jsonl
+    runs: run/training     # resolved config of every run
+  fetch:
+    timeout_s: 60
+    retries: 5
+    backoff_s: [2.0, 120.0]  # doubles from the first value up to the second; Retry-After wins
+  sources:
+    football:
+      base_url: https://raw.githubusercontent.com/statsbomb/open-data/master/data
+      competitions:  # more only with the ML lead's OK
+        - {competition_id: 43, season_id: 106}  # FIFA World Cup 2022, 64 matches
+      min_interval_s: 0.2
+    f1:
+      base_url: https://api.jolpi.ca/ergast/f1
+      seasons: [2019, 2020, 2021, 2022, 2023, 2024]
+      page_limit: 100        # Jolpica's maximum
+      min_interval_s: 7.5    # Jolpica allows about 500 unauthenticated requests an hour
+    nba:
+      seasons: ["2024-25", "2025-26"]
+      season_types: ["Regular Season", "Playoffs"]
+      min_interval_s: 0.6
+  convert:
+    f1:
+      sc_slow_ratio: 1.2   # a lap is under the safety car (or VSC) when its median time is this much above green
   split: {val_frac: 0.15, test_frac: 0.15}
   search: {max_settings: 20}
   calibration: {precision_mult: 3.0, max_heating_frac: 0.15}
