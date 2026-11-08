@@ -9,6 +9,9 @@ Needs `PREREQS.md` steps 1 to 4.
 ```bash
 DRY_RUN=1 infra/gcp/create_gpu_vm.sh      # review
 infra/gcp/create_gpu_vm.sh                # si-dev, g2-standard-8, 1 L4, 12 h max run
+# L4s run out (STOCKOUT / ZONE_RESOURCE_POOL_EXHAUSTED; on 2026-11-08 in all three zones): try the
+# other zones with ZONE=europe-west4-b or -c, then set the engine repo's GCP_ZONE variable to the
+# zone the VM landed in, because the deploy workflows look it up there.
 gcloud compute scp infra/gcp/setup_vm.sh si-dev:/tmp/ --zone=europe-west4-a --tunnel-through-iap
 gcloud compute ssh si-dev --zone=europe-west4-a --tunnel-through-iap --command='sudo ROLE=dev bash /tmp/setup_vm.sh'
 # The driver install reboots the VM once: run the ssh line again after it comes back.

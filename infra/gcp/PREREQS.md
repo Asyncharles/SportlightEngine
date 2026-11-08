@@ -1,5 +1,9 @@
 # Prerequisites only Charles can run
 
+**Done 2026-11-08** (steps 1 to 4; step 5 partly; step 6 uploaded). Kept as the record of what was granted and why.
+
+Paste each command as **one line**. zsh doesn't treat `#` as a comment in an interactive shell, and a backslash followed by trailing spaces from a copy doesn't continue the line. On 2026-11-08 both of these silently split commands in two.
+
 The agent's gcloud settings deny `gcloud iam`, `gcloud projects` and firewall commands. It never widens a role itself. Run these once, from your own gcloud config, then tick them off in `status/deploy.md`. Context: `docs/deploy-wiring-plan.md`, section 7.
 
 ```bash
@@ -9,13 +13,12 @@ CI=si-web-ci@$P.iam.gserviceaccount.com
 
 ## 1. Let the engine repo's Actions use si-web-ci
 
-Check that the provider's attribute condition lets `Asyncharles/SportlightEngine` in. For example, `assertion.repository_owner=='Asyncharles'` is fine; a condition naming only `Asyncharles/sportlight` must be widened to cover the engine repo too.
+The provider's attribute condition has to let `Asyncharles/SportlightEngine` in. Until it does, `google-github-actions/auth` fails with "The given credential is rejected by the attribute condition", even though the binding below exists. It was `assertion.repository=='Asyncharles/sportlight'`; on 2026-11-08 it became:
 
 ```bash
-gcloud iam workload-identity-pools providers describe github-sportlight --location=global \
-  --workload-identity-pool=github --format='value(attributeCondition)'
-gcloud iam service-accounts add-iam-policy-binding $CI --role=roles/iam.workloadIdentityUser \
-  --member="principalSet://iam.googleapis.com/projects/$PN/locations/global/workloadIdentityPools/github/attribute.repository/Asyncharles/SportlightEngine"
+C="assertion.repository in ['Asyncharles/sportlight', 'Asyncharles/SportlightEngine']"
+gcloud iam workload-identity-pools providers update-oidc github-sportlight --workload-identity-pool=github --location=global --project=$P --attribute-condition="$C"
+gcloud iam service-accounts add-iam-policy-binding $CI --role=roles/iam.workloadIdentityUser --member="principalSet://iam.googleapis.com/projects/$PN/locations/global/workloadIdentityPools/github/attribute.repository/Asyncharles/SportlightEngine"
 ```
 
 ## 2. Let si-web-ci build the engine image with Cloud Build (as si-build)
@@ -28,6 +31,9 @@ gcloud projects add-iam-policy-binding $P --member=serviceAccount:$CI --role=rol
 gcloud iam service-accounts add-iam-policy-binding si-build@$P.iam.gserviceaccount.com \
   --member=serviceAccount:$CI --role=roles/iam.serviceAccountUser
 gcloud storage buckets add-iam-policy-binding gs://${P}_cloudbuild --member=serviceAccount:$CI --role=roles/storage.objectAdmin
+# gcloud builds submit also reads the staging bucket itself (storage.buckets.get), which objectAdmin
+# lacks; without this it fails "forbidden from accessing the bucket ... serviceusage.services.use".
+gcloud storage buckets add-iam-policy-binding gs://${P}_cloudbuild --member=serviceAccount:$CI --role=roles/storage.legacyBucketReader
 ```
 
 Deploys also need `compute.viewer`, `iap.tunnelResourceAccessor` and `compute.osAdminLogin`. si-web-ci already deploys si-web, so it should have them. Check with:
@@ -76,11 +82,11 @@ On `Asyncharles/SportlightEngine`:
   - `AR_REPO=europe-west4-docker.pkg.dev/sportlight-514020/si`
 - Environments:
   - `dev`, restricted to `master`;
-  - `demo`, restricted to `master`, with Charles as required reviewer.
+  - `demo`, restricted to `master`. Required reviewers aren't available for private repos on this GitHub plan (the API refuses them, HTTP 422), so the gate is that only people with write access can dispatch `deploy-demo`.
 - Secret `SPORTLIGHT_REPO_TOKEN`: a fine-grained token with read-only Contents on `Asyncharles/sportlight`, for the end-to-end CI job. **Only Charles can create the token.**
 
 ## 6. Data
 
-- Upload `sportlight-data.zip` to `gs://$B` at the bucket-plan paths. Leave out `raw/football/` until the ML lead approves it.
+- Upload `sportlight-data.zip` to `gs://$B` at the bucket-plan paths. Done 2026-11-08; the 2018 `raw/football/` files are approved by the ML lead.
 - Then run `make data-verify PACKAGE=<path to the zip>`.
 - Send the team's Google account emails. The agent then runs `TEAM_MEMBERS=a@x,b@y infra/gcp/bucket.sh`.
