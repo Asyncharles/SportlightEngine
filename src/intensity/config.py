@@ -15,6 +15,8 @@ from typing import Any, Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from intensity.data import is_data_path, resolve_data
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_DIR = Path(os.environ.get("INTENSITY_CONFIG_DIR", REPO_ROOT / "config"))
 
@@ -246,9 +248,14 @@ def save_resolved(config: Config, run_dir: Path) -> Path:
 
 
 def resolve_path(path: str | Path) -> Path:
-    """Config paths are relative to the repo root unless absolute."""
+    """Config paths are relative to the repo root unless absolute; `data/...` goes through the data
+    layer (`intensity.data`), so it follows `INTENSITY_DATA_DIR` on the VM."""
     p = Path(path)
-    return p if p.is_absolute() else REPO_ROOT / p
+    if p.is_absolute():
+        return p
+    if is_data_path(p):
+        return resolve_data(p)
+    return REPO_ROOT / p
 
 
 # --------------------------------------------------------------------------- per-sport side files

@@ -18,9 +18,14 @@ data/tables/
 data/transcripts/
 data/tapes/
 data/samples/
+data/stills/
+data/reports/
+data/calibration/
+data/video_head/
 *.mp4
 *.mkv
 *.ts
 
 # Secrets
 .env
+infra/gcp/env

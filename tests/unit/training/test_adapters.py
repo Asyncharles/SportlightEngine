@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from intensity.config import REPO_ROOT
+from intensity.config import resolve_path
 from intensity.engine.adapters import ADAPTERS, F1Adapter, FootballAdapter, NbaAdapter, make_adapter
 from intensity.engine.adapters.base import Adapter
 from intensity.engine.explain.guard import check
@@ -230,7 +230,7 @@ def test_every_sport_has_an_adapter_config() -> None:
 
 
 def _real(sport: str, n: int = 3) -> list[Path]:
-    return [Path(p) for p in sorted(glob.glob(str(REPO_ROOT / "data" / "events" / sport / "*.jsonl")))[:n]]
+    return [Path(p) for p in sorted(glob.glob(str(resolve_path("data/events") / sport / "*.jsonl")))[:n]]
 
 
 @pytest.mark.parametrize("sport", ["football", "f1", "nba"])
