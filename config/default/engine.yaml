@@ -22,6 +22,8 @@ engine:
     window_s: 1800.0          # intensity_pct within sport over a rolling 30 min
     min_samples: 30
     ref_path: models/intensity_ref.json
+    tie_tolerance: 0.01       # rank intensity rounded to this: drift by noise is a tie, not a new high
+    preroll_s: 1800.0         # first clock tick: replay the feed's match data this far back into the window
   forecast:
     source: model             # model | heuristic (stage switch)
     models_dir: models

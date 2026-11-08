@@ -229,3 +229,38 @@ def test_session_csv_feed_replays_in_video_time(tmp_path):
     eng.handle(tick("wl", 11.0), 2.0)
     update = eng.score_all(2.0)[0]
     assert fs.adapter.weight == 150.0 and update.intensity_pct is not None
+
+
+def test_first_clock_tick_prerolls_the_feeds_match_history(tmp_path):
+    from intensity.config import load_config
+    from intensity.feeds import Feed
+
+    (tmp_path / "weightlifting").mkdir()
+    lines = [
+        f'{{"game_time_s": {t}, "period": 1, "kind": "attempt_called", "player": "A{t}",'
+        f' "attrs": {{"weight_kg": {140 + t // 60}, "attempt": 1, "best_kg": 140}}}}'
+        for t in range(30, 600, 60)
+    ]
+    (tmp_path / "weightlifting" / "s1.jsonl").write_text("\n".join(lines) + "\n")
+    base = ["engine.forecast.source=heuristic", "engine.polish.enabled=false", f"engine.replay.events_dir={tmp_path}"]
+    feed = Feed(feed_id="wl", sport="weightlifting", sample="samples/s1.mp4", rtsp_path="wl",
+                match_ref={"source": "session_csv", "match_id": "s1"}, sync=None)
+
+    eng = Engine(load_config(overrides=[*base, "engine.percentile.preroll_s=300"]), feeds=[feed])
+    eng.handle(tick("wl", 500.0), 1000.0)
+    window = eng.sport_pct["weightlifting"].samples
+    assert len(window) == 300 and window[0][0] == pytest.approx(700.0) and window[-1][0] < 1000.0
+    assert eng.metrics.counters["engine.preroll"] == 1
+    eng.handle(tick("wl", 501.0), 1001.0)  # only the first tick pre-rolls
+    assert eng.metrics.counters["engine.preroll"] == 1
+
+    off = Engine(load_config(overrides=[*base, "engine.percentile.preroll_s=0"]), feeds=[feed])
+    off.handle(tick("wl", 500.0), 1000.0)
+    assert len(off.sport_pct["weightlifting"].samples) == 0 and "engine.preroll" not in off.metrics.counters
+
+
+def test_feeds_without_match_data_are_not_prerolled(config):
+    eng = Engine(config)  # an unregistered feed (the mock, a clone): no replay
+    eng.handle(make_envelope(match(1.0, "kickoff")), 0.0)  # feed "f" joins with its first event
+    eng.handle(tick("f", 900.0), 1.0)
+    assert eng.feeds["f"].prerolled and "engine.preroll" not in eng.metrics.counters

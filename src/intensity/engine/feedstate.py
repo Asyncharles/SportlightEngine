@@ -63,6 +63,7 @@ class FeedState:
     last_scored_at: float | None = None  # engine time of the last score, to score once per step
     last_ocr: dict[str, str] = field(default_factory=dict)
     loops: int = 0
+    prerolled: bool = False  # the sport window got this feed's earlier match history (Engine._preroll)
 
     def stale(self, engine_now: float, cfg: EngineConfig) -> bool:
         return self.down or self.clock.t_video is None or engine_now - self.clock.arrival > cfg.stale_after_s

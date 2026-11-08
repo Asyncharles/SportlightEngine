@@ -122,21 +122,39 @@ class SportPercentile:
     """`intensity_pct`: the percentile of a feed's intensity within its sport over a rolling 30 min.
 
     Seeded from intensity_ref.json so it is meaningful from the first tick. Shared by every feed of a
-    sport, and kept across loops. The window is kept sorted, so each lookup is a bisect.
+    sport, and kept across loops. The window is kept sorted, so each lookup is a bisect. Values are
+    ranked rounded to `tie_tolerance`; `backfill` adds pre-rolled history (Engine._preroll).
     """
 
     def __init__(self, cfg: PercentileConfig, seed: list[float] | None = None):
         self.cfg = cfg
-        self.seed = sorted(float(x) for x in seed) if seed else []
-        self.samples: deque[tuple[float, float]] = deque()
+        self.seed = sorted(self._key(float(x)) for x in seed) if seed else []
+        self.samples: deque[tuple[float, float]] = deque()  # (engine time, ranked value)
         self._sorted: list[float] = []
 
-    def add(self, now: float, value: float) -> None:
-        self.samples.append((now, value))
-        bisect.insort(self._sorted, value)
+    def _key(self, value: float) -> float:
+        q = self.cfg.tie_tolerance
+        return round(round(value / q) * q, 6) if q > 0 else value
+
+    def _evict(self, now: float) -> None:
         while self.samples and self.samples[0][0] < now - self.cfg.window_s:
             _, old = self.samples.popleft()
             del self._sorted[bisect.bisect_left(self._sorted, old)]
+
+    def add(self, now: float, value: float) -> None:
+        key = self._key(value)
+        self.samples.append((now, key))
+        bisect.insort(self._sorted, key)
+        self._evict(now)
+
+    def backfill(self, history: list[tuple[float, float]]) -> None:
+        """Merge earlier (engine time, intensity) samples, keeping the window in time order."""
+        if not history:
+            return
+        merged = sorted([*self.samples, *((t, self._key(v)) for t, v in history)])
+        self.samples = deque(merged)
+        self._sorted = sorted(v for _, v in merged)
+        self._evict(merged[-1][0])
 
     @staticmethod
     def _rank(ref: list[float], value: float) -> tuple[int, int]:
@@ -144,6 +162,7 @@ class SportPercentile:
         return lo, bisect.bisect_right(ref, value) - lo
 
     def pct(self, value: float) -> float:
+        value = self._key(value)
         n = len(self._sorted)
         if n >= self.cfg.min_samples or (n and not self.seed):
             less, equal = self._rank(self._sorted, value)

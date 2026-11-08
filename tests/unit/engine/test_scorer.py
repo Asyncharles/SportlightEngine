@@ -92,3 +92,25 @@ def test_sport_percentile_seeded_then_live():
     assert pct.pct(0.35) == 0.0  # three live samples: the seed no longer counts
     pct.add(500.0, 0.1)  # the old samples fall out of the 100 s window
     assert len(pct.samples) == 1
+
+
+def test_tie_tolerance_makes_noise_drift_a_tie_not_a_new_high():
+    drifting = [0.5 + i * 5e-5 for i in range(60)]  # an EMA converging: always a hair higher, within 0.01
+    strict = SportPercentile(PercentileConfig(window_s=1000, min_samples=3, tie_tolerance=0.0))
+    tolerant = SportPercentile(PercentileConfig(window_s=1000, min_samples=3, tie_tolerance=0.01))
+    for t, v in enumerate(drifting):
+        strict.add(float(t), v)
+        tolerant.add(float(t), v)
+    assert strict.pct(drifting[-1]) > 99  # stuck at the top
+    assert 40 <= tolerant.pct(drifting[-1]) <= 60  # a tie with its own past
+    assert tolerant.pct(0.7) == 100.0 and tolerant.pct(0.3) == 0.0  # real moves still rank
+
+
+def test_backfill_merges_history_in_time_order_and_keeps_the_window():
+    pct = SportPercentile(PercentileConfig(window_s=100, min_samples=3, tie_tolerance=0.0))
+    pct.add(200.0, 0.9)
+    pct.backfill([(50.0, 0.1), (150.0, 0.2), (190.0, 0.3)])  # 50 s is outside the 100 s window
+    assert [t for t, _ in pct.samples] == [150.0, 190.0, 200.0]
+    assert pct.pct(0.25) == pytest.approx(100 * 1 / 3, abs=0.01)
+    pct.add(260.0, 0.5)  # eviction still works on the merged window
+    assert [t for t, _ in pct.samples] == [190.0, 200.0, 260.0]

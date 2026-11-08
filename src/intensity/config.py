@@ -46,6 +46,12 @@ class PercentileConfig(_Strict):
     window_s: float = 1800.0  # intensity_pct within sport over a rolling 30 min
     min_samples: int = 30  # below this, intensity_pct uses the seed reference too
     ref_path: str = "models/intensity_ref.json"
+    # Intensity is ranked rounded to this, so a value creeping up by noise ties with its past instead of
+    # being a new high (a single feed's percentile otherwise sticks at 100 while its EMA converges). 0 = off.
+    tie_tolerance: float = 0.01
+    # On a feed's first clock tick, replay its match data over up to this much earlier clip time into the
+    # sport's window, so intensity_pct has history from the first second after any (re)start. 0 = off.
+    preroll_s: float = 1800.0
 
 
 class ForecastConfig(_Strict):

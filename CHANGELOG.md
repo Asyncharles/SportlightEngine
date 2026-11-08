@@ -3,6 +3,19 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## intensity_pct: tie tolerance and per-feed pre-roll (Charles, 2026-11-08)
+
+**What happened:** on the live `si-dev` run, F1 and weightlifting sat at `intensity_pct` 100 for the first ~10 minutes, so the UI's auto-switch would never have left F1.
+- **Cause:** each demo sport has one feed, and there is no `intensity_ref.json`, so a feed is ranked against its own seconds-old history. F1's stakes rise lap by lap, and the weightlifting EMA converges from below. A value that creeps up is always "the highest so far".
+- **Offline check:** a 1 Hz replay of the four demo clips reproduced it: F1 averaged 89 in the first 10 minutes, then the feeds rotated. Ranking against a reference distribution instead made NBA lead 85% of the time, so that wasn't adopted.
+
+**Changes (the meaning of `intensity_pct` is unchanged):**
+- `engine.percentile.tie_tolerance: 0.01`: intensity is ranked rounded to 0.01, so drift by noise is a tie, not a new high.
+- `engine.percentile.preroll_s: 1800`: on a feed's first clock tick, a shadow engine replays its match data at 1 Hz over the preceding clip time (up to 30 min, within the loop). It puts those intensities into the sport window at the engine times they would have had. Every (re)start then ranks against realistic history.
+  - Cost: 0.16–0.3 s per demo feed on the laptop. Feeds without match data (the mock, clones) are skipped.
+  - First live percentiles after a start with 30 min of history: football 74, F1 21, NBA 53, weightlifting 70 (F1 was 100).
+- Either setting can be switched off with 0.
+
 ## Sync check: the match data lines up with the video (deploy agent, 2026-11-08)
 
 - `make sync-check CLIP=<clip_id>|demo [FROM_BUCKET=1]` (`engine/synccheck.py`) picks about 10 key moments spread over a clip, maps them through the sync table (weightlifting sessions are already in video time), and grabs frames 5 s before, at and after each.
