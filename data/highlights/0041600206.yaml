@@ -1,0 +1,26 @@
+# Highlights for the forecast's check: 2017 East semis Game 6, Celtics @ Wizards 91-92 (Wall winner).
+# Imported from data-collection (nba_20170512_bos_was); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "0041600206"
+clip_id: nba_20170512_bos_was
+status: draft
+highlights:
+  - {period: 4, clock: 2294.0, what: "Beal 2' Driving Finger Roll Layup (24 PTS) (lead change; BOS 69-70 WAS)", kind: lead_change, t_video: 285.5}
+  - {period: 4, clock: 2311.0, what: "Bradley 27' 3PT Jump Shot (25 PTS) (Smart 4 AST) (lead change; BOS 72-70 WAS)", kind: lead_change, t_video: 310.6}
+  - {period: 4, clock: 2335.0, what: "Beal 1' Driving Reverse Layup (26 PTS) (Wall 8 AST) (tie; BOS 72-72 WAS)", kind: tie, t_video: 334.6}
+  - {period: 4, clock: 2398.0, what: "Wall 15' Pullup Jump Shot (18 PTS) (lead change; BOS 73-74 WAS)", kind: lead_change, t_video: 446.7}
+  - {period: 4, clock: 2413.0, what: "Thomas 18' Step Back Jump Shot (19 PTS) (lead change; BOS 75-74 WAS)", kind: lead_change, t_video: 469.2}
+  - {period: 4, clock: 2484.0, what: "Beal 11' Floating Jump Shot (28 PTS) (lead change; BOS 75-77 WAS)", kind: lead_change, t_video: 603.9}
+  - {period: 4, clock: 2550.0, what: "Olynyk 1' Layup (4 PTS) (Horford 2 AST) (tie; BOS 77-77 WAS)", kind: tie, t_video: 690.9}
+  - {period: 4, clock: 2566.0, what: "Wall  Driving Layup (21 PTS) (lead change; BOS 77-79 WAS)", kind: lead_change, t_video: 736.5}
+  - {period: 4, clock: 2596.0, what: "Thomas 27' 3PT Jump Shot (22 PTS) (Horford 3 AST) (lead change + three; BOS 80-79 WAS)", kind: lead_change, t_video: 778.1}
+  - {period: 4, clock: 2655.0, what: "Mark Morris  3PT Jump Shot (16 PTS) (Beal 5 AST) (lead change + three; BOS 80-82 WAS)", kind: lead_change, t_video: 837.1}
+  - {period: 4, clock: 2752.0, what: "Thomas 18' Step Back Jump Shot (24 PTS) (Crowder 7 AST) (lead change; BOS 84-82 WAS)", kind: lead_change, t_video: 1011.8}
+  - {period: 4, clock: 2786.0, what: "Thomas 25' 3PT Pullup Jump Shot (27 PTS) (three; BOS 87-82 WAS)", kind: big_play, t_video: 1045.8}
+  - {period: 4, clock: 2811.0, what: "Beal 26' 3PT Pullup Jump Shot (31 PTS) (three; BOS 87-85 WAS)", kind: big_play, t_video: 1205.4}
+  - {period: 4, clock: 2841.0, what: "Bradley 15' Jump Shot (27 PTS) (Crowder 8 AST) (lead change; BOS 89-87 WAS)", kind: lead_change, t_video: 1353.6}
+  - {period: 4, clock: 2851.3, what: "Beal 11' Driving Bank Shot (33 PTS) (tie; BOS 89-89 WAS)", kind: tie, t_video: 1375.0}
+  - {period: 4, clock: 2872.1, what: "Horford 16' Jump Bank Shot (20 PTS) (Thomas 7 AST) (lead change; BOS 91-89 WAS)", kind: lead_change, t_video: 1528.9}
+  - {period: 4, clock: 2876.1, what: "Wall 26' 3PT Pullup Jump Shot (26 PTS) (lead change + three; BOS 91-92 WAS)", kind: lead_change, t_video: 1637.7}
+  - {period: 4, clock: 2879.1, what: "MISS Thomas 27' 3PT Jump Shot (final shot; BOS 91-92 WAS)", kind: big_play, t_video: 1774.2}

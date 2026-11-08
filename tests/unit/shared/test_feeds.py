@@ -10,7 +10,7 @@ def test_repo_registry_loads():
     reg = load_feeds()
     assert {f.sport for f in reg.feeds} >= {"football", "f1", "nba", "weightlifting"}
     fb = reg.get("fb-arg-fra")
-    assert fb.clip_id == "arg_fra_2022_final"
+    assert fb.clip_id == "fb_arg_fra_2022"
     assert fb.asr == "live"
 
 

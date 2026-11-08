@@ -1,0 +1,16 @@
+# Highlights for the forecast's check: 2019 Brazilian Grand Prix (winner Verstappen).
+# Imported from data-collection (f1_2019_brazilian_gp); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "2019-20"
+clip_id: f1_2019_brazilian_gp
+status: draft
+highlights:
+  - {period: 1, clock: 3357.3, what: "Bottas within 0.40 s of Leclerc (P5) at the line, lap 45", kind: battle, t_video: 146.4}
+  - {period: 1, clock: 4572.1, what: "Restart after the safety car, lap 60 (Verstappen leads)", kind: restart, t_video: 1361.2}
+  - {period: 1, clock: 4575.9, what: "Verstappen passes Hamilton for P1 on lap 60", kind: pass, t_video: 1365.0}
+  - {period: 1, clock: 5025.9, what: "Vettel (P4) out of the race on lap 66", kind: incident, t_video: 1815.0}
+  - {period: 1, clock: 5025.9, what: "Leclerc (P5) out of the race on lap 66", kind: incident, t_video: 1815.0}
+  - {period: 1, clock: 5452.2, what: "Restart after the safety car, lap 70 (Verstappen leads)", kind: restart, t_video: 2241.3}
+  - {period: 1, clock: 5502.9, what: "Albon drops from P2 to P15 on lap 70", kind: incident, t_video: 2292.0}
+  - {period: 1, clock: 5600.8, what: "Gasly holds off Hamilton by 0.06 s at the line for P2 (last lap)", kind: battle, t_video: 2389.9}

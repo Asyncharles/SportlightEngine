@@ -1,0 +1,11 @@
+# Highlights for the forecast's check: 2019 Italian Grand Prix (winner Leclerc, 0.8 s ahead of Bottas; 44 on-track passes).
+# Imported from data-collection (f1_2019_italian_gp); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "2019-14"
+clip_id: f1_2019_italian_gp
+status: draft
+highlights:
+  - {period: 1, clock: 3537.7, what: "Bottas passes Hamilton for P2 on lap 42", kind: pass, t_video: 813.0}
+  - {period: 1, clock: 4276.9, what: "Bottas within 0.57 s of Leclerc (P1) at the line, lap 50", kind: battle, t_video: 1552.2}
+  - {period: 1, clock: 4443.7, what: "Bottas within 0.77 s of Leclerc (P1) at the line, lap 52", kind: battle, t_video: 1719.0}

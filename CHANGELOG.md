@@ -136,3 +136,48 @@ Each item is a default the engine builds on until its owner changes it.
 - `data/highlights/3869685.yaml`: draft highlight list for the ML lead to review or replace.
 - The football model misses both targets (test PR-AUC 1.70x, highlights 4 of 10), so it is not
   exported and football keeps the heuristic.
+
+## Clip labels from the data-collection kit (2026-11-08; awaiting ML lead review)
+
+Labels for the 17 broadcast clips (4 demo, 13 tuning), made with the data-collection kit and checked
+by eye on the video. Footage stays in the bucket (hard rule 10): demo clips go to `samples/`, tuning
+clips to `samples/tuning/<sport>/<clip_id>.mp4`.
+
+- **`config/feeds.yaml`**: the four demo feeds now point at the real clips. The feed ids are
+  unchanged, so `contracts/samples/` still match.
+  - Football: `fb_arg_fra_2022` (58' to the end of extra time), match 3869685.
+  - F1: `f1_2019_brazilian_gp` (lap 45 to the flag), item `2019-20`.
+  - NBA: `nba_20160619_cle_gsw` (Q4 to the buzzer), game `0041500407`.
+  - Weightlifting: `wl_worlds2025_m79` (the whole session, `session_csv`, no sync table).
+- **`data/sync/`**: 13 sync tables, one per clip, in each sport's existing game time:
+  - football: the broadcast clock from 0', 45', 90' and 105';
+  - NBA: elapsed game-clock seconds;
+  - F1: seconds since lights out, from the leader's Jolpica lap times.
+
+  Every table loads with `SyncTable`. NBA tables have one row per stretch of running clock (16 to 48
+  rows). Baku 2021, Britain 2022 and Austria 2024 are left out: their only footage has stripes over
+  the picture.
+- **`data/highlights/`**: 12 lists, one per clip's match.
+  - They hold only moments confirmed on the video. Unconfirmed F1 passes are left out: they are timed
+    at the end of the lap, up to about 90 s late.
+  - `clock` is game seconds, so NBA and F1 parse with the existing `parse_clock`.
+  - Each list covers only its clip's span, not the whole match. On the NBA and F1 demos, the forecast
+    check's top-10 peaks can land outside it.
+  - The NBA demo's seven times all land exactly on a record from `sources.nba.to_records`.
+  - `3869685.yaml`, the training agent's draft for the final, is unchanged. The kit has ten confirmed
+    moments from 58' onwards. Six are also in the draft, and they agree within 1 s (the draft uses
+    whole seconds). The kit adds four chances (59:51, 105:41, 107:57 and 122:59). The draft adds
+    Lloris's save at 96:37 and the two first-half goals.
+- **`data/weightlifting/`**: the four Worlds 2025 session CSVs: 207 attempts, with `t_video_walk_on`
+  and `t_video_decision` read from the broadcast graphic, and order and result from the IWF results
+  book. T4's converter should read these.
+
+Match data still missing for some clips (to fetch on a laptop, since `data/raw/` is not shared):
+
+- **NBA**: all five games are outside the configured seasons. The fetcher already takes explicit ids:
+  `python -m intensity.training.cli source --sport nba --items 0041500407,0041600206,0041200224,0042100111,0041200231`.
+  `featurize` reads every file in `data/events/nba/`, so the four tuning games would join training.
+  The demo game is held out by `feeds.yaml`.
+- **Football**: `7560` (Spain v Morocco) and `7567` (South Korea v Germany) are 2018 World Cup matches
+  (competition 43, season 3). The config fetches only 2022, and fetching them by id would lose the
+  match row (team names). This waits on the ML lead's decision on adding competitions.

@@ -1,35 +1,36 @@
 # The one feed registry: MediaMTX paths, pushers, ingest and engine all read it.
-# match_id and sync tables are filled by the ML lead.
+# Demo clips, sync tables and match ids come from the data-collection kit (cut, synced and checked by
+# eye); the ML lead confirms them. clip_id is the sample's file name.
 feeds:
   - feed_id: fb-arg-fra
     sport: football
-    sample: samples/arg_fra_2022_final.mp4
+    sample: samples/fb_arg_fra_2022.mp4    # 58' to the end of extra time
     rtsp_path: fb-arg-fra
     match_ref: {source: statsbomb, match_id: 3869685}  # 2022 World Cup final; ML lead to confirm
-    sync: data/sync/arg_fra_2022_final.csv
+    sync: data/sync/fb_arg_fra_2022.csv
     asr: live
     ocr_regions: null
   - feed_id: f1-demo-race
     sport: f1
-    sample: samples/f1_demo_race.mp4
+    sample: samples/f1_2019_brazilian_gp.mp4    # lap 45 to the chequered flag, Sky Sports broadcast
     rtsp_path: f1-demo-race
-    match_ref: {source: fastf1, match_id: null}
-    sync: data/sync/f1_demo_race.csv
+    match_ref: {source: fastf1, match_id: 2019-20}  # 2019 Brazilian GP (Jolpica item <season>-<round>)
+    sync: data/sync/f1_2019_brazilian_gp.csv
     asr: live
     ocr_regions: null
   - feed_id: nba-demo-game
     sport: nba
-    sample: samples/nba_demo_game.mp4
+    sample: samples/nba_20160619_cle_gsw.mp4    # Q4 to the final buzzer
     rtsp_path: nba-demo-game
-    match_ref: {source: nba_api, match_id: null}
-    sync: data/sync/nba_demo_game.csv
+    match_ref: {source: nba_api, match_id: "0041500407"}  # 2016 Finals Game 7, CLE @ GSW
+    sync: data/sync/nba_20160619_cle_gsw.csv
     asr: live
     ocr_regions: null
   - feed_id: wl-demo-session
     sport: weightlifting
-    sample: samples/wl_demo_session.mp4
+    sample: samples/wl_worlds2025_m79.mp4    # 2025 World Championships, men's 79 kg
     rtsp_path: wl-demo-session
-    match_ref: {source: session_csv, match_id: null}
-    sync: data/sync/wl_demo_session.csv
+    match_ref: {source: session_csv, match_id: wl_worlds2025_m79}  # data/weightlifting/wl_worlds2025_m79.csv
+    sync: null  # the session CSV is already in video time (t_video_walk_on, t_video_decision)
     asr: live
     ocr_regions: null

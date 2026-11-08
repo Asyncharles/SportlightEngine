@@ -48,7 +48,8 @@ def test_summary_and_targets():
 def test_tuning_refuses_demo_clips(tmp_path, monkeypatch):
     tuning = tmp_path / "data" / "samples" / "tuning" / "football"
     tuning.mkdir(parents=True)
-    (tuning / "arg_fra_2022_final.mp4").write_bytes(b"")
+    demo_clip = next(f.clip_id for f in ie.load_feeds().by_sport("football") if f.demo)
+    (tuning / f"{demo_clip}.mp4").write_bytes(b"")
     monkeypatch.setattr(ie, "resolve_path", lambda p: tmp_path / p)
     with pytest.raises(SystemExit, match="hard rule 6"):
         ie.find_tapes("football", "tuning", tmp_path)

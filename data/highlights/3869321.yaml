@@ -1,0 +1,11 @@
+# Highlights for the forecast's check: Netherlands v Argentina 2-2 (Quarter-finals, 2022-12-09).
+# Imported from data-collection (fb_net_arg_2022); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "3869321"
+clip_id: fb_net_arg_2022
+status: draft
+highlights:
+  - {period: 2, clock: 4359.4, what: "Goal Argentina (Lionel Messi)", kind: goal, t_video: 551.9}
+  - {period: 2, clock: 4937.3, what: "Goal Netherlands (Wout Weghorst)", kind: goal, t_video: 1129.8}
+  - {period: 2, clock: 6032.7, what: "Goal Netherlands (Wout Weghorst)", kind: goal, t_video: 2225.2}

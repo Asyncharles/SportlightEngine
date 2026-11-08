@@ -1,0 +1,37 @@
+session_id,athlete,nation,bodyweight_kg,entry_total_kg,final_rank,lift,attempt,weight_kg,result,order_inferred,lot_number,dob,t_video_walk_on,notes,t_video_decision,labeller
+wl_worlds2025_m94,Raphael Friedrich,GER,,,,snatch,1,163,good,1,444,25.01.2001,82.12,,122.44,auto:wl-graphic
+wl_worlds2025_m94,Karim Abokahla,EGY,,,10,snatch,1,164,good,2,55,11.11.1996,143.08,,183.40,auto:wl-graphic
+wl_worlds2025_m94,Karim Abokahla,EGY,,,10,snatch,2,168,no_lift,3,55,11.11.1996,313.48,order differs: after Friedrich (4),351.40,auto:wl-graphic
+wl_worlds2025_m94,Raphael Friedrich,GER,,,,snatch,2,168,good,4,444,25.01.2001,239.08,order differs: lifted before Abokahla (3),291.88,auto:wl-graphic
+wl_worlds2025_m94,Karim Abokahla,EGY,,,10,snatch,3,168,no_lift,5,55,11.11.1996,430.60,,481.00,auto:wl-graphic
+wl_worlds2025_m94,Ali Aalipour,IRI,,,4,snatch,1,171,no_lift,6,211,26.11.2003,594.76,,651.40,auto:wl-graphic
+wl_worlds2025_m94,Raphael Friedrich,GER,,,,snatch,3,171,good,7,444,25.01.2001,697.96,,743.56,auto:wl-graphic
+wl_worlds2025_m94,Kianoush Rostami,KOS,,,5,snatch,1,172,no_lift,8,107,23.07.1991,774.28,,812.20,auto:wl-graphic
+wl_worlds2025_m94,Kianoush Rostami,KOS,,,5,snatch,2,172,good,9,107,23.07.1991,919.24,order differs: after Aalipour (10),949.00,auto:wl-graphic
+wl_worlds2025_m94,Ali Aalipour,IRI,,,4,snatch,2,172,good,10,211,26.11.2003,829.00,order differs: lifted before Rostami's 2nd (9),879.40,auto:wl-graphic
+wl_worlds2025_m94,Karlos Nasar,BUL,,,1,snatch,1,173,good,11,201,05.12.2004,972.04,,1020.04,auto:wl-graphic
+wl_worlds2025_m94,Alireza Moeini,IRI,,,2,snatch,1,174,good,12,480,28.02.2002,1067.56,,1120.36,auto:wl-graphic
+wl_worlds2025_m94,Ali Aalipour,IRI,,,4,snatch,3,176,good,13,211,26.11.2003,1176.52,,1235.56,auto:wl-graphic
+wl_worlds2025_m94,Kianoush Rostami,KOS,,,5,snatch,3,177,no_lift,14,107,23.07.1991,1264.84,,1311.40,auto:wl-graphic
+wl_worlds2025_m94,Karlos Nasar,BUL,,,1,snatch,2,178,no_lift,15,201,05.12.2004,1347.40,,1397.80,auto:wl-graphic
+wl_worlds2025_m94,Alireza Moeini,IRI,,,2,snatch,2,179,good,16,480,28.02.2002,1442.92,,1497.16,auto:wl-graphic
+wl_worlds2025_m94,Karlos Nasar,BUL,,,1,snatch,3,182,no_lift,17,201,05.12.2004,1556.68,,1605.16,auto:wl-graphic
+wl_worlds2025_m94,Alireza Moeini,IRI,,,2,snatch,3,182,good,18,480,28.02.2002,1624.84,,1671.40,auto:wl-graphic
+wl_worlds2025_m94,Alireza Moeini,IRI,,,2,clean_and_jerk,1,198,good,1,480,28.02.2002,1835.56,,1896.04,auto:wl-graphic
+wl_worlds2025_m94,Karim Abokahla,EGY,,,10,clean_and_jerk,1,203,no_lift,2,55,11.11.1996,1935.40,,1993.00,auto:wl-graphic
+wl_worlds2025_m94,Raphael Friedrich,GER,,,,clean_and_jerk,1,203,no_lift,3,444,25.01.2001,2040.04,,2090.44,auto:wl-graphic
+wl_worlds2025_m94,Karim Abokahla,EGY,,,10,clean_and_jerk,2,203,no_lift,4,55,11.11.1996,2123.56,,2170.60,auto:wl-graphic
+wl_worlds2025_m94,Raphael Friedrich,GER,,,,clean_and_jerk,2,203,no_lift,5,444,25.01.2001,2197.48,,2251.72,auto:wl-graphic
+wl_worlds2025_m94,Karim Abokahla,EGY,,,10,clean_and_jerk,3,203,good,6,55,11.11.1996,2278.12,,2310.76,auto:wl-graphic
+wl_worlds2025_m94,Raphael Friedrich,GER,,,,clean_and_jerk,3,203,no_lift,7,444,25.01.2001,2341.48,,2393.32,auto:wl-graphic
+wl_worlds2025_m94,Alireza Moeini,IRI,,,2,clean_and_jerk,2,204,good,8,480,28.02.2002,2418.76,,2464.84,auto:wl-graphic
+wl_worlds2025_m94,Kianoush Rostami,KOS,,,5,clean_and_jerk,1,205,good,9,107,23.07.1991,2488.36,,2537.32,auto:wl-graphic
+wl_worlds2025_m94,Alireza Moeini,IRI,,,2,clean_and_jerk,3,209,good,10,480,28.02.2002,2622.28,,2682.28,auto:wl-graphic
+wl_worlds2025_m94,Karlos Nasar,BUL,,,1,clean_and_jerk,1,210,good,11,201,05.12.2004,2716.84,,2753.32,auto:wl-graphic
+wl_worlds2025_m94,Ali Aalipour,IRI,,,4,clean_and_jerk,1,211,good,12,211,26.11.2003,2780.20,,2834.92,auto:wl-graphic
+wl_worlds2025_m94,Kianoush Rostami,KOS,,,5,clean_and_jerk,2,216,no_lift,13,107,23.07.1991,2917.48,,2950.12,auto:wl-graphic
+wl_worlds2025_m94,Ali Aalipour,IRI,,,4,clean_and_jerk,2,217,no_lift,14,211,26.11.2003,2994.76,,3058.12,auto:wl-graphic
+wl_worlds2025_m94,Kianoush Rostami,KOS,,,5,clean_and_jerk,3,217,no_lift,15,107,23.07.1991,3079.24,,3121.96,auto:wl-graphic
+wl_worlds2025_m94,Karlos Nasar,BUL,,,1,clean_and_jerk,2,219,good,16,201,05.12.2004,3169.96,,3225.16,auto:wl-graphic
+wl_worlds2025_m94,Ali Aalipour,IRI,,,4,clean_and_jerk,3,219,no_lift,17,211,26.11.2003,3259.24,,3319.72,auto:wl-graphic
+wl_worlds2025_m94,Karlos Nasar,BUL,,,1,clean_and_jerk,3,222,good,18,201,05.12.2004,3354.76,,3412.36,auto:wl-graphic

@@ -1,0 +1,12 @@
+# Highlights for the forecast's check: 2019 Bahrain Grand Prix (winner Hamilton).
+# Imported from data-collection (f1_2019_bahrain_gp); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "2019-02"
+clip_id: f1_2019_bahrain_gp
+status: draft
+highlights:
+  - {period: 1, clock: 4161.9, what: "Vettel within 0.61 s of Hulkenberg (P5) at the line, lap 42", kind: battle, t_video: 453.9}
+  - {period: 1, clock: 4664.0, what: "Hamilton passes Leclerc for P1 on lap 48", kind: pass, t_video: 956.0}
+  - {period: 1, clock: 5183.0, what: "Bottas within 0.45 s of Leclerc (P2) at the line, lap 53", kind: battle, t_video: 1475.0}
+  - {period: 1, clock: 5188.0, what: "Bottas passes Leclerc for P2 on lap 54", kind: pass, t_video: 1480.0}
