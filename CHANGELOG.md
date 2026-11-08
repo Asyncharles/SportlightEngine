@@ -3,6 +3,42 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Data package in the bucket; 2018 matches approved (Charles, 2026-11-08)
+
+- The package is uploaded and `make data-verify` passes:
+  - 17 clips (4 demo, 13 tuning, 3 audio-only) under the labels' exact names;
+  - 592 stills;
+  - the five NBA clip games, converted to `events/nba/`. The NBA demo feed now replays Game 7;
+  - private: anonymous GET returns 403.
+- The ML lead approved the 2018 World Cup StatsBomb files (`raw/football/7560.json`, `7567.json`). They are kept in the bucket.
+  - The sync guard stays (`ALLOW_RAW_FOOTBALL_2018=1` to push).
+  - `verify_bucket.py --allow-raw-football` now passes.
+  - They are not converted or trained on yet.
+- The football forecast stays on the heuristic: `models/football/CURRENT` is not set for the in-sample bundle.
+
+## Deploy wiring, Milestone 3: FeedEvents to the front end over RabbitMQ (deploy agent, 2026-11-08)
+
+New base dependency **aio-pika 9.6** (approved by Charles).
+
+- `engine/amqp.py` maps every `ScoreUpdate` to the front end's versioned `FeedEvent`s (Asyncharles/sportlight `packages/shared/src/events.ts`, `schemas.ts`), on exchange `sportlight.feeds` (topic, durable, declared with the backend's arguments; queues are never declared).
+  - `feed.started` is sent first, on every reconnect and every 10 s.
+  - `feed.intensity` carries `score = round(intensity_pct)` and `streamTime`, for non-stale updates.
+  - `feed.updated` carries `availability` when a feed goes stale or recovers, and `source` when the clip clock moves.
+  - `feed.ended` is never sent on a restart.
+  - Routing key: `feed.<type>.<sportId>.<feedId>`.
+  - Sports map `f1` to `motorsport` and `nba` to `basketball`. Titles and media URLs come from `config/publish.yaml`, copied from the front end's `media/local-sources.json`.
+- **Timing:** `mediaOffsetSec` and `streamTime` come from `run/feeds_state.json`, so the browser's loop position equals the engine's `t_video`.
+- **Not sent:** forecast, `heating_up`, trend, parts and reasons. The front end's schema has no field for them, and no front-end code uses `heating_up`.
+- The publisher:
+  - is active only when `AMQP_URL` is set (`engine.publish`);
+  - uses publisher confirms, reconnects with 0.5 to 30 s backoff, keeps a latest-wins slot per feed and a bounded lifecycle queue;
+  - `offer()` never awaits, so scoring never blocks on the broker;
+  - its status is in `/health`, with `degraded` when it's disconnected;
+  - `/ws/scores` is unchanged.
+- Tests:
+  - `tests/contract/test_feed_events.py`: a strict mirror of the zod schema, browser/engine time alignment, and the publisher's announce, availability and reconnect behaviour against a fake broker.
+  - `tests/e2e` and `.github/workflows/e2e.yml`: RabbitMQ 4.3.7 and the real front-end backend in CI, with no GCP. It checks that the dead-letter queue stays empty, that the backend has a fresh run within 10 s of an engine restart, and that its queue doesn't grow.
+
 ## Deploy wiring: image build and deploy workflows (deploy agent, 2026-11-08)
 
 - `image.yml`: on a merge to `master` (not `main`; the repo's default branch is `master`) or by hand, `infra/gcp/cloudbuild.yaml` builds `$AR_REPO/si:<sha>` on Cloud Build as `si-build`, authenticated as `si-web-ci` through WIF.

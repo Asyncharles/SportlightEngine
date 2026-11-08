@@ -1,0 +1,96 @@
+# End to end, no GCP: RabbitMQ in a service container, the front-end backend built from
+# Asyncharles/sportlight, and the engine plus clock lane on synthetic clips (tests/e2e). Reading the
+# private front-end repo needs SPORTLIGHT_REPO_TOKEN (fine-grained, read-only Contents); without it the
+# job skips with a warning. The broker credentials below are throwaway, CI-only values.
+name: e2e
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      frontend_ref:
+        description: Asyncharles/sportlight ref to test against
+        default: main
+
+permissions: {}
+
+jobs:
+  e2e:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    services:
+      rabbitmq:
+        image: rabbitmq:4.3.7-management
+        env:
+          RABBITMQ_DEFAULT_USER: e2e
+          RABBITMQ_DEFAULT_PASS: e2e-ci-only
+          RABBITMQ_DEFAULT_VHOST: sportlight
+        ports: ["5672:5672", "15672:15672"]
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping" --health-interval 5s --health-timeout 5s --health-retries 30
+    env:
+      AMQP_URL: amqp://e2e:e2e-ci-only@127.0.0.1:5672/sportlight
+      RABBITMQ_MGMT_URL: http://e2e:e2e-ci-only@127.0.0.1:15672
+      E2E_BACKEND_URL: http://127.0.0.1:4000
+      UV_PROJECT_ENVIRONMENT: venv
+    steps:
+      - name: Front-end access
+        id: access
+        env:
+          TOKEN: ${{ secrets.SPORTLIGHT_REPO_TOKEN }}
+        run: |
+          if [[ -z "$TOKEN" ]]; then
+            echo "::warning::SPORTLIGHT_REPO_TOKEN is not set; skipping the end-to-end test (see infra/gcp/PREREQS.md step 5)"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.access.outputs.run == 'true'
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.access.outputs.run == 'true'
+        with:
+          repository: Asyncharles/sportlight
+          ref: ${{ inputs.frontend_ref || 'main' }}
+          token: ${{ secrets.SPORTLIGHT_REPO_TOKEN }}
+          path: frontend
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        if: steps.access.outputs.run == 'true'
+        with:
+          node-version: 20        # the front end's Dockerfiles use Node 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Production queue policy on the vhost (as on si-mq)
+        if: steps.access.outputs.run == 'true'
+        run: |
+          curl -fsS -u e2e:e2e-ci-only -X PUT -H 'content-type: application/json' \
+            http://127.0.0.1:15672/api/policies/sportlight/bounded \
+            -d '{"pattern": ".*", "apply-to": "queues", "definition": {"max-length": 100000, "overflow": "drop-head"}}'
+      - name: Build and start the front-end backend
+        if: steps.access.outputs.run == 'true'
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build -w @sportlight/shared
+          npm run build -w @sportlight/backend
+          PORT=4000 DATA_DIR="$RUNNER_TEMP/backend-data" nohup node apps/backend/dist/index.js > "$RUNNER_TEMP/backend.log" 2>&1 &
+          for i in $(seq 1 60); do curl -fsS http://127.0.0.1:4000/readyz && exit 0; sleep 1; done
+          echo "::error::backend never became ready"; cat "$RUNNER_TEMP/backend.log"; exit 1
+      - uses: astral-sh/setup-uv@v6
+        if: steps.access.outputs.run == 'true'
+        with: {version: "0.13.7"}
+      - name: Engine -> RabbitMQ -> backend
+        if: steps.access.outputs.run == 'true'
+        run: |
+          uv sync --frozen --inexact
+          make test-e2e
+      - name: Backend log
+        if: failure() && steps.access.outputs.run == 'true'
+        run: tail -n 200 "$RUNNER_TEMP/backend.log"

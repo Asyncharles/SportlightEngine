@@ -74,3 +74,14 @@ engine:
     min_interval_s: 5.0
   replay:
     events_dir: data/events
+  publish:                    # FeedEvents to the front end over RabbitMQ; only when AMQP_URL is set
+    enabled: true
+    exchange: sportlight.feeds  # topic, durable (the front-end backend declares it identically)
+    provider: sportlight-engine
+    catalog_path: config/publish.yaml
+    feeds_state_path: run/feeds_state.json
+    reannounce_s: 10.0        # the backend marks a feed unavailable after 15 s of silence
+    unavailable_after_s: 5.0
+    lifecycle_buffer: 1000
+    confirm_timeout_s: 5.0
+    backoff_s: [0.5, 30.0]

@@ -9,6 +9,9 @@ Endpoints:
     POST /admin/reload swap model bundles, weights and imminent configs between ticks
     POST /admin/switch {"key": "engine.imminent.enabled", "value": false}
     GET  /debug        plain HTML page with parts bars, imminent and phase per feed
+
+With AMQP_URL set (and engine.publish.enabled), every ScoreUpdate also goes to the front end as a
+FeedEvent on RabbitMQ (engine/amqp.py); /ws/scores keeps working either way.
 """
 
 from __future__ import annotations
@@ -17,8 +20,10 @@ import argparse
 import asyncio
 import contextlib
 import logging
+import os
 import signal
 import time
+from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
@@ -28,6 +33,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import ValidationError
 
 from intensity.config import Config, load_config, resolve_path, save_resolved
+from intensity.engine.amqp import AmqpPublisher
 from intensity.engine.core import Engine, default_feeds
 from intensity.feeds import Feed
 from intensity.schema import ScoreUpdate, parse_envelope
@@ -63,12 +69,18 @@ class Broadcaster:
         self.clients: set[ScoreClient] = set()
         self.metrics = metrics
         self.latest: dict[str, str] = {}
+        self.sinks: list[Callable[[ScoreUpdate], None]] = []  # e.g. the AMQP publisher's offer()
 
     def publish(self, update: ScoreUpdate) -> None:
         payload = update.model_dump_json()
         self.latest[update.feed_id] = payload
         for client in self.clients:
             client.offer(update.feed_id, payload)
+        for sink in self.sinks:
+            try:
+                sink(update)
+            except Exception:  # a sink must never stop scoring
+                log.exception("score sink failed")
         self.metrics.inc("scores.published")
 
 
@@ -82,6 +94,11 @@ class EngineService:
         self.mock_seed = mock_seed
         self.feeds = feeds
         self._tasks: list[asyncio.Task] = []
+        self.amqp: AmqpPublisher | None = None
+        url = os.environ.get("AMQP_URL", "").strip()
+        if url and config.engine.publish.enabled:
+            self.amqp = AmqpPublisher(config.engine.publish, url, feeds, self.metrics)
+            self.broadcaster.sinks.append(self.amqp.offer)
 
     @staticmethod
     def now() -> float:
@@ -125,6 +142,8 @@ class EngineService:
         self._tasks.append(asyncio.create_task(self.tick_loop(), name="tick"))
         if self.mock:
             self._tasks.append(asyncio.create_task(self.mock_loop(), name="mock"))
+        if self.amqp is not None:
+            self._tasks.append(asyncio.create_task(self.amqp.run(), name="amqp"))
 
     async def stop(self) -> None:
         for task in self._tasks:
@@ -210,7 +229,12 @@ def create_app(config: Config | None = None, feeds: list[Feed] | None = None, mo
 
     @app.get("/health")
     async def health() -> dict[str, Any]:
-        return service.engine.health(service.now())
+        out = service.engine.health(service.now())
+        if service.amqp is not None:
+            out["amqp"] = service.amqp.status()
+            if not service.amqp.connected and out["status"] == "ok":
+                out["status"] = "degraded"  # scoring is fine; the front end just isn't hearing it
+        return out
 
     @app.get("/metrics")
     async def metrics() -> dict[str, Any]:

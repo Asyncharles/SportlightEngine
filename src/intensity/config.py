@@ -142,6 +142,22 @@ class ReplayConfig(_Strict):
     events_dir: str = "data/events"
 
 
+class PublishConfig(_Strict):
+    """ScoreUpdates to the front end's FeedEvents on RabbitMQ (engine/amqp.py). Active only when the
+    AMQP_URL environment variable is set, so laptops and tests never need a broker."""
+
+    enabled: bool = True
+    exchange: str = "sportlight.feeds"  # topic, durable: declared identically by the front-end backend
+    provider: str = "sportlight-engine"
+    catalog_path: str = "config/publish.yaml"  # front-end titles, sports and media URLs per feed
+    feeds_state_path: str = "run/feeds_state.json"  # each feed's clip clock, written by the ingest
+    reannounce_s: float = 10.0  # feed.started again this often (the backend forgets silent feeds)
+    unavailable_after_s: float = 5.0  # stale this long -> feed.updated {availability: unavailable}
+    lifecycle_buffer: int = 1000  # started/updated events kept while the broker is down
+    confirm_timeout_s: float = 5.0
+    backoff_s: tuple[float, float] = (0.5, 30.0)
+
+
 class EngineConfig(_Strict):
     clock: Literal["live", "simulated"] = "live"
     speed: float = 1.0  # simulated clock only
@@ -158,6 +174,7 @@ class EngineConfig(_Strict):
     trackers: TrackersConfig = TrackersConfig()
     polish: PolishConfig = PolishConfig()
     replay: ReplayConfig = ReplayConfig()
+    publish: PublishConfig = PublishConfig()
     max_reasons: int = 3
 
 
