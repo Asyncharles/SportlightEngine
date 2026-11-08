@@ -7,11 +7,11 @@
   "game_clock": "Lap 3/58",
   "t_emit_ns": 1794000000000000000,
   "stale": false,
-  "intensity_raw": 0.457,
-  "intensity": 0.3466,
-  "intensity_pct": 80.29,
+  "intensity_raw": 0.4882,
+  "intensity": 0.3709,
+  "intensity_pct": 80.71,
   "trend": "steady",
-  "trend_slope": 0.00279,
+  "trend_slope": 0.00297,
   "parts": {
     "closeness": {
       "value": 0.95,
@@ -29,7 +29,7 @@
           "key": "battles_1s",
           "value": 1,
           "unit": null,
-          "text": "1 battles within a second"
+          "text": "1 battle within a second"
         }
       ]
     },
@@ -49,14 +49,14 @@
           "key": "battles_1s",
           "value": 1,
           "unit": null,
-          "text": "1 battles within a second"
+          "text": "1 battle within a second"
         }
       ]
     },
     "stakes": {
-      "value": 0.0517,
+      "value": 0.3122,
       "weight": 0.12,
-      "contribution": 0.0062,
+      "contribution": 0.0375,
       "phrase": "a long way to go",
       "facts": [
         {
@@ -184,7 +184,7 @@
   "heating_up_by": [],
   "reasons": [
     {
-      "text": "Cars nose to tail: gap 0.4 s at the front, 1 battles within a second",
+      "text": "Cars nose to tail: gap 0.4 s at the front, 1 battle within a second",
       "facts": [
         {
           "key": "min_gap_s",
@@ -196,7 +196,7 @@
           "key": "battles_1s",
           "value": 1,
           "unit": null,
-          "text": "1 battles within a second"
+          "text": "1 battle within a second"
         }
       ],
       "factors": [
@@ -205,7 +205,7 @@
       "polished": false
     },
     {
-      "text": "Lots of overtaking: 3 passes in 3 laps, 1 battles within a second",
+      "text": "Lots of overtaking: 3 passes in 3 laps, 1 battle within a second",
       "facts": [
         {
           "key": "passes_3laps",
@@ -217,7 +217,7 @@
           "key": "battles_1s",
           "value": 1,
           "unit": null,
-          "text": "1 battles within a second"
+          "text": "1 battle within a second"
         }
       ],
       "factors": [

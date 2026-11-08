@@ -1,0 +1,2 @@
+# Weightlifting adapter (owner: training agent; the full T4 version follows).
+p_success: {scale_kg: 2.5, offset: 0.8}   # logistic in kilograms over the athlete's best

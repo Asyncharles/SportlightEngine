@@ -1,0 +1,34 @@
+# Football adapter (owner: training agent). Part definitions for the ML lead to review, feature
+# windows and the heuristic forecast. Features depend on these, so a bundle stores their hash.
+windows_s: {short: 120, long: 300}
+pitch:                       # StatsBomb coordinates, 120 x 80, attacking towards x = 120
+  final_third_x: 80
+  box_x: 102
+  box_y: [18, 62]
+closeness:
+  goals_zero: 3              # 1 when level, 0 at this margin
+  phrase_at: 0.6
+momentum:                    # weighted sum over the more dangerous team's recent attacking
+  xg_full: 1.0               # xG in the long window that counts as full
+  shots_full: 4              # shots in the short window
+  box_full: 8                # box touches in the short window
+  weights: {xg: 0.5, shots: 0.3, box: 0.2}
+  phrase_at: 0.5
+stakes:                      # stage base, rising to 1 late in a close game
+  stage:
+    Group Stage: 0.25
+    Round of 16: 0.45
+    Quarter-finals: 0.55
+    Semi-finals: 0.65
+    3rd Place Final: 0.4
+    Final: 0.75
+  stage_default: 0.3
+  late_from_min: 60
+  late_full_min: 90
+  phrase_at: 0.6
+heuristic:                   # p(shot with xG >= 0.1 or a goal within 30 s), until a bundle is approved
+  base: 0.03
+  per_box_touch: 0.01
+  per_xg: 0.3
+  final_third_bonus: 0.05
+  cap: 0.6

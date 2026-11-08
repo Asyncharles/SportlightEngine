@@ -3,17 +3,24 @@
 An adapter turns the match-record stream into the match-data parts (closeness, momentum, stakes),
 the ordered forecast feature row, the game clock and a heuristic forecast. Training featurizes
 through the same code (hard rule 5), so an adapter must only ever read records it has been given.
+
+Part definitions, windows and phrase thresholds come from `config/adapters/<sport>.yaml` (hard
+rule 4); the ML lead reviews them there.
 """
 
 from __future__ import annotations
 
+import copy
+import functools
 import hashlib
+import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import ClassVar
+from typing import Any, ClassVar
 
 import numpy as np
 
+from intensity.config import CONFIG_DIR, load_sport_yaml
 from intensity.schema import Fact, MatchPayload
 
 
@@ -32,6 +39,26 @@ def clamp01(x: float) -> float:
     return float(min(1.0, max(0.0, x)))
 
 
+def plural(n: int, word: str, many: str | None = None) -> str:
+    """For fact texts: "1 pass", "3 passes"."""
+    return f"{n} {word if n == 1 else many or word + 's'}"
+
+
+@functools.cache
+def _load_adapter_config(sport: str) -> dict[str, Any]:
+    return load_sport_yaml(CONFIG_DIR / "adapters", sport)
+
+
+def adapter_config(sport: str) -> dict[str, Any]:
+    """`config/adapters/<sport>.yaml`, read once per process."""
+    return copy.deepcopy(_load_adapter_config(sport))
+
+
+def config_hash(cfg: dict[str, Any]) -> str:
+    """Stored in a bundle next to the feature hash: features depend on these settings too."""
+    return hashlib.sha256(json.dumps(cfg, sort_keys=True).encode()).hexdigest()[:16]
+
+
 class Adapter(ABC):
     sport: ClassVar[str]
     FEATURES: ClassVar[tuple[str, ...]]
@@ -39,8 +66,15 @@ class Adapter(ABC):
     HORIZON_S: ClassVar[float]
     FORECAST_SOURCE: ClassVar[str] = "heuristic"  # "rule" for sports with no trained model
 
-    def __init__(self) -> None:
+    def __init__(self, cfg: dict[str, Any] | None = None) -> None:
+        self.cfg = adapter_config(self.sport) if cfg is None else cfg
         self.reset()
+
+    def row(self, values: dict[str, float]) -> np.ndarray:
+        """The feature row in FEATURES order; a missing feature is a bug, so it raises."""
+        return np.fromiter(
+            (float(values[name]) for name in self.FEATURES), dtype=float, count=len(self.FEATURES)
+        )
 
     @abstractmethod
     def reset(self) -> None:

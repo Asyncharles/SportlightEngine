@@ -7,11 +7,11 @@
   "game_clock": "3:59",
   "t_emit_ns": 1794000000000000000,
   "stale": false,
-  "intensity_raw": 0.5616,
-  "intensity": 0.5267,
-  "intensity_pct": 70.04,
+  "intensity_raw": 0.4841,
+  "intensity": 0.4497,
+  "intensity_pct": 72.22,
   "trend": "steady",
-  "trend_slope": -0.00383,
+  "trend_slope": -0.00363,
   "parts": {
     "closeness": {
       "value": 1.0,
@@ -34,29 +34,29 @@
       ]
     },
     "momentum": {
-      "value": 0.5,
+      "value": 0.345,
       "weight": 0.12,
-      "contribution": 0.06,
-      "phrase": "end-to-end attacking",
+      "contribution": 0.0414,
+      "phrase": "a slow spell",
       "facts": [
         {
-          "key": "shots_2min",
-          "value": 2,
+          "key": "xg_5min_home",
+          "value": 0.5,
           "unit": null,
-          "text": "2 shots in 2 minutes"
+          "text": "Argentina 0.5 xG in 5 minutes"
         },
         {
-          "key": "minute",
-          "value": 3,
-          "unit": "min",
-          "text": "minute 3"
+          "key": "shots_2min_home",
+          "value": 1,
+          "unit": null,
+          "text": "Argentina 1 shot in 2 minutes"
         }
       ]
     },
     "stakes": {
-      "value": 0.2,
+      "value": 0.3,
       "weight": 0.12,
-      "contribution": 0.024,
+      "contribution": 0.036,
       "phrase": "plenty of time left",
       "facts": [
         {
@@ -128,29 +128,29 @@
       ]
     },
     "forecast": {
-      "value": 0.87,
+      "value": 0.48,
       "weight": 0.16,
-      "contribution": 0.1392,
-      "phrase": "a big chance brewing",
+      "contribution": 0.0768,
+      "phrase": "no sign of a big chance yet",
       "facts": [
         {
           "key": "forecast_p",
-          "value": 47,
+          "value": 19,
           "unit": "%",
-          "text": "47% chance of a big chance within 30 s"
+          "text": "19% chance of a big chance within 30 s"
         }
       ]
     },
     "imminent": {
-      "value": 0.2341,
+      "value": 0.1638,
       "weight": 0.12,
-      "contribution": 0.0281,
+      "contribution": 0.0197,
       "phrase": "nothing building yet",
       "facts": []
     }
   },
   "forecast": {
-    "p": 0.47,
+    "p": 0.192,
     "label": "big_chance",
     "horizon_s": 30.0,
     "source": "heuristic",
@@ -158,9 +158,9 @@
     "model_version": null
   },
   "imminent": {
-    "value": 0.2341,
+    "value": 0.1638,
     "cue": 0.2153,
-    "context": 0.909,
+    "context": 0.636,
     "heating_up": false,
     "phase": null,
     "source": "rule",
@@ -191,13 +191,13 @@
       "polished": false
     },
     {
-      "text": "A big chance looks likely: 47% chance of a big chance within 30 s, 3:59",
+      "text": "A big chance looks likely: 19% chance of a big chance within 30 s, 3:59",
       "facts": [
         {
           "key": "forecast_p",
-          "value": 47,
+          "value": 19,
           "unit": "%",
-          "text": "47% chance of a big chance within 30 s"
+          "text": "19% chance of a big chance within 30 s"
         },
         {
           "key": "game_clock",

@@ -1,0 +1,24 @@
+# NBA adapter (owner: training agent).
+run_window_s: 120
+secs_since_score_cap: 120
+close_margin: 3              # "trailing team has the ball" counts within this margin
+bonus: {quarter_fouls: 5, ot_fouls: 4, last2_fouls: 2}
+non_team_fouls: [Offensive, Offensive Charge, Defense 3 Second, Flopping, Double Personal]  # and every Technical
+timeouts: {per_game: 7, per_ot: 2}
+closeness:
+  margin_zero: 15
+  phrases: {one_possession: 0.8, tight: 0.5}
+momentum:
+  run_full: 10
+  phrase_at: 0.6
+stakes:
+  progress_weight: 0.6       # elapsed share of regulation, squared
+  late_weight: 0.4           # times closeness, in the last late_s of regulation and in overtime
+  late_s: 300
+  phrase_at: 0.7
+heuristic:                   # p(lead change or tie within 60 s)
+  base: 0.03
+  close_weight: 0.4
+  close_margin: 6
+  per_run_point: 0.02
+  trailing_ball_bonus: 0.08

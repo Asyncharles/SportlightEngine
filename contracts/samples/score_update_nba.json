@@ -7,11 +7,11 @@
   "game_clock": "Q1 7:27",
   "t_emit_ns": 1794000000000000000,
   "stale": false,
-  "intensity_raw": 0.3668,
-  "intensity": 0.4136,
-  "intensity_pct": 31.48,
+  "intensity_raw": 0.3904,
+  "intensity": 0.4358,
+  "intensity_pct": 45.47,
   "trend": "falling",
-  "trend_slope": -0.01714,
+  "trend_slope": -0.01615,
   "parts": {
     "closeness": {
       "value": 0.8,
@@ -43,7 +43,7 @@
           "key": "run_2min",
           "value": 0,
           "unit": "pts",
-          "text": "Celtics on a 0-point run"
+          "text": "no scoring run"
         },
         {
           "key": "score",
@@ -54,9 +54,9 @@
       ]
     },
     "stakes": {
-      "value": 0.0,
+      "value": 0.0054,
       "weight": 0.12,
-      "contribution": 0.0,
+      "contribution": 0.0006,
       "phrase": "early in the game",
       "facts": [
         {
@@ -128,29 +128,29 @@
       ]
     },
     "forecast": {
-      "value": 0.56,
+      "value": 0.6857,
       "weight": 0.16,
-      "contribution": 0.0896,
-      "phrase": "no sign of a lead change yet",
+      "contribution": 0.1097,
+      "phrase": "a lead change brewing",
       "facts": [
         {
           "key": "forecast_p",
-          "value": 23,
+          "value": 31,
           "unit": "%",
-          "text": "23% chance of a lead change within 60 s"
+          "text": "31% chance of a lead change within 60 s"
         }
       ]
     },
     "imminent": {
-      "value": 0.1862,
+      "value": 0.2099,
       "weight": 0.12,
-      "contribution": 0.0223,
+      "contribution": 0.0252,
       "phrase": "nothing building yet",
       "facts": []
     }
   },
   "forecast": {
-    "p": 0.23,
+    "p": 0.31,
     "label": "lead_change",
     "horizon_s": 60.0,
     "source": "heuristic",
@@ -158,9 +158,9 @@
     "model_version": null
   },
   "imminent": {
-    "value": 0.1862,
+    "value": 0.2099,
     "cue": 0.1432,
-    "context": 0.692,
+    "context": 0.78,
     "heating_up": false,
     "phase": null,
     "source": "rule",
@@ -191,6 +191,27 @@
       "polished": false
     },
     {
+      "text": "A lead change looks likely: 31% chance of a lead change within 60 s, Q1 7:27",
+      "facts": [
+        {
+          "key": "forecast_p",
+          "value": 31,
+          "unit": "%",
+          "text": "31% chance of a lead change within 60 s"
+        },
+        {
+          "key": "game_clock",
+          "value": "Q1 7:27",
+          "unit": null,
+          "text": "Q1 7:27"
+        }
+      ],
+      "factors": [
+        "forecast"
+      ],
+      "polished": false
+    },
+    {
       "text": "A roaring crowd: crowd 2 dB above normal, Q1 7:27",
       "facts": [
         {
@@ -208,27 +229,6 @@
       ],
       "factors": [
         "crowd"
-      ],
-      "polished": false
-    },
-    {
-      "text": "A lead change looks likely: 23% chance of a lead change within 60 s, Q1 7:27",
-      "facts": [
-        {
-          "key": "forecast_p",
-          "value": 23,
-          "unit": "%",
-          "text": "23% chance of a lead change within 60 s"
-        },
-        {
-          "key": "game_clock",
-          "value": "Q1 7:27",
-          "unit": null,
-          "text": "Q1 7:27"
-        }
-      ],
-      "factors": [
-        "forecast"
       ],
       "polished": false
     }

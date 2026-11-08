@@ -7,11 +7,11 @@
   "game_clock": "Lap 1/58",
   "t_emit_ns": 1794000000000000000,
   "stale": false,
-  "intensity_raw": 0.4939,
-  "intensity": 0.3718,
+  "intensity_raw": 0.5264,
+  "intensity": 0.3884,
   "intensity_pct": 95.0,
   "trend": "rising",
-  "trend_slope": 0.0124,
+  "trend_slope": 0.01371,
   "parts": {
     "closeness": {
       "value": 0.95,
@@ -29,7 +29,7 @@
           "key": "battles_1s",
           "value": 1,
           "unit": null,
-          "text": "1 battles within a second"
+          "text": "1 battle within a second"
         }
       ]
     },
@@ -49,14 +49,14 @@
           "key": "battles_1s",
           "value": 1,
           "unit": null,
-          "text": "1 battles within a second"
+          "text": "1 battle within a second"
         }
       ]
     },
     "stakes": {
-      "value": 0.0172,
+      "value": 0.2881,
       "weight": 0.12,
-      "contribution": 0.0021,
+      "contribution": 0.0346,
       "phrase": "a long way to go",
       "facts": [
         {
@@ -213,7 +213,7 @@
       "polished": false
     },
     {
-      "text": "Cars nose to tail: gap 0.4 s at the front, 1 battles within a second",
+      "text": "Cars nose to tail: gap 0.4 s at the front, 1 battle within a second",
       "facts": [
         {
           "key": "min_gap_s",
@@ -225,7 +225,7 @@
           "key": "battles_1s",
           "value": 1,
           "unit": null,
-          "text": "1 battles within a second"
+          "text": "1 battle within a second"
         }
       ],
       "factors": [

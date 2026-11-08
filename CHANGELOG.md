@@ -81,3 +81,33 @@ Each item is a default the engine builds on until its owner changes it.
 - Imminent evaluation: an NBA lead change is the go-ahead basket after the other team led, directly
   or after a tie; ties alone are not moments.
 - Mock: weightlifting phases and hush follow the loop that is playing.
+
+## Training data sources (training agent, 2026-11-07; F1 approved by the ML lead)
+
+- F1 is sourced from Jolpica only, because FastF1's live-timing archive now needs an F1 account.
+  The F1 features and the `on_track_pass` label are therefore built at lap granularity. With an F1
+  account, FastF1 can be added later without changing the raw Jolpica files. The ML lead approved
+  lap-granularity F1 on 2026-11-07.
+- NBA uses the two most recent complete seasons, 2024-25 and 2025-26, regular season plus playoffs.
+
+## S2 adapters and match records (training agent, 2026-11-07; part definitions await ML lead review)
+
+- Real football, F1 and NBA adapters replace the F1 stubs; weightlifting keeps its rules but now
+  returns real features (the full T4 version follows). Each adapter's docstring lists its record
+  kinds and attrs, which `training/sources/<sport>.py` writes to `data/events/<sport>/*.jsonl`.
+  Every kind and attr the mock sends is still accepted, so the mock and the engine tests are unchanged.
+- Part definitions, windows, phrase thresholds and heuristic forecasts live in
+  `config/adapters/<sport>.yaml` (hard rule 4) for the ML lead to review. `Adapter(cfg=None)` reads
+  that file; `config_hash(cfg)` is for T1 bundles to store next to `feature_hash`.
+- Feature lists grew: football 31, F1 14, NBA 20, weightlifting 3. No bundle exists yet, so nothing
+  needs retraining.
+- Football game time is the broadcast clock (second half from 45:00), so records order by
+  `(period, game_time_s)`. Shoot-out goals are counted separately and never change the score.
+- F1 records are per car per lap (`crossing`), each at that car's own line crossing. Safety cars
+  are inferred when a lap's median time is 1.2 times the green median
+  (`training.convert.f1.sc_slow_ratio`). On-track passes exclude pit swaps and lap-one changes.
+- NBA possession is inferred from scores, last free throws, rebounds and turnovers; the game clock
+  goes past regulation only when the score is tied.
+- `contracts/samples/` were regenerated: the same shapes, with the real adapters' facts. On the mock
+  the imminent check still meets every target. Recall is now football 1.00 (was 0.95) and NBA 0.955
+  (was 0.91); F1 and weightlifting are unchanged.
