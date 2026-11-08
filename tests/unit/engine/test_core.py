@@ -204,3 +204,28 @@ def test_reload_swaps_rule_version_and_lexicon(config, tmp_path):
     assert eng.health(0.0)["feeds"]["f"]["imminent_rule"] == "football-r2"
     assert fs.imminent.rule.threshold == 0.6
     assert set(fs.commentary.keywords) == {"screamer"}
+
+
+def test_session_csv_feed_replays_in_video_time(tmp_path):
+    """Weightlifting sessions have no sync table: their records are already in video time."""
+    from intensity.config import load_config
+    from intensity.feeds import Feed
+
+    (tmp_path / "weightlifting").mkdir()
+    (tmp_path / "weightlifting" / "s1.jsonl").write_text(
+        '{"game_time_s": 10.0, "period": 1, "kind": "attempt_called", "player": "A",'
+        ' "attrs": {"weight_kg": 150, "attempt": 2, "best_kg": 145}}\n'
+    )
+    cfg = load_config(overrides=["engine.forecast.source=heuristic", "engine.polish.enabled=false",
+                                 f"engine.replay.events_dir={tmp_path}"])
+    feed = Feed(feed_id="wl", sport="weightlifting", sample="samples/s1.mp4", rtsp_path="wl",
+                match_ref={"source": "session_csv", "match_id": "s1"}, sync=None)
+    eng = Engine(cfg, feeds=[feed])
+    fs = eng.feeds["wl"]
+    assert fs.replay is not None
+    eng.handle(tick("wl", 9.0), 0.0)
+    eng.score_all(0.0)
+    assert fs.adapter.weight == 0.0  # not yet: the walk-on is at t_video 10
+    eng.handle(tick("wl", 11.0), 2.0)
+    update = eng.score_all(2.0)[0]
+    assert fs.adapter.weight == 150.0 and update.intensity_pct is not None

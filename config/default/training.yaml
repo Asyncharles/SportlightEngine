@@ -6,6 +6,7 @@ training:
     events: data/events    # converted match records, data/events/<sport>/<item>.jsonl
     tables: data/tables    # features.parquet, labels.parquet and split.json per sport
     highlights: data/highlights  # hand-made highlight lists, <match_id>.yaml
+    sessions: data/weightlifting # weightlifting session CSVs, already in video time
     runs: run/training     # resolved config of every run, and staged bundles per sport
     models: models         # exported bundles; CURRENT moves only with the ML lead's approval
     reports: data/reports/training  # mirrors the bucket's reports/ (make data-push FOLDERS=reports/training)

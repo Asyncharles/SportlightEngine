@@ -1,0 +1,4 @@
+# What `gcloud builds submit` uploads (infra/gcp/cloudbuild.yaml). Same rules as the Docker context:
+# no footage, no data beyond the committed tables, no secrets.
+#!include:.dockerignore
+.gcloudignore

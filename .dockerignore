@@ -1,0 +1,21 @@
+# Build context for docker/Dockerfile (and Cloud Build). Footage and secrets never enter an image.
+.git
+.idea
+.claude
+venv
+.venv
+**/__pycache__
+.pytest_cache
+.ruff_cache
+run
+reports
+.env
+infra/gcp/env
+*.mp4
+*.mkv
+*.ts
+# data/: only the small committed tables the image copies
+data/*
+!data/sync
+!data/weightlifting
+!data/highlights
