@@ -1,0 +1,16 @@
+# Highlights for the forecast's check (plan, step 7): Argentina v France, 2022 World Cup final.
+# DRAFT by the training agent from the StatsBomb record and the broadcast; the ML lead owns this list.
+# `clock` is the broadcast clock (mm:ss, minutes run past 90 in extra time), the same game time the
+# match records use; `period` keeps first-half stoppage time apart from the second half.
+match_id: "3869685"
+status: draft
+highlights:
+  - {period: 1, clock: "22:24", what: "Messi penalty, 1-0"}
+  - {period: 1, clock: "35:22", what: "Di María finishes the counter, 2-0"}
+  - {period: 2, clock: "79:24", what: "Mbappé penalty, 2-1"}
+  - {period: 2, clock: "80:59", what: "Mbappé volley, 2-2"}
+  - {period: 2, clock: "96:37", what: "Lloris saves Messi's strike"}
+  - {period: 3, clock: "104:28", what: "Lautaro Martínez blocked from close range"}
+  - {period: 4, clock: "107:58", what: "Messi rebound, 3-2"}
+  - {period: 4, clock: "117:05", what: "Mbappé penalty, 3-3"}
+  - {period: 4, clock: "122:44", what: "Martínez saves from Kolo Muani"}

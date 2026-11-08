@@ -111,3 +111,26 @@ Each item is a default the engine builds on until its owner changes it.
 - `contracts/samples/` were regenerated: the same shapes, with the real adapters' facts. On the mock
   the imminent check still meets every target. Recall is now football 1.00 (was 0.95) and NBA 0.955
   (was 0.91); F1 and weightlifting are unchanged.
+
+## T1 football pipeline (training agent, 2026-11-08; awaiting ML lead review)
+
+- New CLI steps: `featurize`, `label`, `split`, `train` (which calibrates), `evaluate`, `export`
+  and `build`, with make targets `build-`, `train-`, `eval-` and `export-<sport>`. Paths and every
+  setting are in `training.paths`, `featurize`, `search`, `calibration`, `evaluate` and
+  `highlights` in `config/default/training.yaml`.
+- Football label `big_chance`: a shot with xG >= 0.1 or a goal (own goals included, shoot-out kicks
+  excluded) within 30 s, in the same period. Shoot-out ticks get no rows
+  (`featurize.skip_periods`).
+- Bundle `meta.json` adds `adapter_config_hash`, `label_cfg`, `params`, `best_iteration` and
+  `rows` to the plan's fields. The layout is unchanged.
+- Calibration: `calibrator.json` points sit at each isotonic block's centre, not at its edges, so p
+  keeps the model's ranking. It is still monotone, still `x`/`y` interpolated by the engine.
+- When no level reaches the precision target, the threshold sits above every validation p, so the
+  forecast never heats up on its own; the report says so.
+- Football adapter: 9 new attack features (40 in total). `windows_s` gains `instant: 30` and
+  `possession_cap: 120`.
+- `config/feeds.yaml`: football demo `match_id` set to 3869685 (the 2022 final, which the plan holds
+  out). ML lead to confirm.
+- `data/highlights/3869685.yaml`: draft highlight list for the ML lead to review or replace.
+- First football model misses both targets (test PR-AUC 1.35x, highlights 3 of 10), so it is not
+  exported and football keeps the heuristic.

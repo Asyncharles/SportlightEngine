@@ -1,6 +1,6 @@
 # Football adapter (owner: training agent). Part definitions for the ML lead to review, feature
 # windows and the heuristic forecast. Features depend on these, so a bundle stores their hash.
-windows_s: {short: 120, long: 300}
+windows_s: {instant: 30, short: 120, long: 300, possession_cap: 120}  # instant: the attack features
 pitch:                       # StatsBomb coordinates, 120 x 80, attacking towards x = 120
   final_third_x: 80
   box_x: 102
