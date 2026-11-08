@@ -141,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
     trn = sub.add_parser("train", help="search, train and calibrate; stages run/training/<sport>/<version>/")
     trn.add_argument("--sport", required=True, choices=sports)
     ev = sub.add_parser(
-        "evaluate", help="test metrics, highlight check and reports/training/<sport>/<version>/"
+        "evaluate", help="test metrics, highlight check and data/reports/training/<sport>/<version>/"
     )
     ev.add_argument("--sport", required=True, choices=sports)
     ev.add_argument("--version", default=None, help="staged version (default: run/training/<sport>/LATEST)")

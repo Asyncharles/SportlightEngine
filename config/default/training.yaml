@@ -8,7 +8,7 @@ training:
     highlights: data/highlights  # hand-made highlight lists, <match_id>.yaml
     runs: run/training     # resolved config of every run, and staged bundles per sport
     models: models         # exported bundles; CURRENT moves only with the ML lead's approval
-    reports: reports/training
+    reports: data/reports/training  # mirrors the bucket's reports/ (make data-push FOLDERS=reports/training)
     feeds: config/feeds.yaml
   fetch:
     timeout_s: 60
@@ -35,7 +35,13 @@ training:
   featurize:
     step_s: 1.0                    # one row per second of game time, as the live engine ticks
     skip_periods: {football: [5]}  # the shoot-out: every kick is a big chance, nothing to forecast
-  split: {val_frac: 0.15, test_frac: 0.15}
+  # The one switch for held-out data. in_sample (Charles, 2026-11-08): no train/val/test split; train
+  # on every match, demo matches included (hard rule 6 suspended), and evaluate on the same data, so
+  # every reported metric is in-sample. holdout: the grouped split below, demo matches only in test.
+  split: {mode: in_sample, val_frac: 0.15, test_frac: 0.15}
+  in_sample:  # used only when split.mode is in_sample: one fixed setting, no search, no early stopping
+    num_boost_round: 400
+    params: {num_leaves: 31, min_data_in_leaf: 200, feature_fraction: 0.8, learning_rate: 0.05}
   search:
     max_settings: 20       # settings sampled from the grid with the seed
     num_boost_round: 2000

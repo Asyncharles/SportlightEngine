@@ -11,8 +11,11 @@ Checks, all on test matches through the staged bundle exactly as the engine load
   `hit_window_s` after it in the same period; the target is `target_hits`;
 - a per-match timeline of p with the highlights marked.
 
-Writes `reports/training/<sport>/<version>/report.html` and `report.json`, and adds the test metrics
+Writes `data/reports/training/<sport>/<version>/report.html` and `report.json`, and adds the test metrics
 to the staged `meta.json`.
+
+In `training.split.mode: in_sample`, "test" is the training data itself: every metric is in-sample, both
+files say so (`"evaluation": "in-sample"` and a banner), and none of it measures generalisation.
 """
 
 from __future__ import annotations
@@ -174,6 +177,7 @@ def evaluate(config: Config, sport: str, version: str | None = None) -> Path:
     shap = np.abs(np.asarray(bundle.booster.predict(sample, pred_contrib=True))[:, :-1]).mean(axis=0)
     above = p >= bundle.threshold
     metrics = {
+        "evaluation": meta.get("evaluation", "held-out"),
         "test_rows": int(len(y)),
         "test_matches": int(test["match_id"].nunique()),
         "base_rate": base,
@@ -382,6 +386,15 @@ def write_report(
         for t in sorted(search, key=lambda t: -t["val_ap"])
     )
     val = meta["metrics"]
+    in_sample = meta.get("evaluation") == "in-sample"
+    where = "in-sample" if in_sample else "test"
+    banner = (
+        '<p class="fail">In-sample metrics: this model was trained, calibrated and evaluated on the same'
+        " matches (training.split.mode: in_sample), demo matches included. No number below is held out,"
+        " so none of them says how the model does on unseen matches.</p>"
+        if in_sample
+        else ""
+    )
     page = f"""<!doctype html><html><head><meta charset="utf-8"><title>Forecast report</title><style>{
         CSS
     }</style></head><body>
@@ -390,19 +403,20 @@ def write_report(
         html.escape(meta["git_sha"])
     }</code>,
 data <code>{html.escape(meta["data_hash"])}</code>, created {html.escape(meta["created_at"])}.</p>
+{banner}
 <p class="{"pass" if passed else "fail"}">{
         "Every target met: this bundle can be proposed for CURRENT."
         if passed
         else "A target was missed: the sport keeps serving the heuristic until a bundle meets every target."
     }</p>
 <h2>Targets</h2><table><tr><th>Check</th><th>Target</th><th>Value</th><th></th></tr>
-<tr><td>PR-AUC / base rate (test)</td><td>&ge; {targets["pr_auc"]["target"]}</td><td>{
+<tr><td>PR-AUC / base rate ({where})</td><td>&ge; {targets["pr_auc"]["target"]}</td><td>{
         _f(targets["pr_auc"]["value"], 2)
     }</td><td>{verdict(targets["pr_auc"]["met"])}</td></tr>
 <tr><td>Highlight hits per demo match</td><td>&ge; {hl["target"]} of {hcfg["peaks"]}</td><td>{
         html.escape(hl_value)
     }</td><td>{verdict(hl["met"])}</td></tr></table>
-<h2>Test metrics</h2><table><tr><th>Metric</th><th>Value</th></tr>
+<h2>{where.capitalize()} metrics</h2><table><tr><th>Metric</th><th>Value</th></tr>
 <tr><td>Matches / rows</td><td>{m["test_matches"]} / {m["test_rows"]}</td></tr>
 <tr><td>Base rate</td><td>{_f(m["base_rate"], 4)}</td></tr>
 <tr><td>PR-AUC (model)</td><td>{_f(m["pr_auc"], 4)}</td></tr>
@@ -412,12 +426,12 @@ data <code>{html.escape(meta["data_hash"])}</code>, created {html.escape(meta["c
 <tr><td>Heating-up threshold (calibrated p)</td><td>{_f(threshold, 4)}{
         ""
         if val["threshold_reached"]
-        else ' <span class="fail">(precision target not reached on validation; never heats up)</span>'
+        else ' <span class="fail">(precision target not reached on {"the training data" if in_sample else "validation"}; never heats up)</span>'
     }</td></tr>
 <tr><td>Ticks at or above it / precision there</td><td>{_f(m["heating_frac"], 3)} / {
         _f(m["precision_at_threshold"], 3)
     }</td></tr>
-<tr><td>Validation PR-AUC / base rate</td><td>{_f(val["val_average_precision"], 4)} / {
+<tr><td>{"Training" if in_sample else "Validation"} PR-AUC / base rate</td><td>{_f(val["val_average_precision"], 4)} / {
         _f(val["val_base_rate"], 4)
     }</td></tr></table>
 <h2>Reliability</h2>{_reliability_svg(m["reliability"])}
@@ -430,9 +444,9 @@ data <code>{html.escape(meta["data_hash"])}</code>, created {html.escape(meta["c
 <p class="note">Blue: calibrated p. Dashed grey: threshold. Dashed orange: highlights. Dots: peaks, green if a highlight follows within {
         hcfg["hit_window_s"]
     } s, red if not. Thin lines: period changes.</p>
-{demo_html or '<p class="fail">No demo match in test.</p>'}
-<h2>Search</h2><table><tr><th>Setting</th><th>val AP</th><th>iterations</th><th>s</th></tr>{trials}</table>
-<h2>Split</h2><p>{
+{demo_html or f'<p class="fail">No demo match in {where}.</p>'}
+<h2>Search</h2><table><tr><th>Setting</th><th>{"in-sample AP" if in_sample else "val AP"}</th><th>iterations</th><th>s</th></tr>{trials}</table>
+<h2>Split ({html.escape(meta.get("split_mode", "holdout"))})</h2><p>{
         ", ".join(f"{k}: {len(v)} matches, {meta['rows'][k]} rows" for k, v in meta["matches"].items())
     }.</p>
 </body></html>"""
