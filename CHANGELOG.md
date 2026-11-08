@@ -3,6 +3,20 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Deploy wiring: image build and deploy workflows (deploy agent, 2026-11-08)
+
+- `image.yml`: on a merge to `master` (not `main`; the repo's default branch is `master`) or by hand, `infra/gcp/cloudbuild.yaml` builds `$AR_REPO/si:<sha>` on Cloud Build as `si-build`, authenticated as `si-web-ci` through WIF.
+  - Layers are cached from `:cache`, and a smoke step imports both services.
+  - The build is submitted async and polled.
+- `deploy-reusable.yml` is the handoff's, with inputs unchanged.
+- `deploy-dev.yml` (si-dev) and `deploy-demo.yml` (si-demo, environment `demo`) resolve the handoff's TODOs:
+  - `COMPOSE_FILE=docker/compose.yaml:docker/compose.gcp.yaml`;
+  - engine `http://127.0.0.1:8000/health` (body `status` must be ok or degraded, because the route is always 200);
+  - ingest `http://127.0.0.1:8001/health` (200 only when healthy);
+  - release env with `SI_DATA`, `SI_RUN`, `GCS_BUCKET` and the AMQP host, vhost, user and the secret's *name*.
+- `deploy/remote-up.sh` reads `rabbitmq-app-password` on the VM with the VM's identity into `/opt/si/secrets/engine.env` (0600, percent-encoded into `AMQP_URL`). It is never in the repo, image, release files or logs.
+- `infra/gcp/run_demo.sh` starts the stack; `infra/gcp/RUNBOOK.md` covers create, deploy, the rollback proof and logs.
+
 ## Deploy wiring: the clock-lane ingest, weightlifting replay, image-based Compose (deploy agent, 2026-11-08)
 
 Charles chose the clock lane (plan D1), because ingest and perception are not built.

@@ -1,0 +1,46 @@
+# Manual deploy to the demo GPU VM si-demo. The `demo` environment makes Charles approve; after
+# DEMO_FREEZE_AT it also needs freeze_override. Never triggered by a push.
+name: deploy demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Full git SHA of a built image
+        required: true
+      freeze_override:
+        description: Deploy even though the demo freeze has started
+        type: boolean
+        default: false
+
+permissions: {}
+
+jobs:
+  deploy:
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      app: si
+      vm: si-demo
+      environment: demo
+      image_tag: ${{ inputs.image_tag }}
+      freeze_override: ${{ inputs.freeze_override }}
+      images: si
+      release_paths: docker infra/gcp/run_demo.sh
+      # Names and hosts only. The AMQP password is read on the VM from Secret Manager by
+      # deploy/remote-up.sh (AMQP_PASSWORD_SECRET is the secret's name), never shipped or logged.
+      # Feed config is config/feeds.yaml inside the image at this same SHA.
+      extra_env: |
+        COMPOSE_FILE=docker/compose.yaml:docker/compose.gcp.yaml
+        ENGINE_HEALTH_URL=http://127.0.0.1:8000/health
+        INGEST_HEALTH_URL=http://127.0.0.1:8001/health
+        SI_DATA=/opt/si/data
+        SI_RUN=/opt/si/run
+        GCS_BUCKET=sportlight-514020-si-private
+        AMQP_HOST=si-mq.europe-west4-a.c.sportlight-514020.internal
+        AMQP_PORT=5672
+        AMQP_VHOST=sportlight
+        AMQP_USER=app
+        AMQP_PASSWORD_SECRET=rabbitmq-app-password

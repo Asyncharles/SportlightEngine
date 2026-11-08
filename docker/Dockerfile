@@ -27,12 +27,11 @@ RUN uv sync --frozen --extra gpu --extra train --extra polish --no-dev
 
 # Perception weights are fetched at build time so nothing downloads on stage.
 ARG PREFETCH_WEIGHTS=1
-RUN if [ "$PREFETCH_WEIGHTS" = "1" ]; then python - <<'PY' || echo "weight prefetch skipped"; fi
-import open_clip
-from faster_whisper import download_model
-open_clip.create_model_and_transforms("ViT-B-32", pretrained="laion2b_s34b_b79k")
-download_model("small.en")
-PY
+# (One python -c line, not a heredoc: Cloud Build's default Dockerfile frontend has no heredocs.)
+RUN if [ "$PREFETCH_WEIGHTS" = "1" ]; then \
+        python -c 'import open_clip; from faster_whisper import download_model; open_clip.create_model_and_transforms("ViT-B-32", pretrained="laion2b_s34b_b79k"); download_model("small.en")' \
+        || echo "weight prefetch skipped"; \
+    fi
 
 EXPOSE 8000
 CMD ["python", "-m", "intensity.engine.service", "--overlay", "demo"]

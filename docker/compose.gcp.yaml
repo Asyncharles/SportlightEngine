@@ -2,7 +2,7 @@
 #
 # - ingest runs on the NVIDIA runtime with the L4 reserved (the clock lane doesn't need it yet; real
 #   decode and perception will);
-# - the engine reads its secrets (AMQP_URL) from /opt/si/secrets/engine.env, written at deploy time from
+# - the engine reads its secrets (AMQP_URL) from ${SI_SECRETS}/engine.env (/opt/si/secrets), written at deploy time from
 #   Secret Manager by remote-up.sh; never from the image, the release files or the repo;
 # - logs rotate so a long run can't fill the disk.
 x-logging: &logging
@@ -12,7 +12,7 @@ x-logging: &logging
 services:
   engine:
     env_file:
-      - path: /opt/si/secrets/engine.env
+      - path: ${SI_SECRETS:-/opt/si/secrets}/engine.env
         required: false
     logging: *logging
 

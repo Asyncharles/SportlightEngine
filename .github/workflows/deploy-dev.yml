@@ -1,0 +1,40 @@
+# Manual deploy of a built engine image to the running GPU VM si-dev (never starts it).
+name: deploy dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Full git SHA of a built image (blank = the commit this run is on)
+        required: false
+
+permissions: {}
+
+jobs:
+  deploy:
+    permissions:
+      contents: read
+      id-token: write
+    uses: ./.github/workflows/deploy-reusable.yml
+    with:
+      app: si
+      vm: si-dev
+      environment: dev
+      image_tag: ${{ inputs.image_tag || github.sha }}
+      images: si
+      release_paths: docker infra/gcp/run_demo.sh
+      # Names and hosts only. The AMQP password is read on the VM from Secret Manager by
+      # deploy/remote-up.sh (AMQP_PASSWORD_SECRET is the secret's name), never shipped or logged.
+      # Feed config is config/feeds.yaml inside the image at this same SHA.
+      extra_env: |
+        COMPOSE_FILE=docker/compose.yaml:docker/compose.gcp.yaml
+        ENGINE_HEALTH_URL=http://127.0.0.1:8000/health
+        INGEST_HEALTH_URL=http://127.0.0.1:8001/health
+        SI_DATA=/opt/si/data
+        SI_RUN=/opt/si/run
+        GCS_BUCKET=sportlight-514020-si-private
+        AMQP_HOST=si-mq.europe-west4-a.c.sportlight-514020.internal
+        AMQP_PORT=5672
+        AMQP_VHOST=sportlight
+        AMQP_USER=app
+        AMQP_PASSWORD_SECRET=rabbitmq-app-password

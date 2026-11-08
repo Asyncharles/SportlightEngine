@@ -1,0 +1,183 @@
+# Reusable deploy (from the 2026-11-07 handoff; inputs unchanged). Ships a release to an ALREADY RUNNING VM
+# over IAP SSH, restarts it on pinned image digests, waits for health, and rolls back
+# to the previous release on failure. It never creates, starts or stops a VM.
+#
+# Contract for the calling repo:
+#   deploy/remote-up.sh      run on the VM as root, from the release dir: pull + start
+#   deploy/remote-health.sh  exit 0 when healthy (retried until health_timeout)
+#   deploy/remote-logs.sh    optional; printed once if the release fails
+# release.env (written here) holds IMAGE_<NAME>=<repo>/<name>@sha256:..., GIT_SHA, extra_env.
+name: deploy (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      app:
+        description: Release root on the VM is /opt/<app>; also used as the Compose project name
+        type: string
+        required: true
+      vm:
+        type: string
+        required: true
+      environment:
+        type: string
+        required: true
+      image_tag:
+        description: Full git SHA. Images tagged with it are deployed, with that commit's release files.
+        type: string
+        required: true
+      images:
+        description: Space-separated image names in AR_REPO
+        type: string
+        required: true
+      release_paths:
+        description: Extra repo paths to ship besides deploy/ (space-separated)
+        type: string
+        default: ""
+      extra_env:
+        description: KEY=VALUE lines appended to release.env
+        type: string
+        default: ""
+      health_timeout:
+        type: number
+        default: 300
+      freeze_override:
+        type: boolean
+        default: false
+
+permissions: {}
+
+jobs:
+  deploy:
+    name: ${{ inputs.app }} -> ${{ inputs.vm }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: ${{ inputs.environment }}
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: deploy-${{ inputs.environment }}-${{ inputs.app }}
+      cancel-in-progress: false
+    env:
+      APP: ${{ inputs.app }}
+      VM: ${{ inputs.vm }}
+      TAG: ${{ inputs.image_tag }}
+      IMAGES: ${{ inputs.images }}
+      RELEASE_PATHS: ${{ inputs.release_paths }}
+      EXTRA_ENV: ${{ inputs.extra_env }}
+      HEALTH_TIMEOUT: ${{ inputs.health_timeout }}
+      ZONE: ${{ vars.GCP_ZONE }}
+      AR_REPO: ${{ vars.AR_REPO }}
+    steps:
+      - name: Validate inputs
+        run: |
+          [[ "$TAG" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::image_tag must be a full 40-character git SHA"; exit 1; }
+          [[ "$APP" =~ ^[a-z0-9-]+$ ]] || { echo "::error::app must be lowercase letters, digits and dashes"; exit 1; }
+
+      - name: Demo freeze
+        if: inputs.environment == 'demo'
+        env:
+          FREEZE_AT: ${{ vars.DEMO_FREEZE_AT }}
+          OVERRIDE: ${{ inputs.freeze_override }}
+        run: |
+          [[ -z "$FREEZE_AT" ]] && exit 0
+          if (( $(date -u +%s) >= $(date -u -d "$FREEZE_AT" +%s) )) && [[ "$OVERRIDE" != true ]]; then
+            echo "::error::Demo frozen since $FREEZE_AT. Re-run with freeze_override."; exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.image_tag }}
+          persist-credentials: false
+
+      - uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          project_id: ${{ vars.GCP_PROJECT }}
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_CI_SA }}
+
+      - uses: google-github-actions/setup-gcloud@aa5489c8933f4cc7a4f7d45035b3b1440c9c10db # v3.0.1
+
+      - name: Refuse unless the VM is already running
+        run: |
+          status=$(gcloud compute instances describe "$VM" --zone "$ZONE" --format='value(status)' 2>/dev/null || echo MISSING)
+          if [[ "$status" != RUNNING ]]; then
+            echo "::error::$VM is $status. Start $VM first; this workflow never starts VMs."; exit 1
+          fi
+
+      - name: Resolve image digests
+        run: |
+          : > release.env
+          for img in $IMAGES; do
+            ref=$(gcloud artifacts docker images describe "$AR_REPO/$img:$TAG" \
+                    --format='value(image_summary.fully_qualified_digest)' 2>/dev/null || true)
+            [[ -n "$ref" ]] || { echo "::error::$AR_REPO/$img:$TAG not found. Build it first."; exit 1; }
+            echo "IMAGE_$(tr 'a-z-' 'A-Z_' <<<"$img")=$ref" >> release.env
+          done
+          echo "GIT_SHA=$TAG" >> release.env
+          [[ -z "$EXTRA_ENV" ]] || printf '%s\n' "$EXTRA_ENV" >> release.env
+          cat release.env
+
+      - name: Package release
+        run: |
+          for f in deploy/remote-up.sh deploy/remote-health.sh; do
+            [[ -f "$f" ]] || { echo "::error::$f is missing at $TAG"; exit 1; }
+          done
+          tar -czf "$RUNNER_TEMP/$APP-$TAG.tgz" release.env deploy $RELEASE_PATHS
+          cat > "$RUNNER_TEMP/$APP-driver.sh" <<'DRIVER'
+          #!/usr/bin/env bash
+          # Runs on the VM as root: unpack, switch, start, health-check, roll back.
+          set -euo pipefail
+          APP=$1 SHA=$2 TIMEOUT=$3
+          ROOT=/opt/$APP; REL=$ROOT/releases/$SHA; PKG=/tmp/$APP-$SHA.tgz
+          mkdir -p "$ROOT/releases"
+          PREV=$(readlink -f "$ROOT/current" 2>/dev/null || true)
+          rm -rf "$REL.new"; mkdir -p "$REL.new"; tar -xzf "$PKG" -C "$REL.new"; rm -f "$PKG"
+          rm -rf "$REL"; mv "$REL.new" "$REL"
+
+          start()   { ( cd "$1" && bash deploy/remote-up.sh ); }
+          healthy() {
+            local end=$((SECONDS + TIMEOUT))
+            until ( cd "$1" && bash deploy/remote-health.sh ) >/dev/null 2>&1; do
+              (( SECONDS < end )) || return 1; sleep 10
+            done
+          }
+          logs()    { [[ -f "$1/deploy/remote-logs.sh" ]] && ( cd "$1" && bash deploy/remote-logs.sh ) || true; }
+
+          ln -sfn "$REL" "$ROOT/current"
+          if start "$REL" && healthy "$REL"; then
+            echo "Deployed $SHA ($ROOT/current)"
+            ls -1dt "$ROOT"/releases/*/ | tail -n +6 | xargs -r rm -rf   # keep 5 newest
+            exit 0
+          fi
+          echo "::error::Release $SHA did not start or never became healthy"
+          logs "$REL"
+          if [[ -n "$PREV" && "$PREV" != "$REL" && -f "$PREV/deploy/remote-up.sh" ]]; then
+            ln -sfn "$PREV" "$ROOT/current"
+            if start "$PREV" && healthy "$PREV"; then
+              echo "::warning::Rolled back to $(basename "$PREV")"
+            else
+              echo "::error::Rollback to $(basename "$PREV") is ALSO unhealthy; inspect $HOSTNAME"
+            fi
+          fi
+          exit 1
+          DRIVER
+
+      - name: Ship, start, health-check (auto-rollback)
+        run: |
+          gcloud compute scp "$RUNNER_TEMP/$APP-$TAG.tgz" "$RUNNER_TEMP/$APP-driver.sh" "$VM:/tmp/" \
+            --zone "$ZONE" --tunnel-through-iap --quiet
+          gcloud compute ssh "$VM" --zone "$ZONE" --tunnel-through-iap --quiet \
+            --command "sudo bash /tmp/$APP-driver.sh '$APP' '$TAG' '$HEALTH_TIMEOUT'"
+
+      - name: Summary
+        if: always()
+        env:
+          RESULT: ${{ job.status }}
+        run: |
+          {
+            echo "### $APP -> $VM: $RESULT"
+            echo "Release: \`/opt/$APP/releases/$TAG\`"
+            echo '```'; cat release.env 2>/dev/null || echo "(no release.env)"; echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

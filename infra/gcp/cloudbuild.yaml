@@ -1,0 +1,42 @@
+# Engine image build (image.yml submits it as si-build). One image for every service; tag = git SHA.
+# Layers are cached from the last master image (:cache), so a code-only change rebuilds in minutes.
+# The build context is filtered by .gcloudignore: no footage, no data beyond the committed tables, no secrets.
+substitutions:
+  _AR_REPO: europe-west4-docker.pkg.dev/sportlight-514020/si
+  _TAG: manual
+  _IMAGE: si
+
+steps:
+  - id: pull-cache
+    name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args: ["-c", "docker pull ${_AR_REPO}/${_IMAGE}:cache || echo 'no cache image yet'"]
+
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    env: ["DOCKER_BUILDKIT=1"]
+    args:
+      - build
+      - --file=docker/Dockerfile
+      - --cache-from=${_AR_REPO}/${_IMAGE}:cache
+      - --build-arg=BUILDKIT_INLINE_CACHE=1
+      - --label=org.opencontainers.image.revision=${_TAG}
+      - --tag=${_AR_REPO}/${_IMAGE}:${_TAG}
+      - --tag=${_AR_REPO}/${_IMAGE}:cache
+      - .
+
+  # Fail the build, not the deploy, if the image can't even import the services.
+  - id: smoke
+    name: ${_AR_REPO}/${_IMAGE}:${_TAG}
+    entrypoint: python
+    args: ["-c", "import intensity.engine.service, intensity.ingest.run; print('imports ok')"]
+
+images:
+  - ${_AR_REPO}/${_IMAGE}:${_TAG}
+  - ${_AR_REPO}/${_IMAGE}:cache
+
+timeout: 3600s
+options:
+  machineType: E2_HIGHCPU_8
+  diskSizeGb: 100
+  logging: CLOUD_LOGGING_ONLY
