@@ -3,6 +3,33 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Engine performance report (engine agent, 2026-11-08)
+
+`make engine-report` (`python -m intensity.engine.perf`, settings in `config/experiments/engine_perf.yaml`) writes
+`data/reports/engine/<run_id>/` and pushes it to `gs://<bucket>/reports/engine/<run_id>/`. It contains:
+
+- `report.html` with charts;
+- `summary.json`;
+- `samples.parquet`, one row per timed call.
+
+It covers latency per tick stage, ingest and restart times, data volume in and out, capacity against feed
+count, loopback transport latency and the plan's latency budget. With `LIVE_URL`, it also reads a running
+engine's `/metrics` and `/health` once.
+
+It does not touch live inference:
+
+- It runs in its own process, at niceness 10, on a private engine.
+- No engine code changed: the timers are wrappers on that engine's instances.
+- Publishing and polish are forced off, and it never writes `run/feeds_state.json`.
+
+No contract, weight or label change.
+
+First run `20261108-095200` (Charles's laptop, arm64 with 10 cores, demo overlay):
+
+- Every engine budget is met. Tick per feed p95 is 0.19 ms (target 5 ms), imminent 0.008 ms and forecast 0.03 ms.
+- Ingest to engine p95 is 3.7 ms, and ScoreUpdate to WebSocket client p95 is 3.1 ms.
+- A restart mid-clip costs 120 to 280 ms per feed, almost all of it the percentile pre-roll.
+
 ## Spike score for the demo: the UI switches on moments (Charles, 2026-11-08)
 
 **What happened:** live on sportlight.uk, the main window switched once in 4 minutes and then stayed on F1. F1's intensity climbs lap by lap (stakes), so its level percentile against its own history stays high for most of its loop.
