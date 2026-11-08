@@ -1,0 +1,16 @@
+# Highlights for the forecast's check: South Korea v Germany 2-0 (Group Stage, 2018 World Cup).
+# Imported from data-collection (fb_sou_ger_2018); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "7567"
+clip_id: fb_sou_ger_2018
+status: draft
+highlights:
+  - {period: 2, clock: 4250.0, what: "Mario Gómez chance (xG 0.19)", kind: big_chance, t_video: 139.1}
+  - {period: 2, clock: 4906.2, what: "Thomas Müller chance (xG 0.19)", kind: big_chance, t_video: 795.3}
+  - {period: 2, clock: 5032.4, what: "Julian Brandt chance (xG 0.13)", kind: big_chance, t_video: 921.5}
+  - {period: 2, clock: 5185.7, what: "Mats Hummels chance (xG 0.17)", kind: big_chance, t_video: 1074.8}
+  - {period: 2, clock: 5469.6, what: "Goal South Korea (Kim Young-Gwon)", kind: goal, t_video: 1358.7}
+  - {period: 2, clock: 5665.5, what: "Thomas Müller chance (xG 0.11)", kind: big_chance, t_video: 1554.6}
+  - {period: 2, clock: 5753.4, what: "Goal South Korea (Son Heung-Min)", kind: goal, t_video: 1642.5}
+  - {period: 2, clock: 5921.1, what: "Mats Hummels chance (xG 0.14)", kind: big_chance, t_video: 1810.2}

@@ -1,0 +1,12 @@
+# Highlights for the forecast's check: Spain v Morocco 2-2 (Group Stage, 2018 World Cup).
+# Imported from data-collection (fb_spa_mor_2018); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "7560"
+clip_id: fb_spa_mor_2018
+status: draft
+highlights:
+  - {period: 2, clock: 4834.2, what: "Goal Morocco (Youssef En-Nesyri)", kind: goal, t_video: 704.4}
+  - {period: 2, clock: 5100.7, what: "Rodrigo chance (xG 0.11)", kind: big_chance, t_video: 970.9}
+  - {period: 2, clock: 5188.6, what: "Marco Asensio Willemsen chance (xG 0.19)", kind: big_chance, t_video: 1058.8}
+  - {period: 2, clock: 5408.1, what: "Goal Spain (Iago Aspas)", kind: goal, t_video: 1278.3}

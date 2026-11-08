@@ -1,0 +1,17 @@
+# Highlights for the forecast's check: 2022 East first round Game 1, Nets @ Celtics 114-115 (Tatum winner).
+# Imported from data-collection (nba_20220417_bkn_bos); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "0042100111"
+clip_id: nba_20220417_bkn_bos
+status: draft
+highlights:
+  - {period: 4, clock: 2396.0, what: "Durant 27' 3PT Jump Shot (21 PTS) (Irving 6 AST) (lead change; BKN 100-98 BOS)", kind: lead_change, t_video: 415.7}
+  - {period: 4, clock: 2635.0, what: "Brown 26' 3PT Jump Shot (21 PTS) (White 4 AST) (three; BKN 107-105 BOS)", kind: big_play, t_video: 822.6}
+  - {period: 4, clock: 2684.0, what: "Smart 3' Driving Layup (20 PTS) (tie; BKN 107-107 BOS)", kind: tie, t_video: 909.7}
+  - {period: 4, clock: 2704.0, what: "Irving 17' Fadeaway Jumper (36 PTS) (lead change; BKN 109-107 BOS)", kind: lead_change, t_video: 957.7}
+  - {period: 4, clock: 2721.0, what: "White 2' Driving Layup (7 PTS) (tie; BKN 109-109 BOS)", kind: tie, t_video: 974.7}
+  - {period: 4, clock: 2800.0, what: "Durant 14' Fadeaway Jumper (23 PTS) (lead change; BKN 111-109 BOS)", kind: lead_change, t_video: 1179.9}
+  - {period: 4, clock: 2816.0, what: "Horford 2' Putback Layup (20 PTS) (tie; BKN 111-111 BOS)", kind: tie, t_video: 1290.0}
+  - {period: 4, clock: 2834.1, what: "Irving 28' 3PT Jump Shot (39 PTS) (lead change + three; BKN 114-111 BOS)", kind: lead_change, t_video: 1311.5}
+  - {period: 4, clock: 2880.0, what: "Tatum Cutting Layup Shot (31 PTS) (Smart 6 AST) (lead change + final shot; BKN 114-115 BOS)", kind: lead_change, t_video: 1384.3}

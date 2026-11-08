@@ -1,0 +1,15 @@
+# Highlights for the forecast's check: 2016 Finals Game 7, Cavaliers @ Warriors 93-89.
+# Imported from data-collection (nba_20160619_cle_gsw); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "0041500407"
+clip_id: nba_20160619_cle_gsw
+status: draft
+highlights:
+  - {period: 4, clock: 2186.0, what: "James 5' Jump Shot (18 PTS) (Love 3 AST) (lead change; CLE 77-76 GSW)", kind: lead_change, t_video: 67.3}
+  - {period: 4, clock: 2463.0, what: "Curry 27' 3PT Step Back Jump Shot (17 PTS) (tie; CLE 83-83 GSW)", kind: tie, t_video: 473.7}
+  - {period: 4, clock: 2502.0, what: "Thompson 20' Pullup Jump Shot (12 PTS) (Green 8 AST) (lead change; CLE 83-85 GSW)", kind: lead_change, t_video: 512.7}
+  - {period: 4, clock: 2587.0, what: "James 26' 3PT Pullup Jump Shot (26 PTS) (lead change + three; CLE 89-87 GSW)", kind: lead_change, t_video: 762.0}
+  - {period: 4, clock: 2601.0, what: "Thompson 2' Driving Layup (14 PTS) (Green 9 AST) (tie; CLE 89-89 GSW)", kind: tie, t_video: 776.0}
+  - {period: 4, clock: 2827.0, what: "Irving 25' 3PT Pullup Jump Shot (26 PTS) (lead change + three; CLE 92-89 GSW)", kind: lead_change, t_video: 1169.1}
+  - {period: 4, clock: 2879.5, what: "MISS Speights 24' 3PT Jump Shot (final shot; CLE 93-89 GSW)", kind: big_play, t_video: 1504.8}

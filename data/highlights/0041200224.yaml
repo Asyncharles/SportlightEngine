@@ -1,0 +1,19 @@
+# Highlights for the forecast's check: 2013 West semis Game 4, Thunder @ Grizzlies 97-103 OT.
+# Imported from data-collection (nba_20130513_okc_mem); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "0041200224"
+clip_id: nba_20130513_okc_mem
+status: draft
+highlights:
+  - {period: 4, clock: 2195.0, what: "Martin 24' 3PT Jump Shot (16 PTS) (Durant 7 AST) (lead change; OKC 79-76 MEM)", kind: lead_change, t_video: 81.3}
+  - {period: 4, clock: 2364.0, what: "Randolph 8' Running Jump Shot (16 PTS) (lead change; OKC 81-82 MEM)", kind: lead_change, t_video: 342.1}
+  - {period: 4, clock: 2388.0, what: "Jackson  Reverse Layup (13 PTS) (lead change; OKC 83-82 MEM)", kind: lead_change, t_video: 393.7}
+  - {period: 4, clock: 2511.0, what: "Jackson  Finger Roll Layup (15 PTS) (lead change; OKC 85-84 MEM)", kind: lead_change, t_video: 633.4}
+  - {period: 4, clock: 2536.0, what: "Prince 9' Running Jump Shot (6 PTS) (Bayless 3 AST) (lead change; OKC 85-86 MEM)", kind: lead_change, t_video: 658.4}
+  - {period: 4, clock: 2555.0, what: "Durant 14' Pullup Jump Shot (24 PTS) (lead change; OKC 87-86 MEM)", kind: lead_change, t_video: 677.4}
+  - {period: 4, clock: 2754.0, what: "Conley 6' Floating Jump Shot (24 PTS) (lead change; OKC 91-92 MEM)", kind: lead_change, t_video: 1276.5}
+  - {period: 4, clock: 2873.6, what: "Durant 1' Finger Roll Layup (27 PTS) (tie; OKC 94-94 MEM)", kind: tie, t_video: 1641.4}
+  - {period: 5, clock: 2915.0, what: "Allen 2' Finger Roll Layup (10 PTS) (Prince 5 AST) (lead change; OKC 94-96 MEM)", kind: lead_change, t_video: 1772.3}
+  - {period: 5, clock: 3065.0, what: "Fisher 27' 3PT Jump Shot (3 PTS) (Jackson 8 AST) (three; OKC 97-98 MEM)", kind: big_play, t_video: 1970.7}
+  - {period: 5, clock: 3177.2, what: "MISS Durant 2' Layup (final shot; OKC 97-103 MEM)", kind: big_play, t_video: 2740.1}

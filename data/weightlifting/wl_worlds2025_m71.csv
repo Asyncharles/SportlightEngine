@@ -1,0 +1,50 @@
+session_id,athlete,nation,bodyweight_kg,entry_total_kg,final_rank,lift,attempt,weight_kg,result,order_inferred,lot_number,dob,t_video_walk_on,notes,t_video_decision,labeller
+wl_worlds2025_m71,Isa Rustamov,AZE,,,6,snatch,1,143,good,1,203,06.11.1999,96.52,,127.24,auto:wl-graphic
+wl_worlds2025_m71,Ri Won-ju,PRK,,,5,snatch,1,143,good,2,230,17.09.2002,150.28,,183.88,auto:wl-graphic
+wl_worlds2025_m71,Isa Rustamov,AZE,,,6,snatch,2,147,no_lift,3,203,06.11.1999,355.24,,387.40,auto:wl-graphic
+wl_worlds2025_m71,Masanori Miyamoto,JPN,,,2,snatch,1,148,good,4,3,03.02.1997,460.36,,506.44,auto:wl-graphic
+wl_worlds2025_m71,Kaan Kahriman,TUR,,,7,snatch,1,148,good,5,226,12.09.2004,531.40,,556.84,auto:wl-graphic
+wl_worlds2025_m71,Weeraphon Wichuma,THA,,,1,snatch,1,148,good,6,324,10.08.2004,577.48,,620.68,auto:wl-graphic
+wl_worlds2025_m71,Ri Won-ju,PRK,,,5,snatch,2,148,good,7,230,17.09.2002,648.04,,685.00,auto:wl-graphic
+wl_worlds2025_m71,Isa Rustamov,AZE,,,6,snatch,3,148,good,8,203,06.11.1999,701.32,,736.36,auto:wl-graphic
+wl_worlds2025_m71,Sebastián Olivares,COL,,,,snatch,1,149,no_lift,9,361,27.11.2004,772.84,no decision graphic shown (broadcast cut away); decision left blank,,auto:wl-graphic
+wl_worlds2025_m71,Gor Sahakyan,ARM,,,,snatch,1,150,good,10,297,01.09.2003,1115.56,,1158.28,auto:wl-graphic
+wl_worlds2025_m71,Yusuf Fehmi Genç,TUR,,,4,snatch,1,150,no_lift,11,414,23.05.2002,1194.76,,1219.72,auto:wl-graphic
+wl_worlds2025_m71,Kaan Kahriman,TUR,,,7,snatch,2,151,no_lift,12,226,12.09.2004,1283.56,,1319.08,auto:wl-graphic
+wl_worlds2025_m71,Yusuf Fehmi Genç,TUR,,,4,snatch,2,151,no_lift,13,414,23.05.2002,1344.04,,1377.64,auto:wl-graphic
+wl_worlds2025_m71,Kaan Kahriman,TUR,,,7,snatch,3,151,no_lift,14,226,12.09.2004,1401.64,,1436.68,auto:wl-graphic
+wl_worlds2025_m71,Yusuf Fehmi Genç,TUR,,,4,snatch,3,151,good,15,414,23.05.2002,1461.16,,1517.32,auto:wl-graphic
+wl_worlds2025_m71,Masanori Miyamoto,JPN,,,2,snatch,2,152,good,16,3,03.02.1997,1545.16,,1586.92,auto:wl-graphic
+wl_worlds2025_m71,Weeraphon Wichuma,THA,,,1,snatch,2,152,good,17,324,10.08.2004,1611.40,,1660.84,auto:wl-graphic
+wl_worlds2025_m71,Ri Won-ju,PRK,,,5,snatch,3,152,good,18,230,17.09.2002,1686.28,,1720.84,auto:wl-graphic
+wl_worlds2025_m71,He Yueji,CHN,,,3,snatch,1,153,good,19,479,11.07.2002,1748.20,,1794.28,auto:wl-graphic
+wl_worlds2025_m71,Gor Sahakyan,ARM,,,,snatch,2,154,no_lift,20,297,01.09.2003,1851.40,,1898.44,auto:wl-graphic
+wl_worlds2025_m71,Gor Sahakyan,ARM,,,,snatch,3,154,good,21,297,01.09.2003,1965.64,,1992.52,auto:wl-graphic
+wl_worlds2025_m71,Masanori Miyamoto,JPN,,,2,snatch,3,156,no_lift,22,3,03.02.1997,2070.28,,2127.88,auto:wl-graphic
+wl_worlds2025_m71,Weeraphon Wichuma,THA,,,1,snatch,3,156,no_lift,23,324,10.08.2004,2147.08,graphic first showed him at 155 kg at 2033.32 over the warm-up room (weight change); not a walk-on,2195.08,auto:wl-graphic
+wl_worlds2025_m71,He Yueji,CHN,,,3,snatch,2,157,good,24,479,11.07.2002,2217.64,,2264.68,auto:wl-graphic
+wl_worlds2025_m71,He Yueji,CHN,,,3,snatch,3,160,good,25,479,11.07.2002,2366.92,,2419.72,auto:wl-graphic
+wl_worlds2025_m71,Kaan Kahriman,TUR,,,7,clean_and_jerk,1,172,good,1,226,12.09.2004,2604.04,,2628.04,auto:wl-graphic
+wl_worlds2025_m71,Isa Rustamov,AZE,,,6,clean_and_jerk,1,175,good,2,203,06.11.1999,2677.96,,2726.92,auto:wl-graphic
+wl_worlds2025_m71,Kaan Kahriman,TUR,,,7,clean_and_jerk,2,176,good,3,226,12.09.2004,2748.52,graphic showed 173 kg at 2660.20 over the warm-up room (weight change); not a walk-on,2810.44,auto:wl-graphic
+wl_worlds2025_m71,Isa Rustamov,AZE,,,6,clean_and_jerk,2,180,good,4,203,06.11.1999,2949.16,,2994.76,auto:wl-graphic
+wl_worlds2025_m71,Kaan Kahriman,TUR,,,7,clean_and_jerk,3,180,good,5,226,12.09.2004,3024.04,,3082.12,auto:wl-graphic
+wl_worlds2025_m71,He Yueji,CHN,,,3,clean_and_jerk,1,181,good,6,479,11.07.2002,3119.08,,3157.48,auto:wl-graphic
+wl_worlds2025_m71,Gor Sahakyan,ARM,,,,clean_and_jerk,1,182,no_lift,7,297,01.09.2003,3191.56,,3244.36,auto:wl-graphic
+wl_worlds2025_m71,Gor Sahakyan,ARM,,,,clean_and_jerk,2,182,no_lift,8,297,01.09.2003,3325.00,,3359.08,auto:wl-graphic
+wl_worlds2025_m71,Gor Sahakyan,ARM,,,,clean_and_jerk,3,182,no_lift,9,297,01.09.2003,3437.32,,3482.92,auto:wl-graphic
+wl_worlds2025_m71,He Yueji,CHN,,,3,clean_and_jerk,2,184,good,10,479,11.07.2002,3506.44,,3563.56,auto:wl-graphic
+wl_worlds2025_m71,Isa Rustamov,AZE,,,6,clean_and_jerk,3,184,no_lift,11,203,06.11.1999,3598.60,,3653.32,auto:wl-graphic
+wl_worlds2025_m71,Masanori Miyamoto,JPN,,,2,clean_and_jerk,1,186,good,12,3,03.02.1997,3704.20,,3770.44,auto:wl-graphic
+wl_worlds2025_m71,Yusuf Fehmi Genç,TUR,,,4,clean_and_jerk,1,186,good,13,414,23.05.2002,3786.76,,3828.04,auto:wl-graphic
+wl_worlds2025_m71,He Yueji,CHN,,,3,clean_and_jerk,3,188,no_lift,14,479,11.07.2002,3953.80,,4009.48,auto:wl-graphic
+wl_worlds2025_m71,Ri Won-ju,PRK,,,5,clean_and_jerk,1,190,no_lift,15,230,17.09.2002,4051.24,,4111.72,auto:wl-graphic
+wl_worlds2025_m71,Weeraphon Wichuma,THA,,,1,clean_and_jerk,1,190,no_lift,16,324,10.08.2004,4131.40,,4185.64,auto:wl-graphic
+wl_worlds2025_m71,Ri Won-ju,PRK,,,5,clean_and_jerk,2,190,good,17,230,17.09.2002,4292.20,order differs: after Genç (19),4332.52,auto:wl-graphic
+wl_worlds2025_m71,Weeraphon Wichuma,THA,,,1,clean_and_jerk,2,190,good,18,324,10.08.2004,4370.92,order differs: after Genç (19),4408.84,auto:wl-graphic
+wl_worlds2025_m71,Yusuf Fehmi Genç,TUR,,,4,clean_and_jerk,2,190,good,19,414,23.05.2002,4221.64,order differs: lifted before Ri (17) and Wichuma (18),4263.88,auto:wl-graphic
+wl_worlds2025_m71,Yusuf Fehmi Genç,TUR,,,4,clean_and_jerk,3,192,good,20,414,23.05.2002,4477.96,,4531.24,auto:wl-graphic
+wl_worlds2025_m71,Masanori Miyamoto,JPN,,,2,clean_and_jerk,2,193,good,21,3,03.02.1997,4560.52,,4614.28,auto:wl-graphic
+wl_worlds2025_m71,Weeraphon Wichuma,THA,,,1,clean_and_jerk,3,194,good,22,324,10.08.2004,4650.76,referees gave No Lift (1 white 2 red) at the decision time; Jury Review from ~4708 overturned it to good (gold-winning lift),4702.12,auto:wl-graphic
+wl_worlds2025_m71,Masanori Miyamoto,JPN,,,2,clean_and_jerk,3,195,no_lift,23,3,03.02.1997,4893.16,order differs: after Ri (24),4939.72,auto:wl-graphic
+wl_worlds2025_m71,Ri Won-ju,PRK,,,5,clean_and_jerk,3,195,no_lift,24,230,17.09.2002,4804.36,order differs: lifted before Miyamoto (23),4859.08,auto:wl-graphic

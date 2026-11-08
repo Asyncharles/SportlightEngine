@@ -1,0 +1,13 @@
+# Highlights for the forecast's check: Croatia v Brazil 1-1 (Quarter-finals, 2022-12-09).
+# Imported from data-collection (fb_cro_bra_2022); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "3869420"
+clip_id: fb_cro_bra_2022
+status: draft
+highlights:
+  - {period: 3, clock: 6041.7, what: "Pedro chance (xG 0.11)", kind: big_chance, t_video: 740.2}
+  - {period: 3, clock: 6139.0, what: "Marcelo Brozović chance (xG 0.12)", kind: big_chance, t_video: 837.5}
+  - {period: 3, clock: 6335.3, what: "Goal Brazil (Neymar)", kind: goal, t_video: 1033.8}
+  - {period: 4, clock: 6962.6, what: "Goal Croatia (Bruno Petković)", kind: goal, t_video: 1944.1}
+  - {period: 4, clock: 7279.7, what: "Casemiro chance (xG 0.10)", kind: big_chance, t_video: 2261.2}

@@ -1,0 +1,23 @@
+# Highlights for the forecast's check: 2013 West semis Game 1, Warriors @ Spurs 127-129 2OT.
+# Imported from data-collection (nba_20130506_gsw_sas); every moment was confirmed by eye on the broadcast.
+# Covers only the clip's span (the section of the match kept for the demo or tuning), not the whole match.
+# `clock` is game seconds (the match records' game_time_s); `t_video` is seconds into the cut clip.
+match_id: "0041200231"
+clip_id: nba_20130506_gsw_sas
+status: draft
+highlights:
+  - {period: 4, clock: 2779.0, what: "Leonard 24' 3PT Jump Shot (16 PTS) (Ginobili 8 AST) (three; GSW 104-99 SAS)", kind: big_play, t_video: 1311.3}
+  - {period: 4, clock: 2859.2, what: "Green 25' 3PT Jump Shot (17 PTS) (Ginobili 9 AST) (tie + three; GSW 106-106 SAS)", kind: tie, t_video: 1583.4}
+  - {period: 5, clock: 2896.0, what: "Jack 17' Jump Shot (12 PTS) (lead change; GSW 108-106 SAS)", kind: lead_change, t_video: 1656.4}
+  - {period: 5, clock: 2934.0, what: "Barnes 26' 3PT Jump Shot (16 PTS) (Bogut 4 AST) (three; GSW 111-106 SAS)", kind: big_play, t_video: 1708.2}
+  - {period: 5, clock: 3033.0, what: "Diaw  3PT Jump Shot (5 PTS) (Ginobili 10 AST) (tie + three; GSW 111-111 SAS)", kind: tie, t_video: 1831.6}
+  - {period: 5, clock: 3058.0, what: "Green 1' Layup (19 PTS) (Parker 8 AST) (lead change; GSW 111-113 SAS)", kind: lead_change, t_video: 1856.6}
+  - {period: 5, clock: 3104.0, what: "Curry 2' Layup (40 PTS) (tie; GSW 113-113 SAS)", kind: tie, t_video: 1903.1}
+  - {period: 5, clock: 3118.0, what: "Leonard 6' Pullup Jump Shot (18 PTS) (lead change; GSW 113-115 SAS)", kind: lead_change, t_video: 1926.2}
+  - {period: 5, clock: 3159.7, what: "Jack 3' Layup (14 PTS) (tie; GSW 115-115 SAS)", kind: tie, t_video: 1985.9}
+  - {period: 6, clock: 3264.0, what: "Barnes  3PT Jump Shot (19 PTS) (Curry 10 AST) (lead change + three; GSW 118-115 SAS)", kind: lead_change, t_video: 2519.3}
+  - {period: 6, clock: 3346.0, what: "Diaw 16' Jump Shot (7 PTS) (Ginobili 11 AST) (lead change; GSW 120-121 SAS)", kind: lead_change, t_video: 2732.8}
+  - {period: 6, clock: 3414.0, what: "Green 26' 3PT Jump Shot (22 PTS) (Leonard 2 AST) (three; GSW 121-126 SAS)", kind: big_play, t_video: 2853.1}
+  - {period: 6, clock: 3476.1, what: "Bazemore 2' Layup (2 PTS) (Curry 11 AST) (lead change; GSW 127-126 SAS)", kind: lead_change, t_video: 2972.2}
+  - {period: 6, clock: 3478.8, what: "Ginobili 26' 3PT Jump Shot (16 PTS) (Leonard 3 AST) (lead change + three; GSW 127-129 SAS)", kind: lead_change, t_video: 3228.1}
+  - {period: 6, clock: 3479.8, what: "MISS Jack 28' 3PT Running Jump Shot (final shot; GSW 127-129 SAS)", kind: big_play, t_video: 3460.8}

@@ -1,0 +1,67 @@
+session_id,athlete,nation,bodyweight_kg,entry_total_kg,final_rank,lift,attempt,weight_kg,result,order_inferred,lot_number,dob,t_video_walk_on,notes,t_video_decision,labeller
+wl_worlds2025_m88,Lucas Müller,GER,,,,snatch,1,154,good,1,53,31.07.2003,127.24,,174.76,auto:wl-graphic
+wl_worlds2025_m88,Lorenzo Tarquini,ITA,,,5,snatch,1,155,good,2,142,29.08.2002,203.56,,249.16,auto:wl-graphic
+wl_worlds2025_m88,Cristiano Ficco,ITA,,,7,snatch,1,155,good,3,373,05.04.2001,289.96,,326.92,auto:wl-graphic
+wl_worlds2025_m88,Park Hyeon-go,KOR,,,,snatch,1,155,no_lift,4,436,14.01.2002,349.96,,390.76,auto:wl-graphic
+wl_worlds2025_m88,Iliya Salehi,IRI,,,6,snatch,1,157,no_lift,5,204,12.03.2006,462.76,,511.72,auto:wl-graphic
+wl_worlds2025_m88,Iliya Salehi,IRI,,,6,snatch,2,157,good,6,204,12.03.2006,592.36,order differs: after Park (7),634.12,auto:wl-graphic
+wl_worlds2025_m88,Park Hyeon-go,KOR,,,,snatch,2,157,no_lift,7,436,14.01.2002,535.24,order differs: lifted before Salehi (6),573.16,auto:wl-graphic
+wl_worlds2025_m88,Park Hyeon-go,KOR,,,,snatch,3,157,no_lift,8,436,14.01.2002,651.88,,704.20,auto:wl-graphic
+wl_worlds2025_m88,Lucas Müller,GER,,,,snatch,2,158,no_lift,9,53,31.07.2003,724.36,,757.96,auto:wl-graphic
+wl_worlds2025_m88,Lucas Müller,GER,,,,snatch,3,158,no_lift,10,53,31.07.2003,811.72,,847.72,auto:wl-graphic
+wl_worlds2025_m88,Lorenzo Tarquini,ITA,,,5,snatch,2,159,good,11,142,29.08.2002,865.48,,911.56,auto:wl-graphic
+wl_worlds2025_m88,Cristiano Ficco,ITA,,,7,snatch,2,159,good,12,373,05.04.2001,930.28,,978.76,auto:wl-graphic
+wl_worlds2025_m88,Jo Dae-hee,KOR,,,,snatch,1,160,good,13,195,01.02.1999,993.64,,1046.44,auto:wl-graphic
+wl_worlds2025_m88,Suren Grigoryan,ARM,,,,snatch,1,160,no_lift,14,309,19.11.2003,1073.32,,1111.72,auto:wl-graphic
+wl_worlds2025_m88,Pan Yunhua,CHN,,,,snatch,1,160,no_lift,15,398,23.11.2005,1129.96,,1181.32,auto:wl-graphic
+wl_worlds2025_m88,Suren Grigoryan,ARM,,,,snatch,2,160,no_lift,16,309,19.11.2003,1196.68,,1224.52,auto:wl-graphic
+wl_worlds2025_m88,Suren Grigoryan,ARM,,,,snatch,3,160,good,17,309,19.11.2003,1265.32,,1303.72,auto:wl-graphic
+wl_worlds2025_m88,Pan Yunhua,CHN,,,,snatch,2,161,no_lift,18,398,23.11.2005,1322.44,,1375.24,auto:wl-graphic
+wl_worlds2025_m88,Ro Kwang-ryol,PRK,,,2,snatch,1,162,good,19,155,30.04.2001,1430.92,,1475.56,auto:wl-graphic
+wl_worlds2025_m88,Pan Yunhua,CHN,,,,snatch,3,162,no_lift,20,398,23.11.2005,1521.64,,1572.52,auto:wl-graphic
+wl_worlds2025_m88,Lorenzo Tarquini,ITA,,,5,snatch,3,163,no_lift,21,142,29.08.2002,1700.20,order differs: after Salehi (22),1767.40,auto:wl-graphic
+wl_worlds2025_m88,Iliya Salehi,IRI,,,6,snatch,3,163,good,22,204,12.03.2006,1607.08,order differs: lifted before Tarquini (21),1670.92,auto:wl-graphic
+wl_worlds2025_m88,Cristiano Ficco,ITA,,,7,snatch,3,163,no_lift,23,373,05.04.2001,1785.64,,1834.12,auto:wl-graphic
+wl_worlds2025_m88,Jo Dae-hee,KOR,,,,snatch,2,166,no_lift,24,195,01.02.1999,1874.92,,1932.04,auto:wl-graphic
+wl_worlds2025_m88,Andranik Karapetyan,BIH,,,,snatch,1,168,no_lift,25,237,15.12.1995,1997.80,,2025.16,auto:wl-graphic
+wl_worlds2025_m88,Ro Kwang-ryol,PRK,,,2,snatch,2,168,no_lift,26,155,30.04.2001,2048.20,,2094.28,auto:wl-graphic
+wl_worlds2025_m88,Andranik Karapetyan,BIH,,,,snatch,2,168,no_lift,27,237,15.12.1995,2116.84,,2181.16,auto:wl-graphic
+wl_worlds2025_m88,Ro Kwang-ryol,PRK,,,2,snatch,3,168,no_lift,28,155,30.04.2001,2269.96,order differs: after Jo (29),2316.04,auto:wl-graphic
+wl_worlds2025_m88,Jo Dae-hee,KOR,,,,snatch,3,168,no_lift,29,195,01.02.1999,2198.44,order differs: lifted before Ro (28),2249.32,auto:wl-graphic
+wl_worlds2025_m88,Marin Robu,MDA,,,3,snatch,1,169,good,30,423,19.03.2000,2345.32,,2387.08,auto:wl-graphic
+wl_worlds2025_m88,Yeison López,COL,,,1,snatch,1,173,good,31,445,09.01.1999,2444.68,,2497.96,auto:wl-graphic
+wl_worlds2025_m88,Andranik Karapetyan,BIH,,,,snatch,3,173,no_lift,32,237,15.12.1995,2520.52,,2581.48,auto:wl-graphic
+wl_worlds2025_m88,Marin Robu,MDA,,,3,snatch,2,174,no_lift,33,423,19.03.2000,2601.16,,2636.20,auto:wl-graphic
+wl_worlds2025_m88,Marin Robu,MDA,,,3,snatch,3,174,no_lift,34,423,19.03.2000,2724.04,,2770.12,auto:wl-graphic
+wl_worlds2025_m88,Yeison López,COL,,,1,snatch,2,177,good,35,445,09.01.1999,2797.00,,2852.68,auto:wl-graphic
+wl_worlds2025_m88,Yeison López,COL,,,1,snatch,3,180,no_lift,36,445,09.01.1999,2966.44,,3020.20,auto:wl-graphic
+wl_worlds2025_m88,Lorenzo Tarquini,ITA,,,5,clean_and_jerk,1,191,no_lift,1,142,29.08.2002,3126.76,,3165.16,auto:wl-graphic
+wl_worlds2025_m88,Lorenzo Tarquini,ITA,,,5,clean_and_jerk,2,191,good,2,142,29.08.2002,3258.76,,3298.12,auto:wl-graphic
+wl_worlds2025_m88,Iliya Salehi,IRI,,,6,clean_and_jerk,1,193,good,3,204,12.03.2006,3325.96,,3396.52,auto:wl-graphic
+wl_worlds2025_m88,Cristiano Ficco,ITA,,,7,clean_and_jerk,1,193,good,4,373,05.04.2001,3421.00,,3467.08,auto:wl-graphic
+wl_worlds2025_m88,Suren Grigoryan,ARM,,,,clean_and_jerk,1,195,no_lift,5,309,19.11.2003,3509.80,,3577.48,auto:wl-graphic
+wl_worlds2025_m88,Park Hyeon-go,KOR,,,,clean_and_jerk,1,195,good,6,436,14.01.2002,3603.40,,3660.52,auto:wl-graphic
+wl_worlds2025_m88,Suren Grigoryan,ARM,,,,clean_and_jerk,2,195,no_lift,7,309,19.11.2003,3684.52,,3726.28,auto:wl-graphic
+wl_worlds2025_m88,Suren Grigoryan,ARM,,,,clean_and_jerk,3,195,no_lift,8,309,19.11.2003,3803.08,,3844.36,auto:wl-graphic
+wl_worlds2025_m88,Cristiano Ficco,ITA,,,7,clean_and_jerk,2,196,no_lift,9,373,05.04.2001,3870.76,,3917.32,auto:wl-graphic
+wl_worlds2025_m88,Lorenzo Tarquini,ITA,,,5,clean_and_jerk,3,198,good,10,142,29.08.2002,3986.92,,4031.08,auto:wl-graphic
+wl_worlds2025_m88,Cristiano Ficco,ITA,,,7,clean_and_jerk,3,199,no_lift,11,373,05.04.2001,4059.40,,4110.28,auto:wl-graphic
+wl_worlds2025_m88,Jo Dae-hee,KOR,,,,clean_and_jerk,1,200,no_lift,12,195,01.02.1999,4140.04,,4181.32,auto:wl-graphic
+wl_worlds2025_m88,Marin Robu,MDA,,,3,clean_and_jerk,1,200,good,13,423,19.03.2000,4200.04,,4245.16,auto:wl-graphic
+wl_worlds2025_m88,Jo Dae-hee,KOR,,,,clean_and_jerk,2,201,no_lift,14,195,01.02.1999,4369.48,order differs: after Park's 2nd attempt (15),4417.96,auto:wl-graphic
+wl_worlds2025_m88,Park Hyeon-go,KOR,,,,clean_and_jerk,2,201,no_lift,15,436,14.01.2002,4294.60,order differs: Park and Jo alternated at 201 (Park 2nd att first),4345.48,auto:wl-graphic
+wl_worlds2025_m88,Jo Dae-hee,KOR,,,,clean_and_jerk,3,201,no_lift,16,195,01.02.1999,4553.80,order differs: after Park's 3rd attempt (17),4609.00,auto:wl-graphic
+wl_worlds2025_m88,Park Hyeon-go,KOR,,,,clean_and_jerk,3,201,no_lift,17,436,14.01.2002,4449.64,order differs: before Jo's 3rd attempt (16),4505.32,auto:wl-graphic
+wl_worlds2025_m88,Pan Yunhua,CHN,,,,clean_and_jerk,1,202,no_lift,18,398,23.11.2005,4639.72,,4698.28,auto:wl-graphic
+wl_worlds2025_m88,Iliya Salehi,IRI,,,6,clean_and_jerk,2,202,no_lift,19,204,12.03.2006,4723.72,,4789.48,auto:wl-graphic
+wl_worlds2025_m88,Iliya Salehi,IRI,,,6,clean_and_jerk,3,202,no_lift,20,204,12.03.2006,4884.04,,4947.88,auto:wl-graphic
+wl_worlds2025_m88,Marin Robu,MDA,,,3,clean_and_jerk,2,204,no_lift,21,423,19.03.2000,4969.48,,5007.88,auto:wl-graphic
+wl_worlds2025_m88,Marin Robu,MDA,,,3,clean_and_jerk,3,204,no_lift,22,423,19.03.2000,5096.20,,5135.08,auto:wl-graphic
+wl_worlds2025_m88,Yeison López,COL,,,1,clean_and_jerk,1,205,no_lift,23,445,09.01.1999,5160.52,,5210.92,auto:wl-graphic
+wl_worlds2025_m88,Pan Yunhua,CHN,,,,clean_and_jerk,2,205,no_lift,24,398,23.11.2005,5231.08,,5292.52,auto:wl-graphic
+wl_worlds2025_m88,Yeison López,COL,,,1,clean_and_jerk,2,205,good,25,445,09.01.1999,5311.24,,5356.36,auto:wl-graphic
+wl_worlds2025_m88,Pan Yunhua,CHN,,,,clean_and_jerk,3,206,no_lift,26,398,23.11.2005,5386.60,,5462.92,auto:wl-graphic
+wl_worlds2025_m88,Ro Kwang-ryol,PRK,,,2,clean_and_jerk,1,208,good,27,155,30.04.2001,5512.36,,5561.32,auto:wl-graphic
+wl_worlds2025_m88,Yeison López,COL,,,1,clean_and_jerk,3,210,good,28,445,09.01.1999,5596.84,,5662.12,auto:wl-graphic
+wl_worlds2025_m88,Ro Kwang-ryol,PRK,,,2,clean_and_jerk,2,211,good,29,155,30.04.2001,5718.28,,5743.72,auto:wl-graphic
+wl_worlds2025_m88,Ro Kwang-ryol,PRK,,,2,clean_and_jerk,3,215,good,30,155,30.04.2001,5839.72,,5903.08,auto:wl-graphic

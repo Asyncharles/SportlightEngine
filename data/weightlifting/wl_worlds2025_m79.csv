@@ -1,0 +1,57 @@
+session_id,athlete,nation,bodyweight_kg,entry_total_kg,final_rank,lift,attempt,weight_kg,result,order_inferred,lot_number,dob,t_video_walk_on,notes,t_video_decision,labeller
+wl_worlds2025_m79,Yedige Yemberdi,KAZ,,,6,snatch,1,145,good,1,333,06.05.2005,106.12,,147.40,auto:wl-graphic
+wl_worlds2025_m79,Ritvars Suharevs,LAT,,,11,snatch,1,146,good,2,282,11.01.1999,169.00,,204.52,auto:wl-graphic
+wl_worlds2025_m79,Caden Cahoy,USA,,,5,snatch,1,150,good,3,104,31.01.2004,261.16,graphic showed Juniansyah at 150 kg at 244.36 (declared opener; he opened at 157); not a walk-on,315.40,auto:wl-graphic
+wl_worlds2025_m79,Natthawut Suepsuan,THA,,,,snatch,1,150,good,4,108,02.07.1997,339.40,,378.76,auto:wl-graphic
+wl_worlds2025_m79,Ritvars Suharevs,LAT,,,11,snatch,2,150,good,5,282,11.01.1999,400.84,,466.12,auto:wl-graphic
+wl_worlds2025_m79,Yedige Yemberdi,KAZ,,,6,snatch,2,151,good,6,333,06.05.2005,491.56,,531.88,auto:wl-graphic
+wl_worlds2025_m79,Ning Gan,CHN,,,7,snatch,1,153,good,7,215,05.09.2006,572.20,,619.24,auto:wl-graphic
+wl_worlds2025_m79,Ritvars Suharevs,LAT,,,11,snatch,3,153,no_lift,8,282,11.01.1999,644.20,,680.20,auto:wl-graphic
+wl_worlds2025_m79,Caden Cahoy,USA,,,5,snatch,2,154,good,9,104,31.01.2004,700.36,no referee-lights graphic shown; lift at about 757 s; decision left blank,,auto:wl-graphic
+wl_worlds2025_m79,Son Hyeon-ho,KOR,,,,snatch,1,155,no_lift,10,184,21.06.2000,832.36,,876.04,auto:wl-graphic
+wl_worlds2025_m79,Son Hyeon-ho,KOR,,,,snatch,2,155,no_lift,11,184,21.06.2000,920.68,,960.04,auto:wl-graphic
+wl_worlds2025_m79,Caden Cahoy,USA,,,5,snatch,3,155,good,12,104,31.01.2004,1073.32,order differs: after Yemberdi (14),1114.60,auto:wl-graphic
+wl_worlds2025_m79,Son Hyeon-ho,KOR,,,,snatch,3,155,no_lift,13,184,21.06.2000,1136.68,order differs: after Yemberdi (14). Referees gave 3 white lights at the decision time; jury (officials' table shown ~1181-1218) overturned it to no lift,1171.24,auto:wl-graphic
+wl_worlds2025_m79,Yedige Yemberdi,KAZ,,,6,snatch,3,155,good,14,333,06.05.2005,994.60,order differs: lifted before Cahoy (12) and Son (13),1046.92,auto:wl-graphic
+wl_worlds2025_m79,Natthawut Suepsuan,THA,,,,snatch,2,156,no_lift,15,108,02.07.1997,1253.80,,1301.80,auto:wl-graphic
+wl_worlds2025_m79,Natthawut Suepsuan,THA,,,,snatch,3,156,no_lift,16,108,02.07.1997,1381.96,,1427.08,auto:wl-graphic
+wl_worlds2025_m79,Oscar Reyes,ITA,,,,snatch,1,157,no_lift,17,30,06.10.1996,1445.80,,1493.80,auto:wl-graphic
+wl_worlds2025_m79,Rizki Juniansyah,INA,,,1,snatch,1,157,good,18,37,17.06.2003,1510.12,,1561.48,auto:wl-graphic
+wl_worlds2025_m79,Oscar Reyes,ITA,,,,snatch,2,157,no_lift,19,30,06.10.1996,1658.92,order differs: after Ning (20),1695.88,auto:wl-graphic
+wl_worlds2025_m79,Ning Gan,CHN,,,7,snatch,2,157,good,20,215,05.09.2006,1586.92,order differs: lifted before Reyes's 2nd (19),1622.92,auto:wl-graphic
+wl_worlds2025_m79,Oscar Reyes,ITA,,,,snatch,3,157,no_lift,21,30,06.10.1996,1770.28,,1809.64,auto:wl-graphic
+wl_worlds2025_m79,Ri Chong-song,PRK,,,2,snatch,1,160,good,22,351,31.05.1997,1828.36,,1866.28,auto:wl-graphic
+wl_worlds2025_m79,Ning Gan,CHN,,,7,snatch,3,161,no_lift,23,215,05.09.2006,1897.48,,1951.24,auto:wl-graphic
+wl_worlds2025_m79,Mohamed Younes,EGY,,,3,snatch,1,162,good,24,242,14.11.2004,1972.36,graphic name: ELSAYED ABDELRAHMAN M. (EGY),2006.92,auto:wl-graphic
+wl_worlds2025_m79,Rizki Juniansyah,INA,,,1,snatch,2,162,no_lift,25,37,17.06.2003,2029.00,,2075.08,auto:wl-graphic
+wl_worlds2025_m79,Rizki Juniansyah,INA,,,1,snatch,3,162,no_lift,26,37,17.06.2003,2136.52,,2187.40,auto:wl-graphic
+wl_worlds2025_m79,Ri Chong-song,PRK,,,2,snatch,2,163,good,27,351,31.05.1997,2204.20,,2247.40,auto:wl-graphic
+wl_worlds2025_m79,Ri Chong-song,PRK,,,2,snatch,3,166,no_lift,28,351,31.05.1997,2344.36,,2392.84,auto:wl-graphic
+wl_worlds2025_m79,Mohamed Younes,EGY,,,3,snatch,2,167,no_lift,29,242,14.11.2004,2415.88,,2451.88,auto:wl-graphic
+wl_worlds2025_m79,Mohamed Younes,EGY,,,3,snatch,3,167,no_lift,30,242,14.11.2004,2571.88,,2613.64,auto:wl-graphic
+wl_worlds2025_m79,Ritvars Suharevs,LAT,,,11,clean_and_jerk,1,184,good,1,282,11.01.1999,2867.56,,2910.76,auto:wl-graphic
+wl_worlds2025_m79,Ning Gan,CHN,,,7,clean_and_jerk,1,186,good,2,215,05.09.2006,2946.28,,3002.92,auto:wl-graphic
+wl_worlds2025_m79,Natthawut Suepsuan,THA,,,,clean_and_jerk,1,187,no_lift,3,108,02.07.1997,3042.28,,3093.64,auto:wl-graphic
+wl_worlds2025_m79,Natthawut Suepsuan,THA,,,,clean_and_jerk,2,187,no_lift,4,108,02.07.1997,3168.52,,3220.36,auto:wl-graphic
+wl_worlds2025_m79,Natthawut Suepsuan,THA,,,,clean_and_jerk,3,187,no_lift,5,108,02.07.1997,3282.76,,3331.72,auto:wl-graphic
+wl_worlds2025_m79,Ritvars Suharevs,LAT,,,11,clean_and_jerk,2,188,no_lift,6,282,11.01.1999,3433.48,,3480.52,auto:wl-graphic
+wl_worlds2025_m79,Yedige Yemberdi,KAZ,,,6,clean_and_jerk,1,190,good,7,333,06.05.2005,3553.00,,3610.60,auto:wl-graphic
+wl_worlds2025_m79,Ritvars Suharevs,LAT,,,11,clean_and_jerk,3,190,no_lift,8,282,11.01.1999,3635.08,,3668.68,auto:wl-graphic
+wl_worlds2025_m79,Caden Cahoy,USA,,,5,clean_and_jerk,1,193,good,9,104,31.01.2004,3685.96,,3740.68,auto:wl-graphic
+wl_worlds2025_m79,Rizki Juniansyah,INA,,,1,clean_and_jerk,1,195,good,10,37,17.06.2003,3786.76,,3845.32,auto:wl-graphic
+wl_worlds2025_m79,Ning Gan,CHN,,,7,clean_and_jerk,2,195,no_lift,11,215,05.09.2006,3877.00,,3923.56,auto:wl-graphic
+wl_worlds2025_m79,Yedige Yemberdi,KAZ,,,6,clean_and_jerk,2,196,good,12,333,06.05.2005,3988.84,,4041.16,auto:wl-graphic
+wl_worlds2025_m79,Ning Gan,CHN,,,7,clean_and_jerk,3,196,no_lift,13,215,05.09.2006,4069.48,,4113.16,auto:wl-graphic
+wl_worlds2025_m79,Ri Chong-song,PRK,,,2,clean_and_jerk,1,197,no_lift,14,351,31.05.1997,4141.00,,4181.32,auto:wl-graphic
+wl_worlds2025_m79,Ri Chong-song,PRK,,,2,clean_and_jerk,2,197,good,15,351,31.05.1997,4222.12,,4266.76,auto:wl-graphic
+wl_worlds2025_m79,Son Hyeon-ho,KOR,,,,clean_and_jerk,1,198,good,16,184,21.06.2000,4296.04,,4338.76,auto:wl-graphic
+wl_worlds2025_m79,Mohamed Younes,EGY,,,3,clean_and_jerk,1,198,no_lift,17,242,14.11.2004,4367.08,,4405.96,auto:wl-graphic
+wl_worlds2025_m79,Caden Cahoy,USA,,,5,clean_and_jerk,2,198,good,18,104,31.01.2004,4425.16,,4482.76,auto:wl-graphic
+wl_worlds2025_m79,Mohamed Younes,EGY,,,3,clean_and_jerk,2,198,good,19,242,14.11.2004,4503.88,,4541.80,auto:wl-graphic
+wl_worlds2025_m79,Yedige Yemberdi,KAZ,,,6,clean_and_jerk,3,199,no_lift,20,333,06.05.2005,4573.00,,4632.52,auto:wl-graphic
+wl_worlds2025_m79,Mohamed Younes,EGY,,,3,clean_and_jerk,3,201,no_lift,21,242,14.11.2004,4799.08,order differs: after Ri (22),4848.52,auto:wl-graphic
+wl_worlds2025_m79,Ri Chong-song,PRK,,,2,clean_and_jerk,3,201,no_lift,22,351,31.05.1997,4661.32,order differs: lifted before Younes (21). Referees gave 2 white lights; Jury Review (on screen ~4730) overturned it to no lift,4720.36,auto:wl-graphic
+wl_worlds2025_m79,Son Hyeon-ho,KOR,,,,clean_and_jerk,2,202,no_lift,23,184,21.06.2000,4885.48,no referee-lights graphic shown; lift at about 4925 s; decision left blank,,auto:wl-graphic
+wl_worlds2025_m79,Rizki Juniansyah,INA,,,1,clean_and_jerk,2,204,good,24,37,17.06.2003,5013.64,,5077.96,auto:wl-graphic
+wl_worlds2025_m79,Caden Cahoy,USA,,,5,clean_and_jerk,3,204,no_lift,25,104,31.01.2004,5122.12,,5172.04,auto:wl-graphic
+wl_worlds2025_m79,Son Hyeon-ho,KOR,,,,clean_and_jerk,3,205,no_lift,26,184,21.06.2000,5193.16,,5247.40,auto:wl-graphic
