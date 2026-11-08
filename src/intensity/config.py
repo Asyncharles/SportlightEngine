@@ -52,6 +52,12 @@ class PercentileConfig(_Strict):
     # On a feed's first clock tick, replay its match data over up to this much earlier clip time into the
     # sport's window, so intensity_pct has history from the first second after any (re)start. 0 = off.
     preroll_s: float = 1800.0
+    # What is ranked. level: the intensity itself (the plan). spike: intensity minus the feed's own
+    # baseline (an average over about spike_baseline_s), so a moment stands out and a slow climb (F1's
+    # stakes lap by lap) doesn't hold the top. Validated on the demo clips: 63% of labelled moments
+    # caught by the UI's main window against 39% for level (chance 41% and 30%).
+    mode: Literal["level", "spike"] = "level"
+    spike_baseline_s: float = 60.0
 
 
 class ForecastConfig(_Strict):

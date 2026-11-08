@@ -4,5 +4,8 @@ ingest:
 engine:
   forecast:
     source: model
+  percentile:                 # the UI switches on moments, not slow trends (CHANGELOG, 2026-11-08)
+    mode: spike
+    tie_tolerance: 0.005      # spikes are smaller values than levels
 log:
   json: true

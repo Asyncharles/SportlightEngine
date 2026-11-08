@@ -24,6 +24,8 @@ engine:
     ref_path: models/intensity_ref.json
     tie_tolerance: 0.01       # rank intensity rounded to this: drift by noise is a tie, not a new high
     preroll_s: 1800.0         # first clock tick: replay the feed's match data this far back into the window
+    mode: level               # level (the plan) | spike: rank intensity minus the feed's ~1 min baseline
+    spike_baseline_s: 60.0
   forecast:
     source: model             # model | heuristic (stage switch)
     models_dir: models

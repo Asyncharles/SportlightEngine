@@ -264,3 +264,45 @@ def test_feeds_without_match_data_are_not_prerolled(config):
     eng.handle(make_envelope(match(1.0, "kickoff")), 0.0)  # feed "f" joins with its first event
     eng.handle(tick("f", 900.0), 1.0)
     assert eng.feeds["f"].prerolled and "engine.preroll" not in eng.metrics.counters
+
+
+def test_spike_mode_ranks_moments_not_slow_climbs():
+    from intensity.config import load_config
+
+    cfg = load_config(overrides=["engine.forecast.source=heuristic", "engine.polish.enabled=false",
+                                 "engine.percentile.mode=spike", "engine.percentile.spike_baseline_s=60",
+                                 "engine.percentile.tie_tolerance=0.005", "engine.percentile.min_samples=3"])
+    eng = Engine(cfg)
+    fs = eng.add_feed("f1", "f1")
+    pct = eng.sport_pct["f1"]
+    for t in range(300):  # a slow climb, like F1's stakes lap by lap
+        pct.add(float(t), eng._ranked(fs, 0.40 + 0.0004 * t, float(t)))
+    climbing = pct.pct(eng._ranked(fs, 0.40 + 0.0004 * 300, 300.0))
+    jump = pct.pct(eng._ranked(fs, 0.40 + 0.0004 * 301 + 0.15, 301.0))  # a moment
+    assert climbing < 80 and jump == 100.0
+    fs.reset_for_loop(1)
+    assert fs.baseline is None  # a new loop starts a new baseline
+
+
+def test_spike_mode_preroll_fills_the_window_with_spikes_and_hands_over(tmp_path):
+    from intensity.config import load_config
+    from intensity.feeds import Feed
+
+    (tmp_path / "weightlifting").mkdir()
+    lines = [
+        f'{{"game_time_s": {t}, "period": 1, "kind": "attempt_called", "player": "A{t}",'
+        f' "attrs": {{"weight_kg": {140 + t // 60}, "attempt": 1, "best_kg": 140}}}}'
+        for t in range(30, 600, 60)
+    ]
+    (tmp_path / "weightlifting" / "s1.jsonl").write_text("\n".join(lines) + "\n")
+    cfg = load_config(overrides=["engine.forecast.source=heuristic", "engine.polish.enabled=false",
+                                 f"engine.replay.events_dir={tmp_path}", "engine.percentile.preroll_s=300",
+                                 "engine.percentile.mode=spike"])
+    feed = Feed(feed_id="wl", sport="weightlifting", sample="samples/s1.mp4", rtsp_path="wl",
+                match_ref={"source": "session_csv", "match_id": "s1"}, sync=None)
+    eng = Engine(cfg, feeds=[feed])
+    eng.handle(tick("wl", 500.0), 1000.0)
+    values = [v for _, v in eng.sport_pct["weightlifting"].samples]
+    assert len(values) == 300 and min(values) < 0.0 < max(values) + 1e-9  # spikes around the baseline
+    fs = eng.feeds["wl"]
+    assert fs.baseline is not None and fs.ema.value is not None and fs.baseline_at == 1000.0
