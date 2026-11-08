@@ -3,7 +3,8 @@
 # The VM itself is never started or stopped here.
 set -euo pipefail
 export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-si}
-docker compose up -d --no-build --remove-orphans engine ingest
+# FORCE_RECREATE=1 (deploy dev's `restart` input) restarts the stack even when nothing changed.
+docker compose up -d --no-build --remove-orphans ${FORCE_RECREATE:+--force-recreate} engine ingest
 docker compose ps
 # GPU check on GPU VMs only (informational: the clock lane runs without it, perception will not).
 if [[ "${COMPOSE_FILE:-}" == *compose.gpu.yaml* ]]; then

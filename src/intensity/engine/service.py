@@ -279,7 +279,9 @@ def main(argv: list[str] | None = None) -> int:
     save_resolved(config, run_dir)
     app = create_app(config, mock=args.mock, mock_seed=args.seed)
     svc = config.engine.service
-    uvicorn.run(app, host=args.host or svc.host, port=args.port or svc.port, log_level="warning")
+    # A restart must be quick (the front end recovers within 10 s): don't wait on open WebSockets.
+    uvicorn.run(app, host=args.host or svc.host, port=args.port or svc.port, log_level="warning",
+                timeout_graceful_shutdown=2)
     return 0
 
 

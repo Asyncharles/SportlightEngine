@@ -8,6 +8,10 @@ on:
       image_tag:
         description: Full git SHA of a built image (blank = the commit this run is on)
         required: false
+      restart:
+        description: Recreate the containers even if the release is unchanged (a clean engine restart)
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -39,3 +43,4 @@ jobs:
         AMQP_VHOST=sportlight
         AMQP_USER=app
         AMQP_PASSWORD_SECRET=rabbitmq-app-password
+        ${{ inputs.restart && 'FORCE_RECREATE=1' || '' }}

@@ -101,8 +101,18 @@ def make_app(ingest: ClockIngest):
 async def serve(ingest: ClockIngest, host: str, port: int) -> None:
     import uvicorn
 
-    server = uvicorn.Server(uvicorn.Config(make_app(ingest), host=host, port=port, log_level="warning"))
-    await asyncio.gather(ingest.client.run(), ingest.tick_loop(), server.serve())
+    server = uvicorn.Server(uvicorn.Config(make_app(ingest), host=host, port=port, log_level="warning",
+                                           timeout_graceful_shutdown=1))
+    # uvicorn handles SIGTERM by returning from serve(); then stop the clock lane too, so the process
+    # exits at once instead of Docker killing it after its stop timeout.
+    workers = [asyncio.create_task(ingest.client.run()), asyncio.create_task(ingest.tick_loop())]
+    try:
+        await server.serve()
+    finally:
+        ingest.client.stop()
+        for task in workers:
+            task.cancel()
+        await asyncio.gather(*workers, return_exceptions=True)
 
 
 def main(argv: list[str] | None = None) -> int:
