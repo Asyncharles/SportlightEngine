@@ -17,6 +17,9 @@ Charles decided there is no validation split: train on the full dataset and run 
 - New serve-parity test (`tests/unit/training/test_serve_parity.py`): live engine forecasts equal the offline transform within 1e-6 (at the contract's 5 decimals).
   - The fast version, on a synthetic match, runs in `make test`.
   - The `slow` version runs on every demo match that has a CURRENT bundle and its event file.
+- **Engine fix found by serve parity:** `Replayer` sorted records released at the same `t_video` (everything before the clip starts) by game time alone. That interleaved first-half stoppage time with the second half: 123 period switches before the 2022 final's clip.
+  - The adapter reset its period state each time, so the first ~20 s of served forecasts differed from training's.
+  - It now sorts by `(t_video, period, game_time)`. Parity holds on all 4,525 ticks of `fb-arg-fra`.
 - `make train-all` (`scripts/train_all.sh`) pulls `raw/`, `events/`, `tables/` and `highlights/` from the bucket, converts offline, then builds and exports football, f1 and nba to `models/`.
   - It never fetches unless `FETCH=1`, and refuses NBA fetching on GCE.
   - `PUSH=1` pushes results back.

@@ -30,7 +30,10 @@ class Replayer:
         for rec in records:
             t = self._t_video(rec)
             timed.append((t, rec))
-        timed.sort(key=lambda tr: (tr[0], tr[1].game_time_s))
+        # Records released at the same t_video (everything before the clip starts, say) keep match
+        # order, period first, exactly as training's featurize replays them; game time alone would
+        # interleave first-half stoppage time with the second half and reset the adapter's period state.
+        timed.sort(key=lambda tr: (tr[0], tr[1].period, tr[1].game_time_s))
         self.timeline: list[tuple[float, MatchPayload]] = timed
         self.cursor = 0
 
