@@ -6,8 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 `sports-intensity`, built from `docs/Sports_Intensity___Implementation_Plan.md` (read it before larger
 changes). One package, `intensity`, under `src/`. So far the foundation (F0, F1) and the engine stream
-(S1 to S4, P4) exist; training has T0, S2 and the T1 pipeline (`make build-<sport>`). GPU
-ingest/perception is not started. Progress and open asks
+(S1 to S4, P4) exist; training has T0, S2 and the T1 pipeline (`make build-<sport>`). Ingest has only the clock lane
+(`intensity.ingest.run`, `make ingest-clock`); GPU decode and perception are not started. Progress and open asks
 are in `status/<agent>.md`; decisions and contract changes are in `CHANGELOG.md`.
 
 ## Environment

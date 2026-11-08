@@ -3,6 +3,24 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Deploy wiring: the clock-lane ingest, weightlifting replay, image-based Compose (deploy agent, 2026-11-08)
+
+Charles chose the clock lane (plan D1), because ingest and perception are not built.
+
+- `python -m intensity.ingest.run` (`make ingest-clock`; `ingest.mode: clock_only`) runs the clock lane.
+  - Each feed loops its clip from a start time kept in `run/feeds_state.json`, the file the plan's pushers write and the front end's `feed-clock.ts` reads.
+  - The start time survives restarts while the clip is unchanged.
+  - It sends a `ClockTick` per feed at 4 Hz and a `Control(loop)` on wrap, and serves `GET /health` on :8001 (503 until the engine link is up).
+  - Engine scores then come from match data replayed in clip time. Crowd, commentary and video parts are null until perception exists.
+- Weightlifting session CSVs convert to match records with `convert --sport weightlifting`. This is a minimal T4 converter for the training agent to review: `attempt_called` at walk-on, `attempt_result` at the decision, and no `eta_game_s`, because the decision time would leak the future.
+  - `Engine.add_feed` replays `session_csv` feeds with the identity sync, since their records are already in video time.
+  - `feeds.yaml` is unchanged.
+- `docker/compose.yaml` is image-based (`${IMAGE_SI}`), keeping `build:` for laptops.
+  - Services: `engine` and `ingest`, with MediaMTX behind `--profile video`.
+  - Bucket folders are mounted one by one from `${SI_DATA}`, and `models/` is no longer mounted over the image's.
+  - `docker/compose.gcp.yaml` puts the ingest on the NVIDIA runtime with the L4 reserved, reads the engine's secrets from `/opt/si/secrets/engine.env`, and rotates logs.
+- `.dockerignore` / `.gcloudignore`: no footage, data or secrets in the build context.
+
 ## Training on the full dataset: `training.split.mode: in_sample` (Charles, 2026-11-08)
 
 Charles decided there is no validation split: train on the full dataset and run on that same data. That suspends hard rule 6 (demo matches never train) and the T1 held-out evaluation. **ML lead to note.**

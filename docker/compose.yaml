@@ -1,7 +1,55 @@
-# Skeleton for local work: MediaMTX + engine. The feeds and GPU ingest join in compose.demo.yaml (D1).
+# One image, one stack: the engine (CPU) and the ingest's clock lane (GPU on the VM, see compose.gcp.yaml).
+#
+# Laptop:  docker compose -f docker/compose.yaml up --build          (needs data/samples and data/events)
+# VM:      COMPOSE_FILE=docker/compose.yaml:docker/compose.gcp.yaml, IMAGE_SI=<repo>/si@sha256:... (deploy/)
+#
+# Bucket data is mounted folder by folder from ${SI_DATA} (the local mirror of the bucket, data/ here and
+# /opt/si/data on the VM), so the image's own data/sync stays visible. ${SI_RUN} holds feeds_state.json,
+# which the ingest writes and the engine reads, and which keeps each feed's timeline across restarts.
+# MediaMTX is only for the video path the ingest doesn't have yet: `--profile video` starts it.
+x-image: &image ${IMAGE_SI:-sports-intensity:local}
+
 services:
+  engine:
+    image: *image
+    build: {context: .., dockerfile: docker/Dockerfile}
+    command: ["python", "-m", "intensity.engine.service", "--overlay", "demo"]
+    ports: ["8000:8000"]
+    environment:
+      GCS_BUCKET: ${GCS_BUCKET:-}
+    volumes:
+      - ${SI_DATA:-../data}/events:/app/data/events:ro
+      - ${SI_DATA:-../data}/calibration:/app/data/calibration:ro
+      - ${SI_DATA:-../data}/transcripts:/app/data/transcripts:ro
+      - ${SI_RUN:-../run}:/app/run
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  ingest:
+    image: *image
+    command: ["python", "-m", "intensity.ingest.run", "--overlay", "demo"]
+    ports: ["127.0.0.1:8001:8001"]
+    volumes:
+      - ${SI_DATA:-../data}/samples:/app/data/samples:ro
+      - ${SI_RUN:-../run}:/app/run
+    depends_on:
+      engine: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8001/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
   mediamtx:
     image: bluenviron/mediamtx:1.15.3
+    profiles: ["video"]
     volumes:
       - ./mediamtx.yml:/mediamtx.yml:ro
     ports:
@@ -9,18 +57,4 @@ services:
       - "8888:8888"   # HLS
       - "8889:8889"   # WebRTC
       - "9997:9997"   # status API
-    restart: unless-stopped
-
-  engine:
-    build: {context: .., dockerfile: docker/Dockerfile}
-    command: ["python", "-m", "intensity.engine.service", "--overlay", "demo"]
-    ports: ["8000:8000"]
-    volumes:
-      - ../models:/app/models:ro
-      - ../data/events:/app/data/events:ro
-    healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/health"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
     restart: unless-stopped

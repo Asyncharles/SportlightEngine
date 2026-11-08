@@ -50,7 +50,7 @@ def cmd_fetch(args: argparse.Namespace) -> int:
 
 def cmd_convert(args: argparse.Namespace) -> int:
     config = load_config(overlays=args.overlay, overrides=args.set)
-    sports = sorted(CONVERTERS) if args.sport == "all" else [args.sport]
+    sports = [*sorted(CONVERTERS), "weightlifting"] if args.sport == "all" else [args.sport]
     failures = 0
     for sport in sports:
         items = args.items.split(",") if args.items else None
@@ -116,7 +116,7 @@ def main(argv: list[str] | None = None) -> int:
     fetch.set_defaults(func=cmd_fetch)
 
     conv = sub.add_parser("convert", help="raw files to data/events/<sport>/<item>.jsonl match records")
-    conv.add_argument("--sport", required=True, choices=[*sorted(CONVERTERS), "all"])
+    conv.add_argument("--sport", required=True, choices=[*sorted(CONVERTERS), "weightlifting", "all"])
     conv.add_argument("--items", default=None, help="comma-separated item ids")
     conv.add_argument("--force", action="store_true", help="reconvert even if the JSONL is up to date")
     conv.set_defaults(func=cmd_convert)

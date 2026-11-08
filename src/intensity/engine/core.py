@@ -87,11 +87,16 @@ class Engine:
         seeds = Seeds(sport, tc.default_seeds, tc.calibration_path)
         sync = SyncTable.identity(IDENTITY_SPAN_S, feed_id)
         replay = None
-        if feed is not None and feed.sync and resolve_path(feed.sync).exists():
-            sync = SyncTable.load(resolve_path(feed.sync))
+        if feed is not None:
+            # Match records replay through the clip's sync table; session CSVs (weightlifting) are
+            # already in video time, so they replay with the identity sync and need no table.
+            timed = feed.match_ref.source == "session_csv"
+            if feed.sync and resolve_path(feed.sync).exists():
+                sync = SyncTable.load(resolve_path(feed.sync))
+                timed = True
             match_id = feed.match_ref.match_id
             events_path = resolve_path(self.cfg.replay.events_dir) / sport / f"{match_id}.jsonl"
-            if match_id is not None and events_path.exists():
+            if timed and match_id is not None and events_path.exists():
                 replay = Replayer(feed_id, sport, load_records(events_path), sync)  # type: ignore[arg-type]
         fs = FeedState(
             feed_id=feed_id,

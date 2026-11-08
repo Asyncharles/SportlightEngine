@@ -8,12 +8,15 @@ clip:                         # D2 placeholders, awaiting the ML lead
   mean: [0.485, 0.456, 0.406]
   std: [0.229, 0.224, 0.225]
 ingest:
+  mode: clock_only            # clock_only (the clock lane, deploy plan D1) | full (decode + perception, not built)
+  health: {host: 0.0.0.0, port: 8001}
   decoder: nvdec              # nvdec | pyav_cpu
   feeds_state: run/feeds_state.json
   engine_url: ws://engine:8000/ingest
   rtsp_base: rtsp://mediamtx:8554
   clock:
     tick_hz: 4
+    send_queue: 64            # ClockTicks queued while the engine is down; old ticks are dropped first
     fine_anchor: true
     fine_anchor_window_s: 2.0
   batch:
