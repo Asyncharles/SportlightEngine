@@ -138,7 +138,7 @@ Every message carries:
    - `scripts/sync_bucket.sh push|pull <folder…> [--delete] [--dry-run]` using `gcloud storage rsync -r`, never deleting unless `--delete`.
    - `make data-pull` / `make data-push`.
    - `infra/gcp/bucket.sh`: idempotent labels plus the IAM bindings in section 7.
-   - `scripts/verify_bucket.sh`: file counts and sizes per folder against `bucket-plan.md`, `raw/football/` absent, anonymous GET returns 403.
+   - `scripts/verify_bucket.py` (`make data-verify`): file counts and sizes per folder against `bucket-plan.md`, the two 2018 files absent from `raw/football/`, anonymous GET returns 403.
    - `.env` gets `GCS_BUCKET=sportlight-514020-si-private`.
    - `.gcloudignore` keeps `data/` (except `data/sync`, `data/weightlifting`) out of Cloud Build uploads.
 2. **PR 2: training (Milestone 2).**

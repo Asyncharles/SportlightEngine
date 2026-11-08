@@ -7,12 +7,14 @@
 #
 # Folders are bucket folders or sub-folders (samples, samples/tuning/f1, events/nba, ...);
 # none means every known folder. Nothing is ever deleted at the destination unless --delete.
-# raw/football/ (2018 StatsBomb files) is never pushed unless ALLOW_RAW_FOOTBALL=1 (ML lead approval).
+# The 2018 World Cup StatsBomb files (raw/football/7560.json, 7567.json) are never pushed unless
+# ALLOW_RAW_FOOTBALL_2018=1 (ML lead approval); the approved 2022 files in raw/football/ sync normally.
 # GCS_BUCKET comes from the environment or, failing that, from .env. Local root: INTENSITY_DATA_DIR or data/.
 set -euo pipefail
 
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 KNOWN=(samples stills raw events tables video_head transcripts tapes calibration reports sync weightlifting highlights)
+RAW_2018='(7560|7567)\.json'   # StatsBomb 2018 World Cup matches awaiting ML lead approval
 
 usage() { sed -n '2,12p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit "${1:-2}"; }
 
@@ -56,11 +58,12 @@ synced=0
 for f in "${FOLDERS[@]}"; do
   local_dir="$LOCAL/$f" remote="gs://$BUCKET/$f"
   excl=$EXCLUDE
-  if [[ "$DIR" == push && "${ALLOW_RAW_FOOTBALL:-0}" != 1 ]]; then
-    if [[ "$f" == raw/football || "$f" == raw/football/* ]]; then
-      echo "skip $f: raw/football needs ML lead approval (ALLOW_RAW_FOOTBALL=1)" >&2; continue
-    fi
-    [[ "$f" == raw ]] && excl="$excl|^football/"
+  if [[ "$DIR" == push && "${ALLOW_RAW_FOOTBALL_2018:-0}" != 1 ]]; then
+    case $f in
+      raw) excl="$excl|^football/$RAW_2018$" ;;
+      raw/football) excl="$excl|^$RAW_2018$" ;;
+      raw/football/*) [[ "${f#raw/football/}" =~ ^$RAW_2018$ ]] && { echo "skip $f: 2018 match, needs ML lead approval (ALLOW_RAW_FOOTBALL_2018=1)" >&2; continue; } ;;
+    esac
   fi
 
   if [[ "$DIR" == push ]]; then

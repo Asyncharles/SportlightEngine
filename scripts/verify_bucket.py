@@ -8,7 +8,7 @@ Checks, each printed as ok / FAIL:
      (the zip or its unpacked folder), otherwise within 25% of the plan's rough totals;
   3. every labelled clip is at the path its labels expect (feeds.yaml samples, data/sync tuning clips,
      data/weightlifting sessions), under its exact file name;
-  4. raw/football/ is absent unless --allow-raw-football (ML lead approval);
+  4. the 2018 StatsBomb files (raw/football/7560.json, 7567.json) are absent unless --allow-raw-football;
   5. anonymous requests for an object and for the object listing are refused (403).
 Standard library only; talks to GCS through the gcloud CLI. Exit 1 if any check fails.
 """
@@ -39,7 +39,8 @@ PLAN = {
     "samples/timing_audio_only/f1/": (".mp4", 3, 0.6 * GB),
     "stills/**": (".png", 592, 0.4 * GB),
     "raw/nba/": (".json", 5, 1 * MB),
-}
+}  # raw/football/'s two 2018 files are checked separately (RAW_2018)
+RAW_2018 = {"raw/football/7560.json", "raw/football/7567.json"}  # 2018 World Cup, awaiting the ML lead
 SPORT_PREFIX = {"fb": "football", "f1": "f1", "nba": "nba", "wl": "weightlifting"}
 IGNORED = (".DS_Store", ".gitkeep")
 
@@ -126,7 +127,7 @@ def anonymous_status(url: str) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--package", type=Path, help="sportlight-data.zip or its unpacked folder, for exact sizes")
-    ap.add_argument("--allow-raw-football", action="store_true", help="raw/football/ was approved by the ML lead")
+    ap.add_argument("--allow-raw-football", action="store_true", help="the 2018 raw/football files were approved")
     args = ap.parse_args()
     bucket = bucket_name()
     print(f"bucket gs://{bucket}")
@@ -148,7 +149,7 @@ def main() -> int:
     if args.package:
         pkg = package_files(args.package)
         if not args.allow_raw_football:
-            pkg = {k: s for k, s in pkg.items() if not k.startswith("raw/football/")}
+            pkg = {k: s for k, s in pkg.items() if k not in RAW_2018}
         missing = sorted(k for k in pkg if k not in objects)
         wrong = sorted(k for k in pkg if k in objects and objects[k] != pkg[k])
         check(not missing, f"every package file is in the bucket ({len(pkg)} files, {len(missing)} missing)")
@@ -164,11 +165,11 @@ def main() -> int:
     for k in absent:
         print(f"        missing {k}")
 
-    raw_football = [k for k in objects if k.startswith("raw/football/")]
+    raw_2018 = sorted(k for k in objects if k in RAW_2018)
     if args.allow_raw_football:
-        print(f"info  raw/football/: {len(raw_football)} files (approved)")
+        print(f"info  2018 StatsBomb files present: {raw_2018} (approved)")
     else:
-        check(not raw_football, "raw/football/ absent (needs ML lead approval)")
+        check(not raw_2018, "2018 StatsBomb files absent from raw/football/ (need ML lead approval)")
 
     probe = next(iter(sorted(objects)), None)
     if probe is None:

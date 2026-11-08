@@ -12,7 +12,7 @@ Plan: `docs/deploy-wiring-plan.md`.
   - It also adds the team and GPU-VM bindings. si-web's `si-vm-sa` access is left as it was (plan D8).
 - `intensity.data` is the one data layer. Every `data/...` config path resolves under `INTENSITY_DATA_DIR`, defaulting to `<repo>/data`, through `config.resolve_path`, so the laptop and the VM read the same relative paths.
   - The bucket mirrors `data/` without the prefix.
-- `scripts/sync_bucket.sh` (`make data-pull` / `make data-push`) never deletes at the destination without `--delete`, and never pushes `raw/football/` without `ALLOW_RAW_FOOTBALL=1`.
+- `scripts/sync_bucket.sh` (`make data-pull` / `make data-push`) never deletes at the destination without `--delete`, and never pushes the two 2018 StatsBomb files (`raw/football/7560.json`, `7567.json`) without `ALLOW_RAW_FOOTBALL_2018=1`.
 - `make data-verify` checks the uploaded package: counts and sizes, every labelled clip at its path, and anonymous access refused.
 - `infra/gcp/create_gpu_vm.sh` (si-dev: g2-standard-8, 1 L4, standard, 12 h max run, tag `si`, SA `si-gpu-sa`) and `infra/gcp/setup_vm.sh` (driver, Docker, NVIDIA toolkit, bucket pull, idle watchdog).
   - Human-only steps are in `infra/gcp/PREREQS.md`.
