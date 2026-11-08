@@ -3,6 +3,21 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## Faster engine image builds (deploy agent, 2026-11-08)
+
+A code-only build now takes **6.9 min**, down from about 25: build 7b5124ff, with a one-line `src/` change.
+
+- **`docker/Dockerfile`:**
+  - The open_clip and Whisper weights download right after the dependency install, before any repo file, so a code change no longer re-downloads and re-pushes them.
+  - Repo files are copied least-changed first, `src/` last.
+  - The import check of both services runs as the last build step.
+- **`infra/gcp/cloudbuild.yaml`:**
+  - `docker buildx` with a registry cache (`si:buildcache`, `mode=max`) replaces the full `:cache` image pull. The old `:cache` inline cache is a second source.
+  - The separate smoke step is gone; it pulled the whole ~10 GB image back just to import.
+- **Measured** (builds 2fe77bad, 7b5124ff):
+  - The first build after the switch took 26 min, filling the new cache and moving the weight layer.
+  - The next code-only build took 6.9 min. About 6 min of that is BuildKit downloading the earlier ~6 GB of layers that the final install and import check need; the upload was 7.5 s and the cache export 15 s.
+
 ## Engine performance report (engine agent, 2026-11-08)
 
 `make engine-report` (`python -m intensity.engine.perf`, settings in `config/experiments/engine_perf.yaml`) writes

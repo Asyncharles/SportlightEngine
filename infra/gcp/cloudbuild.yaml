@@ -1,5 +1,9 @@
 # Engine image build (image.yml submits it as si-build). One image for every service; tag = git SHA.
-# Layers are cached from the last master image (:cache), so a code-only change rebuilds in minutes.
+#
+# BuildKit with a registry cache (`:buildcache`, every layer): a build fetches only the cache layers a
+# step needs and pushes only the layers that changed, instead of pulling the whole ~10 GB image first.
+# The old `:cache` image's inline cache is a second source, so the switch doesn't start from scratch.
+# The import check runs inside the Dockerfile, so nothing pulls the image back.
 # The build context is filtered by .gcloudignore: no footage, no data beyond the committed tables, no secrets.
 substitutions:
   _AR_REPO: europe-west4-docker.pkg.dev/sportlight-514020/si
@@ -7,33 +11,23 @@ substitutions:
   _IMAGE: si
 
 steps:
-  - id: pull-cache
-    name: gcr.io/cloud-builders/docker
-    entrypoint: bash
-    args: ["-c", "docker pull ${_AR_REPO}/${_IMAGE}:cache || echo 'no cache image yet'"]
-
   - id: build
     name: gcr.io/cloud-builders/docker
-    env: ["DOCKER_BUILDKIT=1"]
+    entrypoint: bash
     args:
-      - build
-      - --file=docker/Dockerfile
-      - --cache-from=${_AR_REPO}/${_IMAGE}:cache
-      - --build-arg=BUILDKIT_INLINE_CACHE=1
-      - --label=org.opencontainers.image.revision=${_TAG}
-      - --tag=${_AR_REPO}/${_IMAGE}:${_TAG}
-      - --tag=${_AR_REPO}/${_IMAGE}:cache
-      - .
+      - -c
+      - |
+        set -euo pipefail
+        docker buildx create --name si --driver docker-container --use > /dev/null
+        docker buildx build . \
+          --file=docker/Dockerfile \
+          --cache-from=type=registry,ref=${_AR_REPO}/${_IMAGE}:buildcache \
+          --cache-from=type=registry,ref=${_AR_REPO}/${_IMAGE}:cache \
+          --cache-to=type=registry,ref=${_AR_REPO}/${_IMAGE}:buildcache,mode=max,image-manifest=true,oci-mediatypes=true \
+          --label=org.opencontainers.image.revision=${_TAG} \
+          --tag=${_AR_REPO}/${_IMAGE}:${_TAG} \
+          --push
 
-  # Fail the build, not the deploy, if the image can't even import the services.
-  - id: smoke
-    name: ${_AR_REPO}/${_IMAGE}:${_TAG}
-    entrypoint: python
-    args: ["-c", "import intensity.engine.service, intensity.ingest.run; print('imports ok')"]
-
-images:
-  - ${_AR_REPO}/${_IMAGE}:${_TAG}
-  - ${_AR_REPO}/${_IMAGE}:cache
 
 timeout: 3600s
 options:
