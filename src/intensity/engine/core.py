@@ -64,6 +64,7 @@ class Engine:
         self._imminent_cfg: dict[str, dict[str, Any]] = {}
         self._lexicons: dict[str, dict[str, float]] = {}
         self._pending_ticks: dict[str, tuple[ClockTick, float]] = {}
+        self.allow_preroll = True  # off in the shadow engine a pre-roll runs
         for feed in feeds or []:
             self.add_feed(feed.feed_id, feed.sport, feed)
 
@@ -152,6 +153,9 @@ class Engine:
             fs.clock.arrival = now
             fs.down = False
             self.metrics.inc("ingest.clock")
+            if not fs.prerolled:
+                fs.prerolled = True
+                self._preroll(fs, data.t_video, now)
             return
         if isinstance(data, Control):
             self.metrics.inc(f"ingest.control.{data.kind}")
@@ -185,6 +189,35 @@ class Engine:
             fs.commentary.on_event(event)
         elif src == "ocr":
             fs.last_ocr = dict(event.payload.get("fields", {}))
+
+    def _preroll(self, fs: FeedState, t_now: float, now: float) -> None:
+        """Fill the sport's percentile window with this feed's intensity over the clip time before `t_now`.
+
+        A shadow engine replays the feed's match records at 1 Hz from `t_now - preroll_s` (within the
+        current loop, at most the window) to just before `t_now`, exactly as live; its intensities go into
+        the window at the engine times they would have had. Without it a fresh engine ranks each feed
+        against seconds of history, so after every (re)start the feed whose intensity only rises sits at
+        100 for minutes. Feeds without match data (the mock, clones) are not pre-rolled.
+        """
+        pcfg = self.cfg.percentile
+        feed = self.registry_feeds.get(fs.feed_id)
+        span = min(pcfg.preroll_s, pcfg.window_s, t_now)
+        if not self.allow_preroll or feed is None or fs.replay is None or span < 1.0:
+            return
+        started = time.monotonic()
+        shadow = Engine(self.config, feeds=[feed], registry=self.registry, metrics=Metrics())
+        shadow.allow_preroll = False
+        history: list[tuple[float, float]] = []
+        t = t_now - span
+        while t < t_now - 0.5:
+            shadow.handle(Envelope(kind="clock", data=ClockTick(feed_id=fs.feed_id, t_video=t, loop_epoch=0, t_emit_ns=0)), t)
+            history += [(now - (t_now - t), u.intensity) for u in shadow.score_all(t) if u.feed_id == fs.feed_id]
+            t += 1.0
+        if fs.sport not in self.sport_pct:
+            self.sport_pct[fs.sport] = SportPercentile(pcfg, self.intensity_ref.get(fs.sport))
+        self.sport_pct[fs.sport].backfill(history)
+        self.metrics.inc("engine.preroll")
+        log.info("pre-rolled %s: %d s of match history in %.0f ms", fs.feed_id, len(history), (time.monotonic() - started) * 1000)
 
     # ------------------------------------------------------------------ scoring
 
