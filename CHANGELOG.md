@@ -3,6 +3,13 @@
 Contract, label, clip-setting and weight changes need the ML lead's approval and a line here
 (hard rule 9).
 
+## MVP engine on a CPU VM (Charles, 2026-11-08)
+
+- L4 GPUs were out of stock (`ZONE_RESOURCE_POOL_EXHAUSTED`) for `g2-standard-8` and `g2-standard-4` in nine zones: europe-west4 a/b/c, west1 b/c, west2 a/b, west3 a/b.
+- The clock lane needs no GPU, so `si-dev` runs on an `e2-standard-4` CPU VM (`GPU=0 infra/gcp/create_gpu_vm.sh`; `setup_vm.sh GPU=0` skips the NVIDIA driver and toolkit). It has the same image, workflow, service account and tag `si`, with label `role=engine`.
+- `docker/compose.gpu.yaml` now holds the ingest's NVIDIA runtime and L4 reservation. `deploy-demo` layers it; `deploy-dev` (CPU `si-dev`) doesn't. `run_demo.sh` checks the GPU only when that overlay is in use.
+- `docs/mvp-use-case.md`: what F1, NBA and weightlifting need, and how the model reaches the viewer's feed (written before implementation).
+
 ## Data package in the bucket; 2018 matches approved (Charles, 2026-11-08)
 
 - The package is uploaded and `make data-verify` passes:

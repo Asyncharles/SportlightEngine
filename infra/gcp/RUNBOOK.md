@@ -4,6 +4,8 @@ Context: `docs/deploy-wiring-plan.md`. One GPU in the project, so only one of `s
 
 ## Create and set up (once, Charles approves)
 
+**MVP: `si-dev` is a CPU VM** (`e2-standard-4`, Charles's decision of 2026-11-08). L4s were out of stock in every approved zone, and the clock lane needs no GPU. Create it with `GPU=0 infra/gcp/create_gpu_vm.sh`, set it up with `sudo ROLE=dev GPU=0 bash /tmp/setup_vm.sh`, and `deploy dev` leaves out `compose.gpu.yaml`. The GPU steps below are for the L4 VM, when perception needs it.
+
 Needs `PREREQS.md` steps 1 to 4.
 
 ```bash

@@ -33,7 +33,7 @@ jobs:
       # deploy/remote-up.sh (AMQP_PASSWORD_SECRET is the secret's name), never shipped or logged.
       # Feed config is config/feeds.yaml inside the image at this same SHA.
       extra_env: |
-        COMPOSE_FILE=docker/compose.yaml:docker/compose.gcp.yaml
+        COMPOSE_FILE=docker/compose.yaml:docker/compose.gcp.yaml:docker/compose.gpu.yaml
         ENGINE_HEALTH_URL=http://127.0.0.1:8000/health
         INGEST_HEALTH_URL=http://127.0.0.1:8001/health
         SI_DATA=/opt/si/data
