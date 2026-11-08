@@ -1,0 +1,13 @@
+# On a GPU VM (L4), after compose.yaml and compose.gcp.yaml: the ingest runs on the NVIDIA runtime with the
+# GPU reserved. The clock lane doesn't use it yet; real decode and perception will.
+services:
+  ingest:
+    runtime: nvidia
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility,video
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - {driver: nvidia, count: 1, capabilities: [gpu]}

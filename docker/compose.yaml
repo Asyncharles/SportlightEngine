@@ -1,7 +1,7 @@
 # One image, one stack: the engine (CPU) and the ingest's clock lane (GPU on the VM, see compose.gcp.yaml).
 #
 # Laptop:  docker compose -f docker/compose.yaml up --build          (needs data/samples and data/events)
-# VM:      COMPOSE_FILE=docker/compose.yaml:docker/compose.gcp.yaml, IMAGE_SI=<repo>/si@sha256:... (deploy/)
+# VM:      COMPOSE_FILE=docker/compose.yaml:docker/compose.gcp.yaml[:docker/compose.gpu.yaml], IMAGE_SI=... (deploy/)
 #
 # Bucket data is mounted folder by folder from ${SI_DATA} (the local mirror of the bucket, data/ here and
 # /opt/si/data on the VM), so the image's own data/sync stays visible. ${SI_RUN} holds feeds_state.json,

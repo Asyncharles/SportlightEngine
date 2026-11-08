@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # One-time (idempotent) setup of the GPU VM, run on the VM as root:
-#   sudo ROLE=dev|demo GCS_BUCKET=<bucket> bash setup_vm.sh
+#   sudo ROLE=dev|demo GCS_BUCKET=<bucket> [GPU=0] bash setup_vm.sh
 #
+# GPU=0 (a CPU VM, see create_gpu_vm.sh) skips steps 1 and the NVIDIA toolkit in 2.
 # 1. NVIDIA driver (Google's cuda_installer.pyz; it reboots once: run this script again after).
 # 2. Docker, Compose v2 and the NVIDIA Container Toolkit (Compose's GPU service uses it).
 # 3. Artifact Registry auth for Docker.
@@ -11,6 +12,7 @@
 set -euo pipefail
 
 ROLE=${ROLE:-dev}
+GPU=${GPU:-1}
 GCS_BUCKET=${GCS_BUCKET:-sportlight-514020-si-private}
 AR_HOST=${AR_HOST:-europe-west4-docker.pkg.dev}
 IDLE_MIN=${IDLE_MIN:-60}
@@ -25,21 +27,23 @@ mkdir -p "$SI/releases" "$DATA" "$SI/secrets" "$SI/run"
 chmod 700 "$SI/secrets"
 
 echo "== 1. NVIDIA driver"
-if ! nvidia-smi >/dev/null 2>&1; then
+if [[ $GPU != 1 ]]; then
+  echo "skipped (GPU=0)"
+elif ! nvidia-smi >/dev/null 2>&1; then
   curl -fsSL https://storage.googleapis.com/compute-gpu-installation-us/installer/latest/cuda_installer.pyz \
     -o /opt/cuda_installer.pyz
   echo "Installing the driver; the VM may reboot. Run setup_vm.sh again afterwards."
   python3 /opt/cuda_installer.pyz install_driver --installation-mode=repo --installation-branch=prod
   nvidia-smi >/dev/null 2>&1 || { echo "Driver installed; reboot then re-run setup_vm.sh"; exit 0; }
 fi
-nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader
+if [[ $GPU == 1 ]]; then nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader; fi
 
 echo "== 2. Docker, Compose, NVIDIA Container Toolkit"
 if ! command -v docker >/dev/null || ! docker compose version >/dev/null 2>&1; then
   apt-get update -q
   apt-get install -y -q docker.io docker-compose-v2
 fi
-if ! command -v nvidia-ctk >/dev/null; then
+if [[ $GPU == 1 ]] && ! command -v nvidia-ctk >/dev/null; then
   curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \
     | gpg --dearmor --yes -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
   curl -fsSL https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \
@@ -48,7 +52,7 @@ if ! command -v nvidia-ctk >/dev/null; then
   apt-get update -q
   apt-get install -y -q nvidia-container-toolkit
 fi
-nvidia-ctk runtime configure --runtime=docker >/dev/null
+if [[ $GPU == 1 ]]; then nvidia-ctk runtime configure --runtime=docker >/dev/null; fi
 systemctl restart docker
 systemctl enable --now docker >/dev/null
 docker compose version

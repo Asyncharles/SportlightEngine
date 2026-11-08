@@ -5,6 +5,8 @@ set -euo pipefail
 export COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-si}
 docker compose up -d --no-build --remove-orphans engine ingest
 docker compose ps
-# GPU check (informational: the clock lane runs without it, perception will not).
-docker compose exec -T ingest nvidia-smi --query-gpu=name,driver_version --format=csv,noheader 2>/dev/null \
-  || echo "WARNING: the ingest container sees no GPU" >&2
+# GPU check on GPU VMs only (informational: the clock lane runs without it, perception will not).
+if [[ "${COMPOSE_FILE:-}" == *compose.gpu.yaml* ]]; then
+  docker compose exec -T ingest nvidia-smi --query-gpu=name,driver_version --format=csv,noheader 2>/dev/null \
+    || echo "WARNING: the ingest container sees no GPU" >&2
+fi
