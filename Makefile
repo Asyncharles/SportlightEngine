@@ -7,7 +7,7 @@ RUN := $(UV) run --inexact
 PY := $(RUN) python
 
 .DEFAULT_GOAL := help
-.PHONY: help sync test test-gpu test-slow lint format contracts contracts-check env-check
+.PHONY: help sync test test-e2e test-gpu test-slow lint format contracts contracts-check env-check
 
 help:  ## List targets
 	@grep -hE '^[a-zA-Z0-9_%-]+:.*?## ' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-18s %s\n", $$1, $$2}'
@@ -16,7 +16,10 @@ sync:  ## Install base + dev deps into venv/ (add EXTRAS="--extra train" etc.)
 	$(UV) sync --inexact $(EXTRAS)
 
 test:  ## CPU tests: no GPU, no network (hard rule 8)
-	$(RUN) pytest -m "not gpu and not net and not slow" -q
+	$(RUN) pytest -m "not gpu and not net and not slow and not e2e" -q
+
+test-e2e:  ## Engine -> RabbitMQ -> front-end backend; needs E2E_BACKEND_URL, AMQP_URL (CI: .github/workflows/e2e.yml)
+	$(RUN) pytest -m e2e -q -s tests/e2e
 
 test-gpu:  ## GPU tests, on the VM
 	$(RUN) pytest -m gpu -q

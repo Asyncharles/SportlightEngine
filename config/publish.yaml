@@ -1,0 +1,43 @@
+# The front end's view of each engine feed, for the FeedEvents the engine publishes (engine/amqp.py).
+# Copied from sportlight's media/local-sources.json (Asyncharles/sportlight): keep the two in step.
+# Feed ids are the engine's feed_id; the browser plays <media_base>/<file of feeds.yaml sample>, the same
+# file the engine scores.
+media_base: /media/local/videos
+has_audio: true
+license: Private demo footage, not licensed for redistribution
+attribution_notice: Private hackathon demo footage. Do not publish or export.
+sports:                       # engine sport -> the front end's SportId (packages/shared/src/catalogue.ts)
+  football: football
+  f1: motorsport
+  nba: basketball
+  weightlifting: weightlifting
+  chess: chess
+feeds:
+  fb-arg-fra:
+    competition_id: fifa-world-cup
+    event:
+      title: Argentina v France
+      subtitle: 2022 FIFA World Cup · Final
+      broadcaster: {name: FIFA, channel: YouTube replay}
+    source_url: https://www.youtube.com/watch?v=RgqKdplLIk4
+  f1-demo-race:
+    competition_id: formula-1
+    event:
+      title: Brazilian Grand Prix
+      subtitle: Formula 1 2019 · Lap 45 to the flag
+      broadcaster: {name: Sky Sports, channel: Sky Sports F1}
+    source_url: https://www.youtube.com/watch?v=-3EHB0IqOnw
+  nba-demo-game:
+    competition_id: nba
+    event:
+      title: Cavaliers @ Warriors
+      subtitle: 2016 NBA Finals · Game 7
+      broadcaster: {name: ESPN, channel: YouTube replay}
+    source_url: https://www.youtube.com/watch?v=EoVTttvKfRs
+  wl-demo-session:
+    competition_id: iwf-worlds
+    event:
+      title: Men's 79 kg, Group A
+      subtitle: 2025 World Weightlifting Championships · Førde
+      broadcaster: {name: Weightlifting House, channel: YouTube replay}
+    source_url: https://www.youtube.com/watch?v=2JRPzQ7QYgY
