@@ -4,6 +4,7 @@
 #   DRY_RUN=1 infra/gcp/create_gpu_vm.sh            print the command only
 #   infra/gcp/create_gpu_vm.sh                       si-dev, g2-standard-8, 1 L4
 #   VM=si-demo MAX_RUN=24h infra/gcp/create_gpu_vm.sh
+#   ZONE=europe-west4-b infra/gcp/create_gpu_vm.sh   L4 stockout in the default zone
 #
 # Standard provisioning (never Spot: the demo must not be preempted, and PREEMPTIBLE_CPUS is 0 in
 # europe-west4). A max run duration stops the VM even if the idle watchdog (setup_vm.sh) misses.
@@ -12,10 +13,11 @@
 set -euo pipefail
 
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+CALLER_ZONE=${ZONE:-}   # a zone on the command line beats infra/gcp/env (e.g. ZONE=$ZONE_FALLBACK on a stockout)
 # shellcheck source=/dev/null
 [[ -f "$HERE/env" ]] && source "$HERE/env"
 PROJECT=${PROJECT:?set PROJECT or create infra/gcp/env}
-ZONE=${ZONE:-europe-west4-a}
+ZONE=${CALLER_ZONE:-${ZONE:-europe-west4-a}}
 VM=${VM:-si-dev}
 MACHINE=${MACHINE:-g2-standard-8}
 DISK_GB=${DISK_GB:-100}
